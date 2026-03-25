@@ -1,0 +1,2012 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Level 4 — 기타 지판 학습 가이드</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@300;400;500;600;700&family=IBM+Plex+Mono:ital,wght@0,400;0,500;0,600;1,400&family=Cormorant+Garamond:ital,wght@0,600;1,400&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #f5f0e8;
+  --bg2: #ede7d9;
+  --bg3: #e4dccb;
+  --ink: #1a1710;
+  --ink2: #3d3828;
+  --ink3: #6b6452;
+  --ink4: #9a9080;
+  --accent: #8b4513;
+  --accent2: #2c5f8a;
+  --accent3: #4a7c59;
+  --gold: #c49a3c;
+  --red: #a63228;
+  --border: #c8bfa8;
+  --string1: #8b7355;
+  --string6: #5a4a35;
+  --nut: #2c2820;
+  --fret: #9a8f7a;
+  --dot-root: #a63228;
+  --dot-note: #2c5f8a;
+  --dot-text: #f5f0e8;
+  --shadow: rgba(26,23,16,0.12);
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'IBM Plex Sans KR', sans-serif;
+  background: var(--bg);
+  color: var(--ink);
+  min-height: 100vh;
+}
+
+/* ── HEADER ── */
+header {
+  padding: 28px 32px 20px;
+  border-bottom: 2px solid var(--border);
+  background: var(--bg2);
+}
+
+.header-inner {
+  max-width: 1100px;
+  margin: 0 auto;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.title-block h1 {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 28px;
+  color: var(--accent);
+  letter-spacing: 0.01em;
+  line-height: 1.1;
+}
+
+.title-block h1 em {
+  font-style: italic;
+  color: var(--ink3);
+  font-size: 22px;
+}
+
+.title-block p {
+  font-size: 12px;
+  color: var(--ink4);
+  font-family: 'IBM Plex Mono', monospace;
+  margin-top: 4px;
+  letter-spacing: 0.06em;
+}
+
+.header-legend {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 12px;
+  color: var(--ink3);
+  font-family: 'IBM Plex Mono', monospace;
+}
+
+.legend-dot {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 9px;
+  font-weight: 700;
+  color: var(--dot-text);
+}
+
+.ld-root { background: var(--dot-root); }
+.ld-note { background: var(--dot-note); }
+.ld-open { background: var(--bg); border: 2px solid var(--dot-note); color: var(--dot-note); }
+
+/* ── SECTION TABS ── */
+.section-nav {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 20px 32px 0;
+  display: flex;
+  gap: 2px;
+  border-bottom: 2px solid var(--border);
+}
+
+.sec-tab {
+  padding: 10px 24px;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  border: 2px solid transparent;
+  border-bottom: none;
+  background: transparent;
+  color: var(--ink4);
+  font-family: 'IBM Plex Sans KR', sans-serif;
+  border-radius: 6px 6px 0 0;
+  transition: all 0.15s;
+  letter-spacing: 0.01em;
+  position: relative;
+  bottom: -2px;
+}
+
+.sec-tab:hover { color: var(--ink2); background: var(--bg3); }
+
+.sec-tab.active {
+  background: var(--bg);
+  color: var(--accent);
+  border-color: var(--border);
+  font-weight: 700;
+}
+
+/* ── KEY SELECTOR ── */
+.key-bar {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 18px 32px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.key-label {
+  font-size: 12px;
+  font-family: 'IBM Plex Mono', monospace;
+  color: var(--ink4);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin-right: 6px;
+}
+
+.key-btn {
+  width: 40px;
+  height: 40px;
+  border-radius: 6px;
+  border: 2px solid var(--border);
+  background: var(--bg2);
+  color: var(--ink2);
+  font-size: 13px;
+  font-family: 'IBM Plex Mono', monospace;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.15s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.key-btn:hover { border-color: var(--accent); color: var(--accent); background: var(--bg); }
+
+.key-btn.active {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
+  font-weight: 700;
+  box-shadow: 0 2px 8px rgba(139,69,19,0.3);
+}
+
+/* ── VIEW TOGGLE ── */
+.view-toggle {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-left: 8px;
+  padding-left: 16px;
+  border-left: 1px solid var(--border);
+}
+
+.view-btn {
+  padding: 7px 16px;
+  border-radius: 6px;
+  border: 2px solid var(--border);
+  background: var(--bg2);
+  color: var(--ink3);
+  font-size: 12px;
+  font-family: 'IBM Plex Sans KR', sans-serif;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.view-btn:hover { border-color: var(--accent2); color: var(--accent2); }
+
+.view-btn.active {
+  background: var(--accent2);
+  border-color: var(--accent2);
+  color: #fff;
+  font-weight: 700;
+  box-shadow: 0 2px 8px rgba(44,95,138,0.3);
+}
+
+/* ── MAIN ── */
+main {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 24px 32px 60px;
+}
+
+/* ── SECTION PANEL ── */
+.sec-panel { display: none; }
+.sec-panel.active { display: block; }
+
+/* ── DIAGRAM GROUP ── */
+.diagram-group {
+  margin-bottom: 36px;
+}
+
+.group-title {
+  font-family: 'IBM Plex Sans KR', sans-serif;
+  font-size: 17px;
+  font-weight: 600;
+  color: var(--ink2);
+  margin-bottom: 14px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-variant-numeric: lining-nums;
+  line-height: 1.4;
+}
+
+.group-subtitle {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 12px;
+  color: var(--ink4);
+  font-weight: 400;
+  font-variant-numeric: lining-nums;
+  vertical-align: middle;
+}
+
+.diagrams-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+/* ── FRETBOARD CARD ── */
+.fb-card {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 16px 18px 14px;
+  box-shadow: 0 2px 10px var(--shadow);
+  min-width: 0;
+}
+
+.fb-card-title {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--ink2);
+  margin-bottom: 4px;
+  font-family: 'IBM Plex Mono', monospace;
+  letter-spacing: 0.04em;
+}
+
+.fb-card-sub {
+  font-size: 11px;
+  color: var(--ink4);
+  margin-bottom: 10px;
+  font-family: 'IBM Plex Mono', monospace;
+}
+
+/* ── SVG FRETBOARD ── */
+.fretboard-svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+}
+
+/* ── NOTE INFO ── */
+.note-row {
+  margin-top: 10px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+
+.note-chip {
+  padding: 2px 9px;
+  border-radius: 4px;
+  font-size: 11px;
+  font-family: 'IBM Plex Mono', monospace;
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  color: var(--ink3);
+}
+
+.note-chip.root {
+  background: var(--dot-root);
+  color: #fff;
+  border-color: var(--dot-root);
+}
+
+/* ── FORMULA BOX ── */
+.formula-box {
+  margin-bottom: 16px;
+  padding: 10px 14px;
+  background: var(--bg3);
+  border-left: 3px solid var(--gold);
+  border-radius: 0 6px 6px 0;
+  font-size: 12px;
+  color: var(--ink3);
+  font-family: 'IBM Plex Mono', monospace;
+  line-height: 1.7;
+}
+
+.formula-box strong { color: var(--ink2); }
+
+/* ── HINT BOX ── */
+.hint-box {
+  margin-top: 10px;
+  padding: 9px 14px;
+  background: #f0ede4;
+  border-left: 3px solid var(--accent3);
+  border-radius: 0 6px 6px 0;
+  font-size: 12px;
+  color: var(--ink3);
+  line-height: 1.6;
+}
+
+.hint-box strong { color: var(--ink2); }
+
+/* ── VOICING SECTION ── */
+.voicing-section {
+  margin-top: 18px;
+  padding: 16px 18px;
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+}
+
+.voicing-section-title {
+  font-family: 'IBM Plex Sans KR', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--ink2);
+  margin-bottom: 6px;
+}
+
+.voicing-section-sub {
+  font-size: 12px;
+  color: var(--ink4);
+  font-family: 'IBM Plex Mono', monospace;
+  margin-bottom: 14px;
+  line-height: 1.5;
+}
+
+.voicing-note {
+  margin-top: 10px;
+  padding: 8px 12px;
+  background: var(--bg3);
+  border-radius: 6px;
+  font-size: 11px;
+  color: var(--ink3);
+  font-family: 'IBM Plex Mono', monospace;
+  line-height: 1.6;
+  min-height: 18px;
+}
+
+.voicing-note strong { color: var(--accent); }
+
+/* ── VOICING CONTROLS ── */
+.voicing-controls {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+
+.voicing-ctrl-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.voicing-ctrl-label {
+  font-size: 11px;
+  font-family: 'IBM Plex Mono', monospace;
+  color: var(--ink4);
+  min-width: 40px;
+  letter-spacing: 0.04em;
+}
+
+/* 현 세트 버튼 — 크고 명확하게 */
+.voicing-set-btn {
+  padding: 8px 16px;
+  border-radius: 8px;
+  border: 2px solid var(--border);
+  background: var(--bg3);
+  color: var(--ink2);
+  font-size: 15px;
+  font-family: 'IBM Plex Sans KR', sans-serif;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s;
+  letter-spacing: 0.02em;
+  line-height: 1.3;
+}
+
+.voicing-set-btn:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+  background: #f5ede4;
+}
+
+.voicing-set-btn.active {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
+  font-weight: 700;
+  box-shadow: 0 2px 8px rgba(122,76,44,0.25);
+}
+
+/* 전위 버튼 — 현 세트보다 작고 차분하게 */
+.voicing-inv-btn {
+  padding: 5px 14px;
+  border-radius: 20px;
+  border: 1.5px solid var(--border);
+  background: var(--bg3);
+  color: var(--ink3);
+  font-size: 12px;
+  font-family: 'IBM Plex Sans KR', sans-serif;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.voicing-inv-btn:hover {
+  border-color: var(--accent2);
+  color: var(--accent2);
+}
+
+.voicing-inv-btn.active {
+  background: var(--accent2);
+  border-color: var(--accent2);
+  color: #fff;
+  font-weight: 600;
+}
+
+.voicing-display {
+  margin-bottom: 10px;
+  min-height: 120px;
+}
+
+/* ── RESPONSIVE ── */
+@media (max-width: 700px) {
+  header { padding: 18px 16px 14px; }
+  .section-nav, .key-bar, main { padding-left: 16px; padding-right: 16px; }
+  .sec-tab { padding: 8px 14px; font-size: 12px; }
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <div class="title-block">
+      <h1>Level IV <em>— 기타 지판 학습 가이드</em></h1>
+      <p>Berklee Guitar Proficiency · 노션기타 Notion GTR 2.0 · Keys: C · F · Bb · Eb · G · D · A</p>
+    </div>
+    <div class="header-legend">
+      <div class="legend-item">
+        <div class="legend-dot ld-root">R</div>
+        <span class="legend-root-label">루트음</span>
+      </div>
+      <div class="legend-item">
+        <div class="legend-dot ld-note">●</div>
+        <span>스케일음</span>
+      </div>
+      <div class="legend-item">
+        <div class="legend-dot ld-open">O</div>
+        <span>개방현</span>
+      </div>
+    </div>
+  </div>
+</header>
+
+<nav class="section-nav">
+  <button class="sec-tab active" onclick="switchSection('scales')">🎼 스케일</button>
+  <button class="sec-tab" onclick="switchSection('triads')">🎸 3화음 코드</button>
+  <button class="sec-tab" onclick="switchSection('fourpart')">🎵 4성부 화음</button>
+</nav>
+
+<div class="key-bar">
+  <span class="key-label">Key →</span>
+  <button class="key-btn active" onclick="selectKey('C')">C</button>
+  <button class="key-btn" onclick="selectKey('F')">F</button>
+  <button class="key-btn" onclick="selectKey('Bb')">B♭</button>
+  <button class="key-btn" onclick="selectKey('Eb')">E♭</button>
+  <button class="key-btn" onclick="selectKey('G')">G</button>
+  <button class="key-btn" onclick="selectKey('D')">D</button>
+  <button class="key-btn" onclick="selectKey('A')">A</button>
+
+  <div class="view-toggle" id="viewToggle">
+    <span class="key-label" style="margin-left:12px">표시 →</span>
+    <button class="view-btn active" data-mode="note"  onclick="setViewMode('note')">음이름</button>
+    <button class="view-btn"        data-mode="degree" onclick="setViewMode('degree')">도수</button>
+  </div>
+</div>
+
+<main>
+  <div id="panel-scales" class="sec-panel active"></div>
+  <div id="panel-triads" class="sec-panel"></div>
+  <div id="panel-fourpart" class="sec-panel"></div>
+</main>
+
+<script>
+// ════════════════════════════════════════════════
+// MUSIC THEORY ENGINE
+// ════════════════════════════════════════════════
+
+// Standard tuning: E2 A2 D3 G3 B3 E4
+// Represented as semitone offset from C0
+const OPEN_STRINGS = [4, 9, 14, 19, 23, 28]; // E A D G B E (low to high)
+// String index 0 = low E (6th string), 5 = high E (1st string)
+
+const NOTE_NAMES = ['C','C#','D','D#','E','F','F#','G','G#','A','A#','B'];
+const NOTE_NAMES_FLAT = ['C','Db','D','Eb','E','F','Gb','G','Ab','A','Bb','B'];
+
+// 음계 도수 순서: C D E F G A B (diatonic letter names)
+const DIATONIC_LETTERS = ['C','D','E','F','G','A','B'];
+// 각 음이름의 기본 반음 위치 (sharps/flats 없는 자연음)
+const NATURAL_SEMITONES = {C:0, D:2, E:4, F:5, G:7, A:9, B:11};
+
+function noteToSemitone(note) {
+  const map = {
+    'C':0,'C#':1,'Db':1,'D':2,'D#':3,'Eb':3,'E':4,'F':5,
+    'F#':6,'Gb':6,'G':7,'G#':8,'Ab':8,'A':9,'A#':10,'Bb':10,'B':11
+  };
+  return map[note] ?? 0;
+}
+
+// ─────────────────────────────────────────────────────
+// 핵심 함수: 루트음 + 인터벌 도수 → 올바른 음이름
+// 화성학 규칙: 같은 도수 내에서 변화기호(#/b)로 표현
+// 예) C + 단3도(b3) = Eb (D#이 아님)
+// ─────────────────────────────────────────────────────
+function intervalToNoteName(rootNote, intervalSemitones, degreeOffset) {
+  // rootNote: 'C', 'F#', 'Bb' 등
+  // intervalSemitones: 0~11 (반음 수)
+  // degreeOffset: 0=루트, 1=2도, 2=3도, 3=4도, 4=5도, 5=6도, 6=7도 (0-indexed)
+
+  // 루트의 letter index 찾기
+  const rootLetter = rootNote.replace(/[#b]/g, '');
+  const rootIdx = DIATONIC_LETTERS.indexOf(rootLetter);
+  if (rootIdx === -1) return rootNote;
+
+  // 목표 도수의 letter
+  const targetIdx = (rootIdx + degreeOffset) % 7;
+  const targetLetter = DIATONIC_LETTERS[targetIdx];
+
+  // 루트 반음값
+  const rootSt = noteToSemitone(rootNote);
+  // 목표 반음값 (루트 기준)
+  const targetSt = ((rootSt + intervalSemitones) % 12 + 12) % 12;
+  // 목표 letter의 자연음 반음값
+  const naturalSt = NATURAL_SEMITONES[targetLetter];
+
+  // 차이 계산 → 변화기호 결정
+  let diff = ((targetSt - naturalSt) + 12) % 12;
+  // diff를 -1~+1 범위로 정규화 (더블샤프/더블플랫은 최대 2까지)
+  if (diff > 6) diff -= 12;
+
+  if (diff === 0)  return targetLetter;
+  if (diff === 1)  return targetLetter + '#';
+  if (diff === 2)  return targetLetter + '##';
+  if (diff === -1) return targetLetter + 'b';
+  if (diff === -2) return targetLetter + 'bb';
+  // 그 외 fallback
+  return targetLetter + (diff > 0 ? '#' : 'b');
+}
+
+// 코드 타입별 degree offset 매핑
+// 각 인터벌이 몇 도인지 (0-indexed: 0=1도, 1=2도, 2=3도...)
+const INTERVAL_DEGREES = {
+  'Maj':      [0, 2, 4],           // 1 3 5
+  'Min':      [0, 2, 4],           // 1 b3 5
+  'Aug':      [0, 2, 4],           // 1 3 #5
+  'Dim':      [0, 2, 4],           // 1 b3 b5
+  'Maj7':     [0, 2, 4, 6],        // 1 3 5 7
+  'Min7':     [0, 2, 4, 6],        // 1 b3 5 b7
+  'Dom7':     [0, 2, 4, 6],        // 1 3 5 b7
+  'Min7b5':   [0, 2, 4, 6],        // 1 b3 b5 b7
+  'Dom7sus4': [0, 3, 4, 6],        // 1 4 5 b7
+  '7#5':      [0, 2, 4, 6],        // 1 3 #5 b7
+  'Dim7':     [0, 2, 4, 6],        // 1 b3 b5 bb7
+  'Maj6':     [0, 2, 4, 5],        // 1 3 5 6
+  'Min6':     [0, 2, 4, 5],        // 1 b3 5 6
+  'Min9':     [0, 2, 4, 6, 1],     // 1 b3 5 b7 9
+  '9':        [0, 2, 4, 6, 1],     // 1 3 5 b7 9
+  '7b9':      [0, 2, 4, 6, 1],     // 1 3 5 b7 b9
+  '7#9':      [0, 2, 4, 6, 1],     // 1 3 5 b7 #9
+  '13':       [0, 2, 4, 6, 1, 5],  // 1 3 5 b7 9 13
+};
+
+// 코드 구성음 이름 배열 반환 (화성학적으로 정확한 표기)
+function getChordNoteNames(rootNote, chordType) {
+  const intervals = CHORD_INTERVALS[chordType];
+  const degrees = INTERVAL_DEGREES[chordType] || intervals.map((_,i) => i);
+  return intervals.map((iv, i) => {
+    // 9도 이상은 mod 7로 처리 (2도=9도, 4도=11도, 6도=13도)
+    const deg = degrees[i] !== undefined ? degrees[i] : i;
+    return intervalToNoteName(rootNote, iv % 12, deg);
+  });
+}
+
+// 스케일 구성음 이름 배열 (화성학적 표기)
+function getScaleNoteNames(rootNote, scaleType) {
+  const intervals = SCALES[scaleType];
+  // major: 7음계 도수 0~6
+  const degrees = scaleType === 'major' ? [0,1,2,3,4,5,6] : intervals.map((_,i)=>i);
+  return intervals.map((iv, i) => intervalToNoteName(rootNote, iv, degrees[i] || i));
+}
+
+// 지판 위 음표 표기: 루트 + 반음 위치 → 가장 가까운 올바른 음이름
+// (지판 전체 표시용 — 단순 플랫/샤프 선택)
+function semitoneToNote(s, preferFlat=false) {
+  return preferFlat ? NOTE_NAMES_FLAT[((s%12)+12)%12] : NOTE_NAMES[((s%12)+12)%12];
+}
+
+// 지판 표시용: 컨텍스트 기반 음이름 (해당 스케일/코드의 구성음이면 정확한 이름 반환)
+function getContextualNoteName(semitone, rootNote, chordOrScaleIntervals, chordType) {
+  const rootSt = noteToSemitone(rootNote);
+  const relSt = ((semitone - rootSt) + 12) % 12;
+  const ivIndex = chordOrScaleIntervals.map(iv => iv % 12).indexOf(relSt);
+  if (ivIndex === -1) return semitoneToNote(semitone, !!USE_FLAT[rootNote]);
+  if (chordType && INTERVAL_DEGREES[chordType]) {
+    const deg = INTERVAL_DEGREES[chordType][ivIndex];
+    return intervalToNoteName(rootNote, relSt, deg);
+  }
+  return semitoneToNote(semitone, !!USE_FLAT[rootNote]);
+}
+
+
+
+const CHORD_NAMES_KO = {
+  // 3화음 (공통)
+  'Maj':'장3화음','Min':'단3화음','Aug':'증3화음','Dim':'감3화음',
+  // Level 3 four-part
+  'Maj7':'장7화음','Min7':'단7화음','Dom7':'속7화음','Min7b5':'반감7화음',
+  'Dom7sus4':'속7sus4','7#5':'증속7','Dim7':'감7화음','Maj6':'장6화음',
+  'Min6':'단6화음','Min9':'단9화음','9':'9화음','7b9':'단9속7',
+  '7#9':'증9속7','13':'13화음',
+  // Level IV four-part
+  'Min(maj7)':'단장7화음','Maj7#5':'증장7화음','Maj7b5':'장7(b5)',
+  'Min7#5':'증단7화음','7b5':'속7(b5)','Dim(Maj7)':'감장7화음',
+  'Maj(9/7)':'장9/7화음','Maj(9/6)':'장9/6화음','min9(maj7)':'단9장7화음',
+  '7(b9/b13)':'속7(b9/b13)','13(b9)':'13화음(b9)','9(b13)':'9화음(b13)'
+};
+
+// Level 3 4성부 화음 — Level 1과 동일한 14종 (인터벌 재사용)
+const CHORD_INTERVALS_L3 = {}; // Level 1 CHORD_INTERVALS 그대로 사용
+
+// Level 3 인터벌 degree (Level 1 INTERVAL_DEGREES 재사용)
+const INTERVAL_DEGREES_L3 = {};
+
+// Level 3 degree override (Level 1 DEGREE_OVERRIDE 재사용)
+const DEGREE_OVERRIDE_L3 = {};
+
+
+const USE_FLAT = { 'F':true,'Bb':true,'Eb':true,'Ab':true,'Db':true };
+
+// ════════════════════════════════════════════════
+// SCALE & CHORD DATA
+// ════════════════════════════════════════════════
+
+const SCALES = {
+  major:              [0,2,4,5,7,9,11],
+  chromatic:          [0,1,2,3,4,5,6,7,8,9,10,11],
+  melodicMinor:       [0,2,3,5,7,9,11],
+  wholeTone:          [0,2,4,6,8,10],
+  harmonicMinor:      [0,2,3,5,7,8,11],
+  diminished:         [0,2,3,5,6,8,9,11],
+  harmonicMajor:      [0,2,4,5,7,8,11],  // 1 2 3 4 5 b6 7
+  majorPentatonic:    [0,2,4,7,9],        // 1 2 3 5 6
+  minorPentatonic:    [0,2,3,7,9],        // 1 2 b3 5 6
+};
+
+const CHORD_INTERVALS = {
+  'Maj':      [0,4,7],
+  'Min':      [0,3,7],
+  'Aug':      [0,4,8],
+  'Dim':      [0,3,6],
+  'Maj7':     [0,4,7,11],
+  'Min7':     [0,3,7,10],
+  'Dom7':     [0,4,7,10],
+  'Min7b5':   [0,3,6,10],
+  'Dom7sus4': [0,5,7,10],
+  '7#5':      [0,4,8,10],
+  'Dim7':     [0,3,6,9],
+  'Maj6':     [0,4,7,9],
+  'Min6':     [0,3,7,9],
+  'Min9':     [0,3,7,10,2],
+  '9':        [0,4,7,10,2],
+  '7b9':      [0,4,7,10,1],
+  '7#9':      [0,4,7,10,3],
+  '13':       [0,4,7,10,2,9],
+  // Level IV 코드
+  'Min(maj7)':  [0,3,7,11],
+  'Maj7#5':     [0,4,8,11],
+  'Maj7b5':     [0,4,6,11],
+  'Min7#5':     [0,3,8,10],
+  '7b5':        [0,4,6,10],
+  'Dim(Maj7)':  [0,3,6,11],
+  'Maj(9/7)':   [0,4,7,11,2],
+  'Maj(9/6)':   [0,4,7,9,2],
+  'min9(maj7)': [0,3,7,11,2],
+  '7(b9/b13)':  [0,4,7,10,1,8],
+  '13(b9)':     [0,4,7,10,1,9],
+  '9(b13)':     [0,4,7,10,2,8],
+};
+
+// Level IV 코드 degree override (음이름 정확 표기용)
+const CHORD_INTERVALS_L4 = {
+  'Min(maj7)':  [0,3,7,11],
+  'Maj7#5':     [0,4,8,11],
+  'Maj7b5':     [0,4,6,11],
+  'Min7#5':     [0,3,8,10],
+  '7b5':        [0,4,6,10],
+  'Dim(Maj7)':  [0,3,6,11],
+  'Maj(9/7)':   [0,4,7,11,2],
+  'Maj(9/6)':   [0,4,7,9,2],
+  'min9(maj7)': [0,3,7,11,2],
+  '7(b9/b13)':  [0,4,7,10,1,8],
+  '13(b9)':     [0,4,7,10,1,9],
+  '9(b13)':     [0,4,7,10,2,8],
+};
+
+// ════════════════════════════════════════════════
+// FRETBOARD POSITION CALCULATOR
+// ════════════════════════════════════════════════
+
+// ════════════════════════════════════════════════
+// 인터랙티브 보이싱 폼 — 지판 데이터 기반 자동 계산
+// ════════════════════════════════════════════════
+
+// ════════════════════════════════════════════════
+// 인터랙티브 보이싱 폼 — 정확한 배치 순서 기반 자동 계산
+// (NotebookLM 버클리 기타 마스터 브레인 검증 완료)
+// ════════════════════════════════════════════════
+
+const VOICING_SETS = {
+  close: { '654':[6,5,4], '543':[5,4,3], '432':[4,3,2], '321':[3,2,1] },
+  open:  { '643':[6,4,3], '542':[5,4,2] }
+};
+
+// ════════════════════════════════════════════════
+// DROP 2/3 보이싱 엔진 (4성부 화음용)
+// NotebookLM 버클리 기타 마스터 브레인 검증 완료
+// ════════════════════════════════════════════════
+
+// Drop 3: ⑥④③② (5번줄 뮤트) — absIdx [0,2,3,4]
+// Drop 2: ⑤④③② — absIdx [1,2,3,4]
+// 도수 인덱스: 0=1도(root), 1=3도, 2=5도, 3=7도
+//
+// Drop 3 배치패턴: i번 전위 = [i, (i+3)%4, (i+1)%4, (i+2)%4]
+//   근음: [0,3,1,2] = 1도-7도-3도-5도 (C Maj7: C-B-E-G ✅)
+// Drop 2 배치패턴: i번 전위 = [i, (i+2)%4, (i+3)%4, (i+1)%4]
+//   근음: [0,2,3,1] = 1도-5도-7도-3도 (C Maj7: C-G-B-E ✅)
+
+const DROP3_STRINGS = [0,2,3,4]; // ⑥④③② absIdx
+const DROP2_STRINGS = [1,2,3,4]; // ⑤④③②
+
+function getDrop3Order(invIdx) {
+  const i = invIdx % 4;
+  return [i%4, (i+3)%4, (i+1)%4, (i+2)%4];
+}
+function getDrop2Order(invIdx) {
+  const i = invIdx % 4;
+  return [i%4, (i+2)%4, (i+3)%4, (i+1)%4];
+}
+
+// Drop 보이싱 탐색
+function findDropVoicing(tones, absIdxList, order) {
+  const results = [];
+  const bassAi = absIdxList[0];
+  for (const bF of freetsOfNote(bassAi, tones[order[0]], 0, 18)) {
+    let voicing = [{absIdx:bassAi, fret:bF, degIdx:order[0]}];
+    let valid = true;
+    for (let si = 1; si < absIdxList.length; si++) {
+      const ai = absIdxList[si];
+      const target = tones[order[si]];
+      const minF = Math.max(0, bF-4), maxF = Math.min(18, bF+6);
+      const cands = freetsOfNote(ai, target, minF, maxF);
+      if (!cands.length) { valid=false; break; }
+      cands.sort((a,b) => Math.abs(a-bF)-Math.abs(b-bF));
+      voicing.push({absIdx:ai, fret:cands[0], degIdx:order[si]});
+    }
+    if (!valid) continue;
+    const frets = voicing.map(v => v.fret);
+    const span = Math.max(...frets) - Math.min(...frets);
+    if (span <= 5) results.push({voicing, span, bF});
+  }
+  if (!results.length) return null;
+  results.sort((a,b) => a.bF - b.bF || a.span - b.span);
+  return results[0].voicing;
+}
+
+// Drop 폼 → voicingPos 변환 (makeFretboardSVG 입력 형식)
+function dropVoicingToPos(voicing, baseIntervals, key) {
+  const degOffsets = [0,2,4,6]; // 1도, 3도, 5도, 7도 letter offset
+  const rootSt = noteToSemitone(key);
+  return voicing.map(({absIdx, fret, degIdx}) => {
+    const noteSt = ((OPEN_STRINGS[absIdx] + fret) % 12 + 12) % 12;
+    const isRoot = noteSt === rootSt % 12;
+    const noteNm = intervalToNoteName(key, baseIntervals[degIdx], degOffsets[degIdx]);
+    const degLabels = ['1','3','5','7'];
+    return {
+      string: absIdx, fret, isRoot, isOpen: fret===0,
+      note: noteNm, degree: degLabels[degIdx] || '',
+    };
+  });
+}
+
+// Drop 보이싱 섹션 HTML (지판 전체에 폼 표시)
+function makeDropVoicingSection(chord, key, baseIntervals) {
+  const rootSt = noteToSemitone(key);
+  const tones = baseIntervals.map(i => (rootSt + i) % 12);
+  const invLabels = ['근음 포지션','1전위','2전위','3전위'];
+  const dropTypes = [
+    {label:'Drop 3 (⑥④③②)', absIdxList:DROP3_STRINGS, orderFn:getDrop3Order, strNums:[6,4,3,2]},
+    {label:'Drop 2 (⑤④③②)', absIdxList:DROP2_STRINGS, orderFn:getDrop2Order, strNums:[5,4,3,2]},
+  ];
+
+  let html = `<div class="voicing-section">`;
+  html += `<div class="voicing-section-title">🎸 Drop 보이싱 폼 <span style="font-weight:400;color:var(--ink4);font-size:11px">Level IV 실기: 근음 포지션 2개 폼 필수</span></div>`;
+  html += `<div class="voicing-section-sub">Drop 3 = 위에서 3번째 음을 옥타브 아래로 (⑥현 뮤트) · Drop 2 = 위에서 2번째 음을 옥타브 아래로</div>`;
+
+  dropTypes.forEach(({label, absIdxList, orderFn, strNums}) => {
+    html += `<div style="margin-bottom:18px">`;
+    html += `<div style="font-size:14px;font-family:'IBM Plex Sans KR',sans-serif;color:var(--ink2);margin-bottom:10px;font-weight:700">${label}</div>`;
+    html += `<div style="display:flex;flex-wrap:wrap;gap:16px;">`;
+
+    for (let inv = 0; inv < 4; inv++) {
+      const v = findDropVoicing(tones, absIdxList, orderFn(inv));
+      if (!v) {
+        html += `<div style="font-size:11px;color:var(--ink4);padding:8px;">${invLabels[inv]}: 12프렛 이내 불가</div>`;
+        continue;
+      }
+      const vPos = dropVoicingToPos(v, baseIntervals, key);
+      const vFrets = v.map(p=>p.fret).filter(f=>f>0);
+      const maxF = vFrets.length ? Math.max(...vFrets) : 4;
+      const endFr = Math.max(15, maxF+1);
+      const activeStrNums = new Set(strNums);
+
+      // Level IV 실기는 근음 포지션만 필수 — 강조 표시
+      const isRequired = inv === 0;
+      html += `<div style="flex:1;min-width:180px;">`;
+      html += `<div style="font-size:12px;font-family:'IBM Plex Mono',monospace;color:${isRequired?'var(--accent)':'var(--ink3)'};margin-bottom:6px;font-weight:${isRequired?'700':'400'}">`;
+      html += `${invLabels[inv]}${isRequired?' ★실기 필수':''}`;
+      html += `</div>`;
+      html += makeFretboardSVG(vPos, {startFret:0, endFret:endFr, width:320, viewMode:currentViewMode, activeStrNums});
+      html += `</div>`;
+    }
+    html += `</div></div>`;
+  });
+
+  html += `<div class="voicing-note">💡 <strong>실기 핵심:</strong> Drop 3(6번줄 루트)과 Drop 2(5번줄 루트) 근음 포지션 2개를 모든 키에서 즉각 연주할 수 있어야 합니다.</div>`;
+  html += `</div>`;
+  return html;
+}
+
+const SET_LABELS = {
+  '654':'⑥⑤④ 현 세트', '543':'⑤④③ 현 세트',
+  '432':'④③② 현 세트', '321':'③②① 현 세트',
+  '643':'⑥④③ 현 세트', '542':'⑤④② 현 세트',
+};
+const INV_LABELS_MAP = { R:'근음 포지션', '1':'1전위 (3도 최저)', '2':'2전위 (5도 최저)' };
+
+// ── 클로즈 보이싱 배치 순서 ─────────────────────────────
+// 클로즈 = 1옥타브 이내, 최저음(Bass Note) 기준 전위
+// Root [1-3-5]: bass=1도, mid=3도, top=5도
+// 1st  [3-5-1]: bass=3도, mid=5도, top=1도
+// 2nd  [5-1-3]: bass=5도, mid=1도, top=3도
+// index: 0=root(1도), 1=3도, 2=5도
+const CLOSE_ORDER = [[0,1,2],[1,2,0],[2,0,1]];
+
+// ── 오픈 보이싱 배치 순서 ──────────────────────────────
+// 오픈 = 클로즈의 가운데 음을 1옥타브 위로 올린 형태
+// Root [1-5-3]: bass=1도, mid=5도, top=3도 (3도가 옥타브위로)
+// 1st  [3-1-5]: bass=3도, mid=1도, top=5도
+// 2nd  [5-3-1]: bass=5도, mid=3도, top=1도
+const OPEN_ORDER = [[0,2,1],[1,0,2],[2,1,0]];
+
+// ── 특정 현에서 목표 음의 프렛 위치 탐색 ──────────────
+function freetsOfNote(ai, targetNote, minF, maxF) {
+  const result = [];
+  for (let f = minF; f <= maxF; f++) {
+    if (((OPEN_STRINGS[ai] + f) % 12 + 12) % 12 === targetNote) result.push(f);
+  }
+  return result;
+}
+
+// ── 클로즈 보이싱 탐색 ─────────────────────────────────
+// rootSt: 루트 반음값, strNums: [6,5,4] 형태
+// invIdx: 0=근음, 1=1전위, 2=2전위
+// baseIntervals: [0,4,7] (Maj), [0,3,7] (Min), [0,4,8] (Aug), [0,3,6] (Dim)
+function findCloseVoicing(rootSt, strNums, invIdx, baseIntervals) {
+  const tones = baseIntervals.map(i => (rootSt + i) % 12);
+  const order = CLOSE_ORDER[invIdx];
+  const absIdxList = strNums.map(n => 6 - n);
+  const [bassAi, midAi, topAi] = absIdxList;
+  const results = [];
+
+  for (const bF of freetsOfNote(bassAi, tones[order[0]], 0, 12)) {
+    // 위 현들은 bassFret -3 ~ +4 범위에서 탐색
+    const minF = Math.max(0, bF - 3), maxF = bF + 4;
+    for (const mF of freetsOfNote(midAi, tones[order[1]], minF, maxF)) {
+      for (const tF of freetsOfNote(topAi, tones[order[2]], minF, maxF)) {
+        const activeFrets = [bF, mF, tF].filter(f => f > 0);
+        const span = activeFrets.length ? Math.max(...activeFrets) - Math.min(...activeFrets) : 0;
+        if (span <= 4) {
+          results.push({
+            v: [
+              {absIdx:bassAi, fret:bF, degIdx:order[0]},
+              {absIdx:midAi,  fret:mF, degIdx:order[1]},
+              {absIdx:topAi,  fret:tF, degIdx:order[2]},
+            ],
+            span, bF,
+          });
+        }
+      }
+    }
+  }
+  if (!results.length) return null;
+  // 개방현 포함 폼은 후순위, 낮은 포지션 우선
+  results.sort((a, b) => {
+    const aO = a.v.some(x => x.fret === 0) ? 1 : 0;
+    const bO = b.v.some(x => x.fret === 0) ? 1 : 0;
+    return aO - bO || a.bF - b.bF || a.span - b.span;
+  });
+  return results[0].v;
+}
+
+// ── 오픈 보이싱 탐색 ────────────────────────────────────
+function findOpenVoicing(rootSt, strNums, invIdx, baseIntervals) {
+  const tones = baseIntervals.map(i => (rootSt + i) % 12);
+  const order = OPEN_ORDER[invIdx];
+  const absIdxList = strNums.map(n => 6 - n);
+  const [bassAi, midAi, topAi] = absIdxList;
+  const results = [];
+
+  for (const bF of freetsOfNote(bassAi, tones[order[0]], 0, 12)) {
+    // 오픈은 더 넓은 범위 (bassFret -4 ~ +8)
+    const minF = Math.max(0, bF - 4), maxF = bF + 8;
+    for (const mF of freetsOfNote(midAi, tones[order[1]], minF, maxF)) {
+      for (const tF of freetsOfNote(topAi, tones[order[2]], minF, maxF)) {
+        const activeFrets = [bF, mF, tF].filter(f => f > 0);
+        const span = activeFrets.length ? Math.max(...activeFrets) - Math.min(...activeFrets) : 0;
+        if (span <= 5) {
+          results.push({
+            v: [
+              {absIdx:bassAi, fret:bF, degIdx:order[0]},
+              {absIdx:midAi,  fret:mF, degIdx:order[1]},
+              {absIdx:topAi,  fret:tF, degIdx:order[2]},
+            ],
+            span, bF,
+          });
+        }
+      }
+    }
+  }
+  if (!results.length) return null;
+  results.sort((a, b) => a.bF - b.bF || a.span - b.span);
+  return results[0].v;
+}
+
+// ── 통합 탐색 래퍼 ──────────────────────────────────────
+function findVoicingAuto(rootSt, strNums, invIdx, voicingType, baseIntervals) {
+  return voicingType === 'close'
+    ? findCloseVoicing(rootSt, strNums, invIdx, baseIntervals)
+    : findOpenVoicing(rootSt, strNums, invIdx, baseIntervals);
+}
+
+// 폼 포인트 → 6줄 다이어그램 SVG
+function makeVoicingDiagramFromPositions(voicingPoints, strNums) {
+  if (!voicingPoints) {
+    return `<div style="width:118px;height:130px;display:flex;align-items:center;justify-content:center;
+      background:#f0ede4;border-radius:6px;border:1px dashed var(--border);
+      font-size:11px;color:var(--ink4);font-family:IBM Plex Mono,monospace;text-align:center;padding:8px;line-height:1.5">
+      해당 전위는<br>이 현 세트에서<br>12프렛 이내 불가</div>`;
+  }
+
+  const activeStrNums = new Set(strNums);
+  const fretMap = {};
+  voicingPoints.forEach(p => { fretMap[p.string] = p; });
+
+  const activeFrets = voicingPoints.map(p => p.fret).filter(f => f > 0);
+  const minFret   = activeFrets.length ? Math.min(...activeFrets) : 1;
+  const maxFret   = activeFrets.length ? Math.max(...activeFrets) : 4;
+  const startFret = minFret <= 1 ? 1 : minFret;
+  const endFret   = Math.max(maxFret + 1, startFret + 3);
+  const numFrets  = endFret - startFret + 1;
+
+  const N=6, ss=13, fs=18, NR=6, OR=4;
+  const pL = startFret>1 ? 26 : 14, pR=10, pT=30, pB=10;
+  const bW = ss*(N-1), bH = fs*numFrets;
+  const tW = pL+bW+pR, tH = pT+bH+pB;
+  const FN = "'IBM Plex Mono', monospace";
+  const CN = ['','①','②','③','④','⑤','⑥'];
+
+  let s = `<svg viewBox="0 0 ${tW} ${tH}" xmlns="http://www.w3.org/2000/svg" `
+        + `style="width:${tW}px;height:${tH}px;flex-shrink:0;overflow:visible;display:block">`;
+  s += `<rect x="0" y="0" width="${tW}" height="${tH}" fill="#ede7d9" rx="5"/>`;
+
+  if (startFret>1)
+    s += `<text x="${pL-4}" y="${pT+fs*0.5}" font-family="${FN}" font-size="8" fill="#9a9080" text-anchor="end" dominant-baseline="middle">${startFret}fr</text>`;
+  else
+    s += `<rect x="${pL}" y="${pT-4}" width="${bW}" height="4" fill="#2c2820" rx="1"/>`;
+
+  for (let f=0; f<=numFrets; f++)
+    s += `<line x1="${pL}" y1="${pT+f*fs}" x2="${pL+bW}" y2="${pT+f*fs}" stroke="#9a8f7a" stroke-width="1"/>`;
+
+  for (let ai=0; ai<N; ai++) {
+    const sn = 6-ai, x = pL+ai*ss;
+    const isAct = activeStrNums.has(sn);
+    const th = isAct ? (0.5+((sn-1)/5)*1.8).toFixed(1) : (0.4+((sn-1)/5)*0.8).toFixed(1);
+    s += `<line x1="${x}" y1="${pT}" x2="${x}" y2="${pT+bH}" stroke="${isAct?'#8b7355':'#c8bfa8'}" stroke-width="${th}"/>`;
+    s += `<text x="${x}" y="${pT-16}" font-family="${FN}" font-size="9" fill="${isAct?'#6b6452':'#b8b0a0'}" text-anchor="middle" dominant-baseline="middle">${CN[sn]}</text>`;
+    if (!isAct)
+      s += `<text x="${x}" y="${pT-6}" font-family="${FN}" font-size="8" fill="#b8b0a0" text-anchor="middle" dominant-baseline="middle">×</text>`;
+
+    if (isAct && fretMap[ai] !== undefined) {
+      const {fret, isRoot} = fretMap[ai];
+      const fc = isRoot ? '#a63228' : '#2c5f8a';
+      if (fret === 0) {
+        s += `<circle cx="${x}" cy="${pT-6}" r="${OR}" fill="#ede7d9" stroke="${fc}" stroke-width="1.8"/>`;
+      } else {
+        const y = pT+(fret-startFret+0.5)*fs;
+        s += `<circle cx="${x}" cy="${y}" r="${NR}" fill="${fc}"/>`;
+        if (isRoot)
+          s += `<text x="${x}" y="${y}" font-family="${FN}" font-size="6" fill="#f5f0e8" text-anchor="middle" dominant-baseline="middle" font-weight="bold">R</text>`;
+      }
+    }
+  }
+  s += `</svg>`;
+  return s;
+}
+
+// 인터랙티브 보이싱 섹션 HTML 생성
+function makeInteractiveVoicingSection(type, voicingType, uid, key, intervals) {
+  const sets = Object.keys(VOICING_SETS[voicingType]);
+  const invKeys = ['R','1','2'];
+  const isClose = voicingType === 'close';
+  // 초기 렌더: 첫 번째 세트 + 근음 포지션 (새 보이싱 엔진)
+  const initSet = sets[0];
+  const initInv = 'R';
+  const initStrNums = VOICING_SETS[voicingType][initSet];
+  const rootSt0 = noteToSemitone(key);
+  const baseIvs0 = intervals.map(i => ((i % 12) + 12) % 12);
+  const voicing0 = findVoicingAuto(rootSt0, initStrNums, 0, voicingType, baseIvs0);
+
+  let initDiag, initNote;
+  if (voicing0) {
+    const degLabels0 = ['1','3','5'];
+    const degOffsets0 = [0, 2, 4];
+    const voicingPos0 = voicing0.map(({absIdx, fret, degIdx}) => {
+      const noteSt = ((OPEN_STRINGS[absIdx] + fret) % 12 + 12) % 12;
+      const isRoot = noteSt === rootSt0 % 12;
+      const noteNm = intervalToNoteName(key, baseIvs0[degIdx], degOffsets0[degIdx]);
+      return {
+        string: absIdx, fret, isRoot, isOpen: fret === 0,
+        note:   noteNm,
+        degree: degLabels0[degIdx] || '',
+      };
+    });
+    const sf0 = 0;
+    const vFrets0 = voicing0.map(p => p.fret);
+    const ef0 = Math.max(15, Math.max(...vFrets0) + 1);
+    initDiag = makeFretboardSVG(voicingPos0, {
+      startFret: sf0, endFret: ef0, width: 700,
+      viewMode: currentViewMode,
+      activeStrNums: new Set(initStrNums),
+    });
+    const strSymbols = ['','①','②','③','④','⑤','⑥'];
+    const noteInfo = voicing0.map(({absIdx, fret, degIdx}) => {
+      const noteNm = intervalToNoteName(key, baseIvs0[degIdx], degOffsets0[degIdx]);
+      const deg = degLabels0[degIdx] || '';
+      return `${strSymbols[6-absIdx]}현 ${fret}fr = ${noteNm}(${deg})`;
+    }).join(' · ');
+    initNote = `💡 ${SET_LABELS[initSet]} · ${INV_LABELS_MAP['R']} — ${noteInfo}`;
+  } else {
+    initDiag = `<div style="padding:14px;font-size:12px;color:var(--ink4);font-family:'IBM Plex Mono',monospace;">⚠️ 이 현 세트에서는 해당 전위를 12프렛 이내로 연주하기 어렵습니다.</div>`;
+    initNote = '';
+  }
+
+  // data-* 속성으로 필요한 정보를 저장 (인라인 script 불필요)
+  const ivsEncoded = encodeURIComponent(JSON.stringify(intervals));
+
+  let html = `<div class="voicing-section" id="vs-${uid}" `
+           + `data-type="${type}" data-vtype="${voicingType}" data-ivs="${ivsEncoded}">`;
+  html += `<div class="voicing-section-title">🎸 ${isClose?'클로즈':'오픈(스프레드)'} 보이싱 폼 예시</div>`;
+  html += `<div class="voicing-section-sub">`;
+  html += isClose
+    ? `클로즈 보이싱 = 구성음을 <strong>인접한 현에 밀집</strong> 배치 · 현 세트와 전위를 선택하면 해당 폼이 자동으로 표시돼요`
+    : `오픈 보이싱 = 구성음을 <strong>한 줄 건너뛰어 분산</strong> 배치 · 클로즈보다 넓고 풍성한 소리`;
+  html += `</div>`;
+
+  // 현 세트 버튼
+  html += `<div class="voicing-controls">`;
+  html += `<div class="voicing-ctrl-row"><span class="voicing-ctrl-label">현 세트</span>`;
+  sets.forEach((set, i) => {
+    html += `<button class="voicing-set-btn${i===0?' active':''}" `
+          + `onclick="selectVoicingSet('${uid}','${set}')" data-set="${set}">${SET_LABELS[set]}</button>`;
+  });
+  html += `</div>`;
+
+  // 전위 버튼
+  html += `<div class="voicing-ctrl-row"><span class="voicing-ctrl-label">전위</span>`;
+  invKeys.forEach((inv, i) => {
+    html += `<button class="voicing-inv-btn${i===0?' active':''}" `
+          + `onclick="selectVoicingInv('${uid}','${inv}')" data-inv="${inv}">${INV_LABELS_MAP[inv]}</button>`;
+  });
+  html += `</div></div>`;
+
+  // 초기 다이어그램 서버사이드 렌더 (스크립트 없이 즉시 표시)
+  html += `<div class="voicing-display" id="vd-${uid}">${initDiag}</div>`;
+  html += `<div class="voicing-note" id="vn-${uid}">${initNote}</div>`;
+  html += `</div>`;
+
+  return html;
+}
+
+// 버튼 클릭 전역 핸들러 — data-* 속성에서 직접 읽어 계산
+function selectVoicingSet(uid, set) {
+  const sec = document.getElementById('vs-'+uid);
+  if (!sec) return;
+  sec.querySelectorAll('.voicing-set-btn').forEach(b =>
+    b.classList.toggle('active', b.dataset.set === set)
+  );
+  const inv = (sec.querySelector('.voicing-inv-btn.active') || {dataset:{inv:'R'}}).dataset.inv;
+  renderVoicingDiagram(uid, set, inv);
+}
+
+function selectVoicingInv(uid, inv) {
+  const sec = document.getElementById('vs-'+uid);
+  if (!sec) return;
+  sec.querySelectorAll('.voicing-inv-btn').forEach(b =>
+    b.classList.toggle('active', b.dataset.inv === inv)
+  );
+  const setKeys = Object.keys(VOICING_SETS[sec.dataset.vtype]);
+  const set = (sec.querySelector('.voicing-set-btn.active') || {dataset:{set:setKeys[0]}}).dataset.set;
+  renderVoicingDiagram(uid, set, inv);
+}
+
+// 실제 렌더링 — 새 보이싱 엔진 + 가로형 지판
+function renderVoicingDiagram(uid, set, inv) {
+  const sec = document.getElementById('vs-'+uid);
+  if (!sec) return;
+  const type    = sec.dataset.type;
+  const vtype   = sec.dataset.vtype;
+  const ivs     = JSON.parse(decodeURIComponent(sec.dataset.ivs));
+  const strNums = VOICING_SETS[vtype][set];
+  const invIdx  = {R:0,'1':1,'2':2}[inv];
+  const rootSt  = noteToSemitone(currentKey);
+  const baseIvs = ivs.map(i => ((i % 12) + 12) % 12);
+
+  // 새 엔진으로 폼 탐색
+  const voicing = findVoicingAuto(rootSt, strNums, invIdx, vtype, baseIvs);
+
+  if (!voicing) {
+    document.getElementById('vd-'+uid).innerHTML =
+      `<div style="padding:14px;font-size:12px;color:var(--ink4);font-family:'IBM Plex Mono',monospace;">
+        ⚠️ 이 현 세트에서는 해당 전위를 12프렛 이내로 연주하기 어렵습니다.
+      </div>`;
+    document.getElementById('vn-'+uid).textContent = '';
+    return;
+  }
+
+  // ── 보이싱 포지션 → makeFretboardSVG 형식으로 변환 ──
+  // voicing의 음만 표시 (전체 지판 포지션 대신)
+  const degreeLabels = ['1','3','5'];
+  const degreeOffsets = [0, 2, 4];
+  const voicingPos = voicing.map(({absIdx, fret, degIdx}) => {
+    const noteSt = ((OPEN_STRINGS[absIdx] + fret) % 12 + 12) % 12;
+    const isRoot = noteSt === noteToSemitone(currentKey) % 12;
+    const noteNm = intervalToNoteName(currentKey, baseIvs[degIdx], degreeOffsets[degIdx]);
+    return {
+      string: absIdx,
+      fret:   fret,
+      note:   noteNm,
+      degree: degreeLabels[degIdx] || '',
+      isRoot: isRoot,
+      isOpen: fret === 0,
+    };
+  });
+
+  // 전체 지판 표시 (0~15프렛)
+  const startFret = 0;
+  const endFret   = Math.max(15, Math.max(...voicing.map(p => p.fret)) + 1);
+
+  const activeStrNums = new Set(strNums);
+
+  const svg = makeFretboardSVG(voicingPos, {
+    startFret, endFret, width: 700,
+    viewMode: currentViewMode,
+    activeStrNums,
+  });
+
+  document.getElementById('vd-'+uid).innerHTML = svg;
+
+  // 힌트 텍스트: 각 현의 음 정보
+  const strSymbols = ['','①','②','③','④','⑤','⑥'];
+  const noteInfo = voicing.map(({absIdx, fret, degIdx}) => {
+    const noteNm = intervalToNoteName(currentKey, baseIvs[degIdx], degreeOffsets[degIdx]);
+    const strNum = 6 - absIdx;
+    const deg = degreeLabels[degIdx] || '';
+    return `${strSymbols[strNum]}현 ${fret}fr = ${noteNm}(${deg})`;
+  }).join(' · ');
+
+  document.getElementById('vn-'+uid).textContent =
+    `💡 ${SET_LABELS[set]} · ${INV_LABELS_MAP[inv]} — ${noteInfo}`;
+}
+
+// 인터랙티브 보이싱 섹션 HTML 생성
+
+// 버튼 클릭 전역 핸들러 — data-* 속성에서 직접 읽어 계산
+function selectVoicingSet(uid, set) {
+  const sec = document.getElementById('vs-'+uid);
+  if (!sec) return;
+  sec.querySelectorAll('.voicing-set-btn').forEach(b =>
+    b.classList.toggle('active', b.dataset.set === set)
+  );
+  const inv = (sec.querySelector('.voicing-inv-btn.active') || {dataset:{inv:'R'}}).dataset.inv;
+  renderVoicingDiagram(uid, set, inv);
+}
+
+function selectVoicingInv(uid, inv) {
+  const sec = document.getElementById('vs-'+uid);
+  if (!sec) return;
+  sec.querySelectorAll('.voicing-inv-btn').forEach(b =>
+    b.classList.toggle('active', b.dataset.inv === inv)
+  );
+  const setKeys = Object.keys(VOICING_SETS[sec.dataset.vtype]);
+  const set = (sec.querySelector('.voicing-set-btn.active') || {dataset:{set:setKeys[0]}}).dataset.set;
+  renderVoicingDiagram(uid, set, inv);
+}
+
+
+
+
+// 도수 이름 테이블: 반음 거리 → 도수 표기
+const DEGREE_NAMES = {
+  0: '1', 1: 'b2', 2: '2', 3: 'b3', 4: '3', 5: '4',
+  6: 'b5', 7: '5', 8: '#5', 9: '6', 10: 'b7', 11: '7'
+};
+
+// 코드 타입별 특수 도수 재정의 (컨텍스트에 맞게)
+const DEGREE_OVERRIDE = {
+  'Dom7sus4': { 5: '4' },   // sus4의 4도
+  '7#5':      { 8: '#5' },
+  'Dim7':     { 9: 'bb7' }, // 감7도
+  '13':       { 9: '13' },  // 13도로 표기
+};
+
+function getDegreeLabel(relSt, chordType) {
+  // L2 override 먼저 확인
+  if (chordType && DEGREE_OVERRIDE_L3[chordType] && DEGREE_OVERRIDE_L3[chordType][relSt] !== undefined) {
+    return DEGREE_OVERRIDE_L3[chordType][relSt];
+  }
+  if (chordType && DEGREE_OVERRIDE[chordType] && DEGREE_OVERRIDE[chordType][relSt] !== undefined) {
+    return DEGREE_OVERRIDE[chordType][relSt];
+  }
+  return DEGREE_NAMES[relSt] || String(relSt);
+}
+
+// 코드 구성음 이름 배열 반환 (L1 + L2 모두 지원)
+function getChordNoteNames(rootNote, chordType) {
+  const intervals = CHORD_INTERVALS_L3[chordType] || CHORD_INTERVALS[chordType];
+  const degrees   = INTERVAL_DEGREES_L3[chordType] || INTERVAL_DEGREES[chordType] || intervals.map((_,i)=>i);
+  return intervals.map((iv, i) => {
+    const deg = degrees[i] !== undefined ? degrees[i] : i;
+    return intervalToNoteName(rootNote, iv % 12, deg);
+  });
+}
+
+const SCALE_DEGREES = {
+  major:              [0,1,2,3,4,5,6],
+  chromatic:          null,
+  melodicMinor:       [0,1,2,3,4,5,6],
+  wholeTone:          [0,1,2,3,4,6],
+  harmonicMinor:      [0,1,2,3,4,5,6],   // 1 2 b3 4 5 b6 7
+  diminished:         [0,1,2,3,4,5,5,6], // 1 2 b3 4 b5 b6 6 7 — b6·6 모두 6도 letter
+  harmonicMajor:      [0,1,2,3,4,5,6],   // 1 2 3 4 5 b6 7 — b6는 5도 letter
+  majorPentatonic:    [0,1,2,4,5],        // 1 2 3 5 6 — 3음계 (3,7도 없음)
+  minorPentatonic:    [0,1,2,4,5],        // 1 2 b3 5 6
+};
+
+// 지판 포지션 계산 — 스케일/코드 모두 intervalToNoteName 사용
+function getScalePositions(rootNote, intervals, maxFret=12, chordType=null, scaleType=null) {
+  const rootSt = noteToSemitone(rootNote);
+  const positions = [];
+  const normalizedIntervals = intervals.map(iv => ((iv % 12) + 12) % 12);
+
+  // 스케일 degree 테이블 결정
+  const scaleDegrees = scaleType ? SCALE_DEGREES[scaleType] : null;
+  // 코드 degree 테이블 결정
+  const chordDegrees = chordType
+    ? (INTERVAL_DEGREES_L3[chordType] || INTERVAL_DEGREES[chordType] || null)
+    : null;
+
+  for (let str = 0; str < 6; str++) {
+    const openSt = OPEN_STRINGS[str];
+    for (let fret = 0; fret <= maxFret; fret++) {
+      const noteSt = ((openSt + fret) % 12 + 12) % 12;
+      const relSt  = ((noteSt - rootSt) + 12) % 12;
+      if (!normalizedIntervals.includes(relSt)) continue;
+
+      // 인터벌 인덱스 (몇 번째 구성음인가)
+      const ivIndex = normalizedIntervals.indexOf(relSt);
+
+      let noteName;
+      if (scaleDegrees && scaleDegrees[ivIndex] !== undefined) {
+        // 스케일: degree 테이블로 정확한 표기
+        noteName = intervalToNoteName(rootNote, relSt, scaleDegrees[ivIndex]);
+      } else if (chordDegrees && chordDegrees[ivIndex] !== undefined) {
+        // 코드: degree 테이블로 정확한 표기
+        noteName = intervalToNoteName(rootNote, relSt, chordDegrees[ivIndex]);
+      } else {
+        // fallback: 플랫/샤프 선택 (크로매틱 등)
+        noteName = semitoneToNote(noteSt, !!USE_FLAT[rootNote]);
+      }
+
+      const degree = getDegreeLabel(relSt, chordType);
+      positions.push({
+        string: str, fret, note: noteName, degree,
+        isRoot: relSt === 0, isOpen: fret === 0
+      });
+    }
+  }
+  return positions;
+}
+
+// L2 코드용 getScalePositions 래퍼 — L2 intervals 자동 참조
+function getL2ChordPositions(rootNote, chordType, maxFret=12) {
+  const intervals = (CHORD_INTERVALS_L3[chordType] || CHORD_INTERVALS[chordType] || [])
+    .map(iv => iv % 12);
+  return getScalePositions(rootNote, intervals, maxFret, chordType);
+}
+
+// Standard chord voicings (hand-curated for each key)
+// Format: array of {string(0=low E), fret, finger}
+// fret=-1 means muted, fret=0 means open
+const CHORD_VOICINGS = {
+  // ── TRIADS: Close voicing, root position ──
+  // Maj
+  'C_Maj':   [{s:5,f:-1},{s:4,f:3},{s:3,f:2},{s:2,f:0},{s:1,f:1},{s:0,f:0}],
+  'F_Maj':   [{s:5,f:1},{s:4,f:3},{s:3,f:3},{s:2,f:2},{s:1,f:1},{s:0,f:1}],
+  'Bb_Maj':  [{s:5,f:1},{s:4,f:1},{s:3,f:3},{s:2,f:3},{s:1,f:3},{s:0,f:1}],
+  'Eb_Maj':  [{s:5,f:-1},{s:4,f:6},{s:3,f:5},{s:2,f:4},{s:1,f:4},{s:0,f:-1}],
+  'G_Maj':   [{s:5,f:3},{s:4,f:2},{s:3,f:0},{s:2,f:0},{s:1,f:0},{s:0,f:3}],
+  'D_Maj':   [{s:5,f:-1},{s:4,f:0},{s:3,f:0},{s:2,f:2},{s:1,f:3},{s:0,f:2}],
+  'A_Maj':   [{s:5,f:0},{s:4,f:2},{s:3,f:2},{s:2,f:2},{s:1,f:0},{s:0,f:0}],
+  // Min
+  'C_Min':   [{s:5,f:-1},{s:4,f:3},{s:3,f:5},{s:2,f:5},{s:1,f:4},{s:0,f:3}],
+  'F_Min':   [{s:5,f:1},{s:4,f:3},{s:3,f:3},{s:2,f:1},{s:1,f:1},{s:0,f:1}],
+  'Bb_Min':  [{s:5,f:1},{s:4,f:1},{s:3,f:3},{s:2,f:3},{s:1,f:2},{s:0,f:1}],
+  'Eb_Min':  [{s:5,f:-1},{s:4,f:6},{s:3,f:8},{s:2,f:8},{s:1,f:7},{s:0,f:6}],
+  'G_Min':   [{s:5,f:3},{s:4,f:5},{s:3,f:5},{s:2,f:3},{s:1,f:3},{s:0,f:3}],
+  'D_Min':   [{s:5,f:-1},{s:4,f:0},{s:3,f:0},{s:2,f:2},{s:1,f:3},{s:0,f:1}],
+  'A_Min':   [{s:5,f:0},{s:4,f:2},{s:3,f:2},{s:2,f:1},{s:1,f:0},{s:0,f:0}],
+  // Aug
+  'C_Aug':   [{s:5,f:-1},{s:4,f:3},{s:3,f:2},{s:2,f:1},{s:1,f:1},{s:0,f:0}],
+  'F_Aug':   [{s:5,f:1},{s:4,f:0},{s:3,f:3},{s:2,f:2},{s:1,f:2},{s:0,f:1}],
+  'Bb_Aug':  [{s:5,f:-1},{s:4,f:1},{s:3,f:0},{s:2,f:3},{s:1,f:3},{s:0,f:-1}],
+  'Eb_Aug':  [{s:5,f:-1},{s:4,f:6},{s:3,f:5},{s:2,f:4},{s:1,f:5},{s:0,f:-1}],
+  'G_Aug':   [{s:5,f:3},{s:4,f:2},{s:3,f:1},{s:2,f:0},{s:1,f:0},{s:0,f:3}],
+  'D_Aug':   [{s:5,f:-1},{s:4,f:5},{s:3,f:4},{s:2,f:3},{s:1,f:3},{s:0,f:2}],
+  'A_Aug':   [{s:5,f:0},{s:4,f:3},{s:3,f:2},{s:2,f:1},{s:1,f:1},{s:0,f:0}],
+  // Dim
+  'C_Dim':   [{s:5,f:-1},{s:4,f:3},{s:3,f:4},{s:2,f:5},{s:1,f:4},{s:0,f:-1}],
+  'F_Dim':   [{s:5,f:1},{s:4,f:2},{s:3,f:3},{s:2,f:4},{s:1,f:3},{s:0,f:-1}],
+  'Bb_Dim':  [{s:5,f:-1},{s:4,f:1},{s:3,f:2},{s:2,f:3},{s:1,f:2},{s:0,f:-1}],
+  'Eb_Dim':  [{s:5,f:-1},{s:4,f:6},{s:3,f:7},{s:2,f:8},{s:1,f:7},{s:0,f:-1}],
+  'G_Dim':   [{s:5,f:3},{s:4,f:4},{s:3,f:5},{s:2,f:6},{s:1,f:5},{s:0,f:-1}],
+  'D_Dim':   [{s:5,f:-1},{s:4,f:0},{s:3,f:1},{s:2,f:2},{s:1,f:1},{s:0,f:-1}],
+  'A_Dim':   [{s:5,f:0},{s:4,f:1},{s:3,f:2},{s:2,f:3},{s:1,f:2},{s:0,f:-1}],
+
+  // ── 4-PART CHORDS ──
+  // Maj7
+  'C_Maj7':  [{s:5,f:-1},{s:4,f:3},{s:3,f:2},{s:2,f:0},{s:1,f:0},{s:0,f:0}],
+  'F_Maj7':  [{s:5,f:1},{s:4,f:3},{s:3,f:3},{s:2,f:2},{s:1,f:1},{s:0,f:0}],
+  'Bb_Maj7': [{s:5,f:-1},{s:4,f:1},{s:3,f:3},{s:2,f:3},{s:1,f:3},{s:0,f:-1}],
+  'Eb_Maj7': [{s:5,f:-1},{s:4,f:6},{s:3,f:5},{s:2,f:4},{s:1,f:3},{s:0,f:-1}],
+  'G_Maj7':  [{s:5,f:3},{s:4,f:2},{s:3,f:0},{s:2,f:0},{s:1,f:0},{s:0,f:2}],
+  'D_Maj7':  [{s:5,f:-1},{s:4,f:0},{s:3,f:0},{s:2,f:2},{s:1,f:2},{s:0,f:2}],
+  'A_Maj7':  [{s:5,f:0},{s:4,f:2},{s:3,f:2},{s:2,f:1},{s:1,f:0},{s:0,f:0}],
+  // Min7
+  'C_Min7':  [{s:5,f:-1},{s:4,f:3},{s:3,f:5},{s:2,f:5},{s:1,f:4},{s:0,f:3}],
+  'F_Min7':  [{s:5,f:1},{s:4,f:3},{s:3,f:3},{s:2,f:1},{s:1,f:1},{s:0,f:1}],
+  'Bb_Min7': [{s:5,f:1},{s:4,f:1},{s:3,f:3},{s:2,f:3},{s:1,f:2},{s:0,f:1}],
+  'Eb_Min7': [{s:5,f:-1},{s:4,f:6},{s:3,f:8},{s:2,f:8},{s:1,f:6},{s:0,f:-1}],
+  'G_Min7':  [{s:5,f:3},{s:4,f:5},{s:3,f:5},{s:2,f:3},{s:1,f:3},{s:0,f:3}],
+  'D_Min7':  [{s:5,f:-1},{s:4,f:0},{s:3,f:0},{s:2,f:2},{s:1,f:1},{s:0,f:1}],
+  'A_Min7':  [{s:5,f:0},{s:4,f:2},{s:3,f:0},{s:2,f:2},{s:1,f:1},{s:0,f:0}],
+  // Dom7
+  'C_Dom7':  [{s:5,f:-1},{s:4,f:3},{s:3,f:2},{s:2,f:3},{s:1,f:1},{s:0,f:0}],
+  'F_Dom7':  [{s:5,f:1},{s:4,f:3},{s:3,f:1},{s:2,f:2},{s:1,f:1},{s:0,f:1}],
+  'Bb_Dom7': [{s:5,f:1},{s:4,f:1},{s:3,f:3},{s:2,f:1},{s:1,f:3},{s:0,f:1}],
+  'Eb_Dom7': [{s:5,f:-1},{s:4,f:6},{s:3,f:5},{s:2,f:6},{s:1,f:4},{s:0,f:-1}],
+  'G_Dom7':  [{s:5,f:3},{s:4,f:2},{s:3,f:0},{s:2,f:0},{s:1,f:0},{s:0,f:1}],
+  'D_Dom7':  [{s:5,f:-1},{s:4,f:0},{s:3,f:0},{s:2,f:2},{s:1,f:1},{s:0,f:2}],
+  'A_Dom7':  [{s:5,f:0},{s:4,f:2},{s:3,f:0},{s:2,f:2},{s:1,f:0},{s:0,f:0}],
+  // Min7b5
+  'C_Min7b5':[{s:5,f:-1},{s:4,f:3},{s:3,f:4},{s:2,f:5},{s:1,f:4},{s:0,f:3}],
+  'F_Min7b5':[{s:5,f:1},{s:4,f:2},{s:3,f:3},{s:2,f:4},{s:1,f:4},{s:0,f:-1}],
+  'Bb_Min7b5':[{s:5,f:-1},{s:4,f:1},{s:3,f:2},{s:2,f:3},{s:1,f:2},{s:0,f:-1}],
+  'Eb_Min7b5':[{s:5,f:-1},{s:4,f:6},{s:3,f:7},{s:2,f:8},{s:1,f:7},{s:0,f:-1}],
+  'G_Min7b5':[{s:5,f:-1},{s:4,f:10},{s:3,f:11},{s:2,f:12},{s:1,f:11},{s:0,f:-1}],
+  'D_Min7b5':[{s:5,f:-1},{s:4,f:0},{s:3,f:1},{s:2,f:2},{s:1,f:1},{s:0,f:-1}],
+  'A_Min7b5':[{s:5,f:0},{s:4,f:1},{s:3,f:2},{s:2,f:3},{s:1,f:2},{s:0,f:-1}],
+  // Dom7sus4
+  'C_Dom7sus4':[{s:5,f:-1},{s:4,f:3},{s:3,f:3},{s:2,f:3},{s:1,f:1},{s:0,f:-1}],
+  'F_Dom7sus4':[{s:5,f:1},{s:4,f:3},{s:3,f:3},{s:2,f:3},{s:1,f:1},{s:0,f:1}],
+  'Bb_Dom7sus4':[{s:5,f:1},{s:4,f:1},{s:3,f:3},{s:2,f:3},{s:1,f:4},{s:0,f:1}],
+  'Eb_Dom7sus4':[{s:5,f:-1},{s:4,f:6},{s:3,f:8},{s:2,f:6},{s:1,f:4},{s:0,f:-1}],
+  'G_Dom7sus4':[{s:5,f:3},{s:4,f:5},{s:3,f:5},{s:2,f:5},{s:1,f:3},{s:0,f:3}],
+  'D_Dom7sus4':[{s:5,f:-1},{s:4,f:0},{s:3,f:0},{s:2,f:2},{s:1,f:3},{s:0,f:3}],
+  'A_Dom7sus4':[{s:5,f:0},{s:4,f:2},{s:3,f:2},{s:2,f:2},{s:1,f:3},{s:0,f:0}],
+  // 7#5
+  'C_7#5':   [{s:5,f:-1},{s:4,f:3},{s:3,f:2},{s:2,f:1},{s:1,f:1},{s:0,f:0}],
+  'F_7#5':   [{s:5,f:1},{s:4,f:0},{s:3,f:3},{s:2,f:2},{s:1,f:2},{s:0,f:1}],
+  'Bb_7#5':  [{s:5,f:-1},{s:4,f:1},{s:3,f:0},{s:2,f:3},{s:1,f:3},{s:0,f:-1}],
+  'Eb_7#5':  [{s:5,f:-1},{s:4,f:6},{s:3,f:5},{s:2,f:4},{s:1,f:5},{s:0,f:-1}],
+  'G_7#5':   [{s:5,f:3},{s:4,f:2},{s:3,f:1},{s:2,f:0},{s:1,f:1},{s:0,f:3}],
+  'D_7#5':   [{s:5,f:-1},{s:4,f:5},{s:3,f:4},{s:2,f:3},{s:1,f:3},{s:0,f:2}],
+  'A_7#5':   [{s:5,f:0},{s:4,f:3},{s:3,f:2},{s:2,f:1},{s:1,f:2},{s:0,f:0}],
+  // Dim7
+  'C_Dim7':  [{s:5,f:-1},{s:4,f:3},{s:3,f:4},{s:2,f:5},{s:1,f:4},{s:0,f:-1}],
+  'F_Dim7':  [{s:5,f:1},{s:4,f:2},{s:3,f:3},{s:2,f:4},{s:1,f:3},{s:0,f:-1}],
+  'Bb_Dim7': [{s:5,f:-1},{s:4,f:1},{s:3,f:2},{s:2,f:3},{s:1,f:2},{s:0,f:-1}],
+  'Eb_Dim7': [{s:5,f:-1},{s:4,f:6},{s:3,f:7},{s:2,f:8},{s:1,f:7},{s:0,f:-1}],
+  'G_Dim7':  [{s:5,f:3},{s:4,f:4},{s:3,f:5},{s:2,f:6},{s:1,f:5},{s:0,f:-1}],
+  'D_Dim7':  [{s:5,f:-1},{s:4,f:0},{s:3,f:1},{s:2,f:2},{s:1,f:1},{s:0,f:-1}],
+  'A_Dim7':  [{s:5,f:0},{s:4,f:1},{s:3,f:2},{s:2,f:3},{s:1,f:2},{s:0,f:-1}],
+  // Maj6
+  'C_Maj6':  [{s:5,f:-1},{s:4,f:3},{s:3,f:2},{s:2,f:2},{s:1,f:1},{s:0,f:0}],
+  'F_Maj6':  [{s:5,f:1},{s:4,f:3},{s:3,f:3},{s:2,f:2},{s:1,f:3},{s:0,f:-1}],
+  'Bb_Maj6': [{s:5,f:-1},{s:4,f:1},{s:3,f:3},{s:2,f:3},{s:1,f:1},{s:0,f:-1}],
+  'Eb_Maj6': [{s:5,f:-1},{s:4,f:6},{s:3,f:5},{s:2,f:4},{s:1,f:4},{s:0,f:-1}],
+  'G_Maj6':  [{s:5,f:3},{s:4,f:2},{s:3,f:0},{s:2,f:0},{s:1,f:0},{s:0,f:0}],
+  'D_Maj6':  [{s:5,f:-1},{s:4,f:0},{s:3,f:0},{s:2,f:2},{s:1,f:0},{s:0,f:2}],
+  'A_Maj6':  [{s:5,f:0},{s:4,f:2},{s:3,f:2},{s:2,f:2},{s:1,f:2},{s:0,f:0}],
+  // Min6
+  'C_Min6':  [{s:5,f:-1},{s:4,f:3},{s:3,f:5},{s:2,f:5},{s:1,f:5},{s:0,f:-1}],
+  'F_Min6':  [{s:5,f:1},{s:4,f:3},{s:3,f:3},{s:2,f:1},{s:1,f:3},{s:0,f:-1}],
+  'Bb_Min6': [{s:5,f:-1},{s:4,f:1},{s:3,f:3},{s:2,f:3},{s:1,f:0},{s:0,f:-1}],
+  'Eb_Min6': [{s:5,f:-1},{s:4,f:6},{s:3,f:8},{s:2,f:8},{s:1,f:9},{s:0,f:-1}],
+  'G_Min6':  [{s:5,f:3},{s:4,f:5},{s:3,f:5},{s:2,f:5},{s:1,f:5},{s:0,f:3}],
+  'D_Min6':  [{s:5,f:-1},{s:4,f:0},{s:3,f:0},{s:2,f:2},{s:1,f:0},{s:0,f:1}],
+  'A_Min6':  [{s:5,f:0},{s:4,f:2},{s:3,f:2},{s:2,f:1},{s:1,f:2},{s:0,f:0}],
+  // Min9
+  'C_Min9':  [{s:5,f:-1},{s:4,f:3},{s:3,f:5},{s:2,f:3},{s:1,f:4},{s:0,f:3}],
+  'F_Min9':  [{s:5,f:1},{s:4,f:3},{s:3,f:1},{s:2,f:1},{s:1,f:1},{s:0,f:1}],
+  'Bb_Min9': [{s:5,f:1},{s:4,f:1},{s:3,f:3},{s:2,f:1},{s:1,f:2},{s:0,f:1}],
+  'Eb_Min9': [{s:5,f:-1},{s:4,f:6},{s:3,f:8},{s:2,f:6},{s:1,f:7},{s:0,f:-1}],
+  'G_Min9':  [{s:5,f:3},{s:4,f:5},{s:3,f:5},{s:2,f:3},{s:1,f:4},{s:0,f:3}],
+  'D_Min9':  [{s:5,f:-1},{s:4,f:0},{s:3,f:0},{s:2,f:2},{s:1,f:1},{s:0,f:0}],
+  'A_Min9':  [{s:5,f:0},{s:4,f:2},{s:3,f:0},{s:2,f:2},{s:1,f:3},{s:0,f:0}],
+  // 9
+  'C_9':     [{s:5,f:-1},{s:4,f:3},{s:3,f:2},{s:2,f:3},{s:1,f:3},{s:0,f:-1}],
+  'F_9':     [{s:5,f:1},{s:4,f:3},{s:3,f:1},{s:2,f:2},{s:1,f:1},{s:0,f:3}],
+  'Bb_9':    [{s:5,f:1},{s:4,f:1},{s:3,f:3},{s:2,f:1},{s:1,f:1},{s:0,f:1}],
+  'Eb_9':    [{s:5,f:-1},{s:4,f:6},{s:3,f:5},{s:2,f:6},{s:1,f:6},{s:0,f:-1}],
+  'G_9':     [{s:5,f:3},{s:4,f:2},{s:3,f:0},{s:2,f:0},{s:1,f:0},{s:0,f:1}],
+  'D_9':     [{s:5,f:-1},{s:4,f:0},{s:3,f:4},{s:2,f:2},{s:1,f:1},{s:0,f:2}],
+  'A_9':     [{s:5,f:0},{s:4,f:2},{s:3,f:0},{s:2,f:2},{s:1,f:2},{s:0,f:0}],
+  // 7b9
+  'C_7b9':   [{s:5,f:-1},{s:4,f:3},{s:3,f:2},{s:2,f:3},{s:1,f:2},{s:0,f:3}],
+  'F_7b9':   [{s:5,f:1},{s:4,f:2},{s:3,f:1},{s:2,f:2},{s:1,f:1},{s:0,f:2}],
+  'Bb_7b9':  [{s:5,f:1},{s:4,f:1},{s:3,f:3},{s:2,f:1},{s:1,f:2},{s:0,f:2}],
+  'Eb_7b9':  [{s:5,f:-1},{s:4,f:6},{s:3,f:5},{s:2,f:6},{s:1,f:5},{s:0,f:6}],
+  'G_7b9':   [{s:5,f:3},{s:4,f:2},{s:3,f:0},{s:2,f:0},{s:1,f:0},{s:0,f:4}],
+  'D_7b9':   [{s:5,f:-1},{s:4,f:5},{s:3,f:4},{s:2,f:5},{s:1,f:4},{s:0,f:5}],
+  'A_7b9':   [{s:5,f:0},{s:4,f:2},{s:3,f:0},{s:2,f:1},{s:1,f:2},{s:0,f:1}],
+  // 7#9
+  'C_7#9':   [{s:5,f:-1},{s:4,f:3},{s:3,f:2},{s:2,f:3},{s:1,f:4},{s:0,f:-1}],
+  'F_7#9':   [{s:5,f:1},{s:4,f:3},{s:3,f:1},{s:2,f:2},{s:1,f:4},{s:0,f:-1}],
+  'Bb_7#9':  [{s:5,f:1},{s:4,f:1},{s:3,f:3},{s:2,f:1},{s:1,f:4},{s:0,f:-1}],
+  'Eb_7#9':  [{s:5,f:-1},{s:4,f:6},{s:3,f:5},{s:2,f:6},{s:1,f:7},{s:0,f:-1}],
+  'G_7#9':   [{s:5,f:3},{s:4,f:2},{s:3,f:0},{s:2,f:0},{s:1,f:3},{s:0,f:-1}],
+  'D_7#9':   [{s:5,f:-1},{s:4,f:0},{s:3,f:0},{s:2,f:2},{s:1,f:4},{s:0,f:-1}],
+  'A_7#9':   [{s:5,f:0},{s:4,f:2},{s:3,f:0},{s:2,f:2},{s:1,f:4},{s:0,f:-1}],
+  // 13
+  'C_13':    [{s:5,f:-1},{s:4,f:3},{s:3,f:2},{s:2,f:3},{s:1,f:3},{s:0,f:2}],
+  'F_13':    [{s:5,f:1},{s:4,f:3},{s:3,f:1},{s:2,f:2},{s:1,f:3},{s:0,f:3}],
+  'Bb_13':   [{s:5,f:1},{s:4,f:1},{s:3,f:3},{s:2,f:1},{s:1,f:3},{s:0,f:1}],
+  'Eb_13':   [{s:5,f:-1},{s:4,f:6},{s:3,f:5},{s:2,f:6},{s:1,f:6},{s:0,f:4}],
+  'G_13':    [{s:5,f:3},{s:4,f:2},{s:3,f:0},{s:2,f:0},{s:1,f:0},{s:0,f:0}],
+  'D_13':    [{s:5,f:-1},{s:4,f:0},{s:3,f:0},{s:2,f:2},{s:1,f:0},{s:0,f:2}],
+  'A_13':    [{s:5,f:0},{s:4,f:2},{s:3,f:2},{s:2,f:2},{s:1,f:2},{s:0,f:2}],
+};
+
+// ════════════════════════════════════════════════
+// SVG FRETBOARD RENDERER
+// ════════════════════════════════════════════════
+
+function makeFretboardSVG(positions, options={}) {
+  const {
+    startFret = 0,
+    endFret = 12,
+    width = 560,
+    viewMode = 'note',   // 'note' | 'degree'
+    activeStrNums = null, // Set of string numbers (1~6) to highlight; null = all active
+  } = options;
+
+  const numFrets = endFret - startFret;
+
+  // ── 레이아웃 상수 ──────────────────────────────
+  const NUM_STRINGS   = 6;
+  const STRING_SPACING = 16;
+  const FRET_DOT_R    = 3;
+  const NOTE_R        = 7;   // 음표 원 반지름
+
+  // 개방현 표시 여부
+  const showOpen = startFret === 0;
+
+  // 구역 너비 정의
+  const LABEL_W  = 16;   // 줄 이름 라벨 영역 너비
+  const OPEN_W   = showOpen ? 20 : 0;  // 개방현 음표 영역 너비
+  const NUT_W    = showOpen ? 6  : 0;  // 너트 너비
+
+  const padTop   = 14;
+  const padBot   = 22;
+  const padLeft  = LABEL_W + OPEN_W + NUT_W + 4;  // 총 왼쪽 여백
+  const padRight = 16;
+
+  const strAreaH = STRING_SPACING * (NUM_STRINGS - 1);  // 5 * 16 = 80
+  const totalH   = padTop + strAreaH + padBot;
+  const w        = width;
+  const fretW    = (w - padLeft - padRight) / numFrets;
+
+  // x 기준점: 프렛 영역 시작 = padLeft
+  const fretX    = padLeft;
+  // 너트 x: 프렛 영역 바로 앞
+  const nutX     = fretX - NUT_W;
+  // 개방현 음표 x 중심: 너트 왼쪽, OPEN_W 영역 중앙
+  const openNoteX = nutX - OPEN_W / 2;
+  // 줄 라벨 x 중심: 맨 왼쪽 LABEL_W 영역 중앙
+  const labelX   = LABEL_W / 2;
+
+  // 줄 y 좌표 헬퍼: row 0 = high e (상단), row 5 = low E (하단)
+  const strY  = (row) => padTop + row * STRING_SPACING;
+  // string index 0=low E → row 5 (하단)
+  const toRow = (strIdx) => NUM_STRINGS - 1 - strIdx;
+  // strIdx(0=lowE=6번줄) → strNum(1~6): 6번줄=strNum6, 1번줄=strNum1
+  const toStrNum = (strIdx) => NUM_STRINGS - strIdx;
+
+  const fretDotPositions = [3,5,7,9,12];
+  const FONT = "'IBM Plex Mono', 'IBM Plex Sans KR', monospace";
+
+  let svg = `<svg viewBox="0 0 ${w} ${totalH}" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:auto;display:block">`;
+
+  // ── 배경 ─────────────────────────────────────
+  svg += `<rect width="${w}" height="${totalH}" fill="#ede7d9" rx="4"/>`;
+
+  // ── 프렛 포지션 마커 (지판 중앙) ──────────────
+  const dotY = padTop + strAreaH / 2;
+  fretDotPositions.forEach(fp => {
+    if (fp > startFret && fp <= endFret) {
+      const cx = fretX + (fp - startFret - 0.5) * fretW;
+      if (fp === 12) {
+        svg += `<circle cx="${cx - fretW*0.25}" cy="${dotY}" r="${FRET_DOT_R}" fill="#c8bfa8"/>`;
+        svg += `<circle cx="${cx + fretW*0.25}" cy="${dotY}" r="${FRET_DOT_R}" fill="#c8bfa8"/>`;
+      } else {
+        svg += `<circle cx="${cx}" cy="${dotY}" r="${FRET_DOT_R}" fill="#c8bfa8"/>`;
+      }
+    }
+  });
+
+  // ── 너트 ─────────────────────────────────────
+  if (showOpen) {
+    svg += `<rect x="${nutX}" y="${strY(0)}" width="${NUT_W - 1}" height="${strAreaH}" fill="#2c2820" rx="1"/>`;
+  }
+
+  // ── 프렛 선 ───────────────────────────────────
+  const fretStart = showOpen ? 1 : 0;
+  for (let f = fretStart; f <= numFrets; f++) {
+    const x = fretX + f * fretW;
+    svg += `<line x1="${x}" y1="${strY(0)}" x2="${x}" y2="${strY(5)}" stroke="#9a8f7a" stroke-width="1.2"/>`;
+  }
+
+  // ── 줄 선 ────────────────────────────────────
+  // strIdx 0=low E(굵음)→row5, strIdx 5=high e(얇음)→row0
+  for (let strIdx = 0; strIdx < NUM_STRINGS; strIdx++) {
+    const row = toRow(strIdx);
+    const y   = strY(row);
+    const strNum = toStrNum(strIdx);
+    const isActive = !activeStrNums || activeStrNums.has(strNum);
+    const thickness = 0.7 + ((NUM_STRINGS - 1 - strIdx) / (NUM_STRINGS - 1)) * 1.7;
+    const x1 = showOpen ? nutX : fretX;
+    // 비활성 현: 연하게
+    const strokeColor = isActive ? '#8b7355' : '#d0c8b4';
+    const strokeW = isActive ? thickness : thickness * 0.5;
+    svg += `<line x1="${x1}" y1="${y}" x2="${w - padRight}" y2="${y}" stroke="${strokeColor}" stroke-width="${strokeW.toFixed(2)}"/>`;
+  }
+
+  // ── 줄 이름 라벨 (맨 왼쪽 구역) ─────────────
+  const strLabels = ['e','B','G','D','A','E'];
+  for (let row = 0; row < NUM_STRINGS; row++) {
+    const strIdx = NUM_STRINGS - 1 - row; // row→strIdx
+    const strNum = toStrNum(strIdx);
+    const isActive = !activeStrNums || activeStrNums.has(strNum);
+    const y = strY(row);
+    svg += `<text x="${labelX}" y="${y}" font-family="${FONT}" font-size="9" fill="${isActive ? '#9a9080' : '#ccc8be'}" text-anchor="middle" dominant-baseline="middle">${strLabels[row]}</text>`;
+  }
+
+  // ── 프렛 번호 (하단) ──────────────────────────
+  for (let f = 1; f <= numFrets; f++) {
+    const fn = f + startFret;
+    const x  = fretX + (f - 0.5) * fretW;
+    svg += `<text x="${x}" y="${strY(5) + 15}" font-family="${FONT}" font-size="8" fill="#9a9080" text-anchor="middle">${fn}</text>`;
+  }
+
+  // ── 음표 렌더링 ───────────────────────────────
+  const rendered = new Set();
+
+  positions.forEach(p => {
+    if (p.fret < startFret || p.fret > endFret) return;
+
+    const key = `${p.string}_${p.fret}`;
+    if (rendered.has(key)) return;
+    rendered.add(key);
+
+    const strNum = toStrNum(p.string);
+    const isActive = !activeStrNums || activeStrNums.has(strNum);
+
+    const row = toRow(p.string);
+    const y   = strY(row);
+    let x;
+
+    if (p.fret === 0) {
+      x = openNoteX;
+    } else {
+      x = fretX + (p.fret - startFret - 0.5) * fretW;
+    }
+
+    const label = (viewMode === 'degree') ? p.degree : p.note;
+
+    if (!isActive) {
+      // 비활성 현의 음표: 매우 흐리게
+      svg += `<circle cx="${x}" cy="${y}" r="${NOTE_R}" fill="#e0dbd0" opacity="0.5"/>`;
+      return;
+    }
+
+    // 루트음
+    if (p.isRoot) {
+      svg += `<circle cx="${x}" cy="${y}" r="${NOTE_R}" fill="#a63228"/>`;
+      // 음이름 모드: 실제 음이름(C, G, Bb 등) / 도수 모드: 1
+      const rootLabel = viewMode === 'degree' ? '1' : (p.note || 'R');
+      svg += `<text x="${x}" y="${y}" font-family="${FONT}" font-size="7" fill="#f5f0e8" text-anchor="middle" dominant-baseline="middle" font-weight="bold">${rootLabel}</text>`;
+    }
+    // 개방현(비루트)
+    else if (p.fret === 0) {
+      svg += `<circle cx="${x}" cy="${y}" r="${NOTE_R}" fill="#f5f0e8" stroke="#2c5f8a" stroke-width="1.8"/>`;
+      svg += `<text x="${x}" y="${y}" font-family="${FONT}" font-size="6.5" fill="#2c5f8a" text-anchor="middle" dominant-baseline="middle">${label}</text>`;
+    }
+    // 일반 음표
+    else {
+      svg += `<circle cx="${x}" cy="${y}" r="${NOTE_R}" fill="#2c5f8a"/>`;
+      svg += `<text x="${x}" y="${y}" font-family="${FONT}" font-size="6.5" fill="#f5f0e8" text-anchor="middle" dominant-baseline="middle">${label}</text>`;
+    }
+  });
+
+  svg += `</svg>`;
+  return svg;
+}
+
+// Chord diagram (vertical, traditional style)
+function makeChordDiagramSVG(voicing, rootNote) {
+  if (!voicing) return '<div style="color:#9a9080;font-size:12px;padding:10px;">폼 데이터 준비 중</div>';
+
+  const frets = voicing.map(v => v.f).filter(f => f > 0);
+  if (frets.length === 0) return '<div style="color:#9a9080;font-size:12px;">개방 코드</div>';
+
+  const minFret = Math.min(...frets);
+  const maxFret = Math.max(...frets);
+  const startFret = minFret > 1 ? minFret : 1;
+  const endFret = Math.max(maxFret, startFret + 3);
+  const numFrets = endFret - startFret + 1;
+
+  const w = 120, h = 100;
+  const padL = 18, padR = 18, padT = 16, padB = 16;
+  const strSpacing = (w - padL - padR) / 5;
+  const fretSpacing = (h - padT - padB) / (numFrets);
+
+  let svg = `<svg viewBox="0 0 ${w} ${h+padT+padB}" xmlns="http://www.w3.org/2000/svg" style="width:${w}px;height:auto;flex-shrink:0">`;
+  svg += `<rect width="${w}" height="${h+padT+padB}" fill="#ede7d9"/>`;
+
+  // Fret position indicator
+  if (startFret > 1) {
+    svg += `<text x="${padL-14}" y="${padT + fretSpacing*0.5 + 4}" font-family="IBM Plex Mono,monospace" font-size="9" fill="#6b6452">${startFret}fr</text>`;
+  }
+
+  // Nut
+  if (startFret === 1) {
+    svg += `<rect x="${padL}" y="${padT-3}" width="${5*strSpacing}" height="5" fill="#2c2820" rx="1"/>`;
+  }
+
+  // Fret lines
+  for (let f = 0; f <= numFrets; f++) {
+    const y = padT + f * fretSpacing;
+    svg += `<line x1="${padL}" y1="${y}" x2="${padL + 5*strSpacing}" y2="${y}" stroke="#9a8f7a" stroke-width="${f===0?0:1}"/>`;
+  }
+
+  // String lines
+  for (let s = 0; s < 6; s++) {
+    const x = padL + s * strSpacing;
+    svg += `<line x1="${x}" y1="${padT}" x2="${x}" y2="${padT+h}" stroke="#8b7355" stroke-width="${0.8 + ((5-s)/5)*1.5}"/>`;
+  }
+
+  // Notes
+  voicing.forEach((v, idx) => {
+    // idx 0 = low E (string 6), idx 5 = high E (string 1)
+    // Display: idx 0 at left, idx 5 at right
+    const x = padL + idx * strSpacing;
+
+    if (v.f === -1) {
+      // Muted
+      svg += `<text x="${x}" y="${padT-5}" font-family="IBM Plex Mono,monospace" font-size="9" fill="#9a9080" text-anchor="middle">✕</text>`;
+    } else if (v.f === 0) {
+      // Open
+      svg += `<circle cx="${x}" cy="${padT-6}" r="4" fill="none" stroke="#2c5f8a" stroke-width="1.5"/>`;
+    } else {
+      const y = padT + (v.f - startFret + 0.5) * fretSpacing;
+      const isRoot = semitoneIsRoot(idx, v.f, rootNote);
+      svg += `<circle cx="${x}" cy="${y}" r="6" fill="${isRoot ? '#a63228' : '#2c5f8a'}"/>`;
+      if (isRoot) {
+        svg += `<text x="${x}" y="${y+3}" font-family="IBM Plex Mono,monospace" font-size="6.5" fill="#f5f0e8" text-anchor="middle" font-weight="bold">R</text>`;
+      }
+    }
+  });
+
+  svg += `</svg>`;
+  return svg;
+}
+
+function semitoneIsRoot(strIdx, fret, rootNote) {
+  const openStr = OPEN_STRINGS[strIdx]; // strIdx 0=low E
+  const noteSt = (openStr + fret) % 12;
+  return noteSt === noteToSemitone(rootNote);
+}
+
+// ════════════════════════════════════════════════
+// RENDER SECTIONS
+// ════════════════════════════════════════════════
+
+let currentKey = 'C';
+let currentSection = 'scales';
+let currentViewMode = 'note';   // 'note' | 'degree'
+
+function setViewMode(mode) {
+  currentViewMode = mode;
+  document.querySelectorAll('.view-btn').forEach(b => {
+    b.classList.toggle('active', b.dataset.mode === mode);
+  });
+  // 범례 업데이트
+  const rootLegend = document.querySelector('.legend-root-label');
+  if (rootLegend) rootLegend.textContent = mode === 'degree' ? '1 (루트)' : '루트음';
+  renderCurrent();
+}
+
+function renderScales(key) {
+  let html = '';
+
+  // ── 하모닉 메이저 스케일 ──────────────────────
+  // 1 2 3 4 5 b6 7 (메이저에서 b6만 다름)
+  const hmajDegrees = [0,1,2,3,4,5,6];
+  const hmajNotes = SCALES.harmonicMajor.map((iv,i) =>
+    intervalToNoteName(key, iv, hmajDegrees[i])
+  ).join(' · ');
+
+  html += `<div class="diagram-group">`;
+  html += `<div class="group-title">하모닉 메이저 스케일 <span class="group-subtitle">Harmonic Major Scale — 2 Octaves · 16분음표 ♩=60</span></div>`;
+  html += `<div class="formula-box">`;
+  html += `<strong>음정 공식:</strong> W W H W H A H (메이저 스케일의 6도를 반음 내림)<br>`;
+  html += `<strong>메이저와 차이:</strong> b6도 · 5→b6 사이 반음, b6→7 사이 <strong>증2도</strong>가 특징<br>`;
+  html += `<strong>구성음 (${key}):</strong> ${hmajNotes}<br>`;
+  html += `<strong>스케일 도수:</strong> 1 &nbsp;·&nbsp; 2 &nbsp;·&nbsp; 3 &nbsp;·&nbsp; 4 &nbsp;·&nbsp; 5 &nbsp;·&nbsp; b6 &nbsp;·&nbsp; 7`;
+  html += `</div>`;
+  const hmajPos = getScalePositions(key, SCALES.harmonicMajor, 12, null, 'harmonicMajor');
+  html += `<div class="fb-card" style="width:100%">`;
+  html += `<div class="fb-card-title">${key} Harmonic Major Scale — 전체 지판</div>`;
+  html += `<div class="fb-card-sub">파란 점: 스케일음 · 빨간 R: 루트음 · b6(증2도 구간)에 주목하세요</div>`;
+  html += makeFretboardSVG(hmajPos, {startFret:0, endFret:12, width:700, viewMode:currentViewMode});
+  html += `</div></div>`;
+
+  // ── 메이저 펜타토닉 스케일 ────────────────────
+  // 1 2 3 5 6 (5음계)
+  const majPentDegrees = [0,1,2,4,5];
+  const majPentNotes = SCALES.majorPentatonic.map((iv,i) =>
+    intervalToNoteName(key, iv, majPentDegrees[i])
+  ).join(' · ');
+
+  html += `<div class="diagram-group">`;
+  html += `<div class="group-title">메이저 펜타토닉 스케일 <span class="group-subtitle">Major Pentatonic Scale — 2 Octaves · 16분음표 ♩=60</span></div>`;
+  html += `<div class="formula-box">`;
+  html += `<strong>음정 공식:</strong> 메이저 스케일에서 4도·7도 제거<br>`;
+  html += `<strong>특징:</strong> 가장 보편적인 5음계 · 팝/록/블루스 전 장르 활용<br>`;
+  html += `<strong>구성음 (${key}):</strong> ${majPentNotes}<br>`;
+  html += `<strong>스케일 도수:</strong> 1 &nbsp;·&nbsp; 2 &nbsp;·&nbsp; 3 &nbsp;·&nbsp; 5 &nbsp;·&nbsp; 6`;
+  html += `</div>`;
+  const majPentPos = getScalePositions(key, SCALES.majorPentatonic, 12, null, 'majorPentatonic');
+  html += `<div class="fb-card" style="width:100%">`;
+  html += `<div class="fb-card-title">${key} Major Pentatonic Scale — 전체 지판</div>`;
+  html += `<div class="fb-card-sub">파란 점: 스케일음 · 빨간 R: 루트음</div>`;
+  html += makeFretboardSVG(majPentPos, {startFret:0, endFret:12, width:700, viewMode:currentViewMode});
+  html += `</div></div>`;
+
+  // ── 재패니즈 마이너 펜타토닉 스케일 ──────────
+  // 1 2 b3 5 6 (5음계)
+  const minPentDegrees = [0,1,2,4,5];
+  const minPentNotes = SCALES.minorPentatonic.map((iv,i) =>
+    intervalToNoteName(key, iv, minPentDegrees[i])
+  ).join(' · ');
+
+  html += `<div class="diagram-group">`;
+  html += `<div class="group-title">마이너 펜타토닉 <span class="group-subtitle">Minor Pentatonic — 2 Octaves · 16분음표 ♩=60</span></div>`;
+  html += `<div class="formula-box">`;
+  html += `<strong>음정 공식:</strong> 메이저 펜타토닉의 3도를 b3도로<br>`;
+  html += `<strong>특징:</strong> 동양적 색채 · 재즈/퓨전에서 얼터드 사운드 연출<br>`;
+  html += `<strong>구성음 (${key}):</strong> ${minPentNotes}<br>`;
+  html += `<strong>스케일 도수:</strong> 1 &nbsp;·&nbsp; 2 &nbsp;·&nbsp; b3 &nbsp;·&nbsp; 5 &nbsp;·&nbsp; 6`;
+  html += `</div>`;
+  const minPentPos = getScalePositions(key, SCALES.minorPentatonic, 12, null, 'minorPentatonic');
+  html += `<div class="fb-card" style="width:100%">`;
+  html += `<div class="fb-card-title">${key} Minor Pentatonic — 전체 지판</div>`;
+  html += `<div class="fb-card-sub">파란 점: 스케일음 · 빨간 R: 루트음</div>`;
+  html += makeFretboardSVG(minPentPos, {startFret:0, endFret:12, width:700, viewMode:currentViewMode});
+  html += `</div></div>`;
+
+  return html;
+}
+
+function renderTriads(key) {
+  // Level IV: Aug(증), Dim(감) 오픈 보이싱만
+  const types = ['Aug','Dim'];
+  const typeNames = {
+    'Maj': '장3화음 (Major Triad) · 음정: 1 3 5',
+    'Min': '단3화음 (Minor Triad) · 음정: 1 b3 5',
+    'Aug': '증3화음 (Augmented Triad) · 음정: 1 3 #5',
+    'Dim': '감3화음 (Diminished Triad) · 음정: 1 b3 b5',
+  };
+  const formulas = {
+    'Maj': '루트(1도) + 장3도 + 완전5도',
+    'Min': '루트(1도) + 단3도(b3) + 완전5도',
+    'Aug': '루트(1도) + 장3도 + 증5도(#5)',
+    'Dim': '루트(1도) + 단3도(b3) + 감5도(b5)',
+  };
+
+  let html = '';
+
+  // Level 3 안내 배너
+  html += `<div class="hint-box" style="margin-bottom:20px">📌 <strong>Level IV 요구사항:</strong> 증(Aug) · 감(Dim) 3화음 · <strong>오픈(스프레드) 보이싱</strong> · 임의 전위에서 시작 · 1옥타브</div>`;
+
+  types.forEach(type => {
+    const intervals = CHORD_INTERVALS[type];
+    const notes = getChordNoteNames(key, type).join(' · ');
+
+    html += `<div class="diagram-group">`;
+    html += `<div class="group-title">${key} ${typeNames[type]}</div>`;
+    html += `<div class="formula-box"><strong>구성음:</strong> ${notes} &nbsp;·&nbsp; <strong>구조:</strong> ${formulas[type]}</div>`;
+
+    const pos = getScalePositions(key, intervals, 12, type);
+    html += `<div class="fb-card" style="width:100%">`;
+    html += `<div class="fb-card-title">${key}${type} — 지판 전체 구성음 위치</div>`;
+    html += `<div class="fb-card-sub">빨간 <strong>R</strong> = 루트음 · 파란 점 = 나머지 구성음 · 루트를 찾고 주변 구성음을 연결하면 폼이 완성돼요</div>`;
+    html += makeFretboardSVG(pos, {startFret:0, endFret:12, width:700, viewMode:currentViewMode});
+    html += `</div>`;
+
+    // 인터랙티브 오픈 보이싱
+    html += makeInteractiveVoicingSection(type, 'open', key+type+'open', key, intervals);
+
+
+    html += `</div>`;
+  });
+
+  return html;
+}
+
+function renderFourPart(key) {
+  // Level IV: 새로운 12종 얼터드/텐션 보이싱
+  const chords = ['Min(maj7)','Maj7#5','Maj7b5','Min7#5','7b5','Dim(Maj7)',
+                  'Maj(9/7)','Maj(9/6)','min9(maj7)','7(b9/b13)','13(b9)','9(b13)'];
+
+  const chordInfo = {
+    'Min(maj7)':  {formula:'1 b3 5 7',        struct:'마이너 트라이어드 + 장7도'},
+    'Maj7#5':     {formula:'1 3 #5 7',         struct:'증 트라이어드 + 장7도'},
+    'Maj7b5':     {formula:'1 3 b5 7',         struct:'감 트라이어드 + 장7도'},
+    'Min7#5':     {formula:'1 b3 #5 b7',       struct:'증 마이너 트라이어드 + 단7도'},
+    '7b5':        {formula:'1 3 b5 b7',        struct:'감 트라이어드 + 단7도'},
+    'Dim(Maj7)':  {formula:'1 b3 b5 7',        struct:'감 트라이어드 + 장7도'},
+    'Maj(9/7)':   {formula:'1 3 5 7 9',        struct:'Maj7 + 장9도'},
+    'Maj(9/6)':   {formula:'1 3 5 6 9',        struct:'Maj6 + 장9도'},
+    'min9(maj7)': {formula:'1 b3 5 7 9',       struct:'Min(maj7) + 장9도'},
+    '7(b9/b13)':  {formula:'1 3 5 b7 b9 b13',  struct:'Dom7 + 단9도 + 단13도'},
+    '13(b9)':     {formula:'1 3 5 b7 b9 13',   struct:'Dom7 + 단9도 + 장13도'},
+    '9(b13)':     {formula:'1 3 5 b7 9 b13',   struct:'Dom7 + 장9도 + 단13도'},
+  };
+
+  let html = '';
+  html += `<div class="hint-box" style="margin-bottom:20px">📌 <strong>Level IV 요구사항:</strong> 얼터드 및 텐션 화음 12종 · <strong>각 2개 폼</strong> (6번줄 루트 Drop 3 · 5번줄 루트 Drop 2)</div>`;
+
+  chords.forEach(chord => {
+    const intervals = (CHORD_INTERVALS[chord] || []).map(iv => iv % 12);
+    const notes = getChordNoteNames(key, chord).join(' · ');
+    const info = chordInfo[chord] || {formula:'', struct:''};
+    const koName = CHORD_NAMES_KO[chord] || chord;
+
+    html += `<div class="diagram-group">`;
+    html += `<div class="group-title">${key}${chord} <span class="group-subtitle">${koName} · ${info.formula}</span></div>`;
+    html += `<div class="formula-box"><strong>구성음:</strong> ${notes} &nbsp;·&nbsp; <strong>구조:</strong> ${info.struct}</div>`;
+
+    const pos = getScalePositions(key, intervals, 12, chord);
+    html += `<div class="fb-card" style="width:100%">`;
+    html += `<div class="fb-card-title">${key}${chord} — 지판 전체 구성음 위치</div>`;
+    html += `<div class="fb-card-sub">빨간 <strong>R</strong> = 루트음 · 파란 점 = 나머지 구성음 · 루트를 찾고 주변 구성음을 연결하면 폼이 완성돼요</div>`;
+    html += makeFretboardSVG(pos, {startFret:0, endFret:12, width:700, viewMode:currentViewMode});
+    html += `</div>`;
+
+    // Drop 2/3 보이싱 섹션
+    html += makeDropVoicingSection(chord, key, intervals);
+
+
+    html += `</div>`;
+  });
+
+  return html;
+}
+
+// ════════════════════════════════════════════════
+// UI CONTROL
+// ════════════════════════════════════════════════
+
+function renderCurrent() {
+  const key = currentKey;
+  const sec = currentSection;
+
+  let html = '';
+  if (sec === 'scales') html = renderScales(key);
+  else if (sec === 'triads') html = renderTriads(key);
+  else if (sec === 'fourpart') html = renderFourPart(key);
+
+  document.getElementById(`panel-${sec}`).innerHTML = html;
+}
+
+function selectKey(k) {
+  currentKey = k;
+  document.querySelectorAll('.key-btn').forEach(b => {
+    b.classList.toggle('active', b.textContent.replace('♭','b') === k || b.textContent === k);
+  });
+  renderCurrent();
+}
+
+function switchSection(sec) {
+  currentSection = sec;
+  document.querySelectorAll('.sec-tab').forEach(t => t.classList.remove('active'));
+  event.target.classList.add('active');
+  document.querySelectorAll('.sec-panel').forEach(p => p.classList.remove('active'));
+  document.getElementById(`panel-${sec}`).classList.add('active');
+  // 모든 섹션에서 토글 표시
+  document.getElementById('viewToggle').style.display = 'flex';
+  renderCurrent();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+// Initial render
+document.getElementById('viewToggle').style.display = 'flex';
+renderCurrent();
+</script>
+</body>
+</html>

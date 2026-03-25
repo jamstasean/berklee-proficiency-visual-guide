@@ -1,0 +1,867 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Level VIII — 기타 지판 학습 가이드</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans+KR:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+
+:root {
+  --bg:    #f5f0e8;
+  --bg2:   #ede7d9;
+  --bg3:   #e4dece;
+  --ink1:  #2c2820;
+  --ink2:  #4a3f33;
+  --ink3:  #6b6452;
+  --ink4:  #9a9080;
+  --accent:#7a4c2c;
+  --accent2:#2c5f8a;
+  --accent3:#4a7c4a;
+  --red:   #a63228;
+  --border:#c8bfa8;
+  --font-mono: 'IBM Plex Mono', monospace;
+  --font-kr:   'IBM Plex Sans KR', sans-serif;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { background: var(--bg); color: var(--ink1); font-family: var(--font-kr); }
+
+header {
+  background: var(--ink1);
+  color: #f5f0e8;
+  padding: 20px 32px;
+}
+header h1 { font-size: 22px; font-weight: 700; letter-spacing: -0.02em; }
+header p  { font-size: 12px; color: #a8a098; font-family: var(--font-mono); margin-top: 4px; }
+
+.tab-bar {
+  display: flex;
+  gap: 0;
+  background: var(--ink1);
+  padding: 0 32px;
+}
+.tab {
+  padding: 13px 24px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #a8a098;
+  cursor: pointer;
+  border-bottom: 3px solid transparent;
+  transition: all 0.15s;
+  letter-spacing: 0.01em;
+}
+.tab.active { color: #f5f0e8; border-bottom-color: var(--accent); }
+.tab:hover:not(.active) { color: #d8d0c8; }
+
+.controls {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  background: var(--bg2);
+  border-bottom: 2px solid var(--border);
+  padding: 0 32px;
+  flex-wrap: wrap;
+}
+.ctrl-group {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 20px 10px 0;
+  border-right: 1px solid var(--border);
+  margin-right: 20px;
+}
+.ctrl-group:last-child { border-right: none; }
+.ctrl-label {
+  font-size: 11px;
+  color: var(--ink4);
+  font-family: var(--font-mono);
+  letter-spacing: 0.05em;
+  white-space: nowrap;
+  margin-right: 4px;
+}
+.ctrl-btn {
+  padding: 7px 16px;
+  border-radius: 6px;
+  border: 1.5px solid var(--border);
+  background: var(--bg3);
+  color: var(--ink2);
+  font-size: 13px;
+  font-family: var(--font-kr);
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s;
+  white-space: nowrap;
+}
+.ctrl-btn:hover  { border-color: var(--accent); color: var(--accent); background: var(--bg); }
+.ctrl-btn.active { background: var(--accent); border-color: var(--accent); color: #fff; box-shadow: 0 2px 6px rgba(122,76,44,0.2); }
+.ctrl-sep { display: none; }
+
+/* ── 공통 콘텐츠 영역 ── */
+main { padding: 28px 32px; max-width: 1100px; }
+
+/* ══════════════════════════════════════════
+   방식 A — 시퀀스 뷰 (8코드 가로 나열)
+══════════════════════════════════════════ */
+#view-A { display: block; }
+#view-B { display: none; }
+
+.seq-title {
+  font-size: 13px;
+  font-family: var(--font-mono);
+  color: var(--ink3);
+  margin-bottom: 16px;
+}
+.seq-title strong { color: var(--accent); }
+
+.sequence-container {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.chord-card {
+  display: grid;
+  grid-template-columns: 140px 1fr;
+  align-items: center;
+  gap: 16px;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--border);
+  position: relative;
+}
+.chord-card:last-child { border-bottom: none; }
+
+/* 아래 방향 화살표 */
+.chord-card:not(:last-child)::after {
+  content: '▼';
+  position: absolute;
+  left: 60px;
+  bottom: -14px;
+  font-size: 12px;
+  color: var(--border);
+  z-index: 2;
+  line-height: 1;
+}
+
+.chord-name {
+  font-size: 13px;
+  font-family: var(--font-mono);
+  color: var(--ink2);
+  text-align: center;
+  line-height: 1.6;
+  padding: 8px;
+  background: var(--bg2);
+  border-radius: 8px;
+  border: 1px solid var(--border);
+}
+.chord-name strong { font-size: 18px; font-family: var(--font-kr); display: block; }
+.chord-name .quality { color: var(--ink4); font-size: 11px; }
+
+/* 미니 지판 SVG */
+.mini-fretboard { display: block; }
+
+.voice-path {
+  margin-top: 8px;
+  display: flex;
+  gap: 4px;
+  justify-content: center;
+}
+.vp-dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: var(--border);
+}
+.vp-dot.move-up    { background: #e06040; }
+.vp-dot.move-down  { background: var(--accent2); }
+.vp-dot.stay       { background: var(--accent3); }
+
+.move-legend {
+  display: flex;
+  gap: 16px;
+  margin-top: 16px;
+  font-size: 11px;
+  font-family: var(--font-mono);
+  color: var(--ink4);
+}
+.ml-item { display: flex; align-items: center; gap: 6px; }
+.ml-dot  { width: 10px; height: 10px; border-radius: 50%; }
+
+/* ══════════════════════════════════════════
+   방식 B — 스텝 인터랙티브
+══════════════════════════════════════════ */
+.step-container {
+  display: flex;
+  gap: 24px;
+  align-items: flex-start;
+}
+
+.step-left { flex: 1; min-width: 0; }
+.step-right { width: 280px; flex-shrink: 0; }
+
+.step-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+.step-counter {
+  font-size: 11px;
+  font-family: var(--font-mono);
+  color: var(--ink4);
+}
+.step-chord-name {
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--ink1);
+}
+.step-inv {
+  font-size: 12px;
+  font-family: var(--font-mono);
+  color: var(--ink4);
+  background: var(--bg3);
+  padding: 3px 8px;
+  border-radius: 4px;
+}
+
+.step-fretboard { margin-bottom: 20px; }
+
+.step-nav {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+.nav-btn {
+  padding: 10px 20px;
+  border-radius: 8px;
+  border: 2px solid var(--border);
+  background: var(--bg3);
+  color: var(--ink2);
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.15s;
+  font-family: var(--font-kr);
+}
+.nav-btn:hover:not(:disabled) { border-color: var(--accent); color: var(--accent); }
+.nav-btn:disabled { opacity: 0.35; cursor: default; }
+.nav-btn.primary { background: var(--accent); border-color: var(--accent); color: #fff; }
+.nav-btn.primary:hover { background: var(--ink2); border-color: var(--ink2); }
+
+.step-dots {
+  display: flex;
+  gap: 6px;
+  margin-left: auto;
+}
+.sdot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: var(--border);
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.sdot.active   { background: var(--accent); }
+.sdot.visited  { background: var(--accent3); }
+
+/* 오른쪽 패널: 변화 표시 */
+.change-panel {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 16px;
+}
+.cp-title {
+  font-size: 11px;
+  font-family: var(--font-mono);
+  color: var(--ink4);
+  margin-bottom: 12px;
+  letter-spacing: 0.05em;
+}
+.cp-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--border);
+  font-family: var(--font-mono);
+  font-size: 12px;
+}
+.cp-row:last-child { border-bottom: none; }
+.cp-string { color: var(--ink4); width: 20px; }
+.cp-from   { color: var(--ink2); width: 40px; text-align: right; }
+.cp-arrow  { color: var(--border); width: 16px; text-align: center; }
+.cp-to     { width: 40px; font-weight: 600; }
+.cp-note   { font-size: 10px; color: var(--ink4); margin-left: auto; }
+
+.change-badge {
+  display: inline-block;
+  padding: 1px 6px;
+  border-radius: 3px;
+  font-size: 10px;
+  font-family: var(--font-mono);
+}
+.badge-stay  { background: #d4e8d4; color: #2a5a2a; }
+.badge-up    { background: #f8d4c8; color: #8a2a1a; }
+.badge-down  { background: #c8d8f0; color: #1a3a6a; }
+
+.seq-scroll-hint {
+  font-size: 10px;
+  font-family: var(--font-mono);
+  color: var(--ink4);
+  margin-top: 8px;
+  text-align: right;
+}
+
+/* ── 4성부 화음 전용 ── */
+
+
+*{box-sizing:border-box;margin:0;padding:0;}
+
+
+
+
+
+
+
+
+
+
+
+main{padding:28px 32px;max-width:1100px;}
+.concept-box{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:18px 22px;margin-bottom:24px;}
+.concept-box h3{font-size:15px;font-weight:700;color:var(--ink1);margin-bottom:10px;}
+.concept-box p{font-size:13px;color:var(--ink3);line-height:1.8;}
+.chord-section{margin-bottom:32px;}
+.chord-
+.chord-formula{font-size:12px;font-family:var(--font-mono);color:var(--ink4);margin-bottom:16px;margin-top:4px;}
+.inv-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;}
+.inv-card{background:var(--bg2);border:1px solid var(--border);border-radius:8px;overflow:hidden;}
+.inv-label{padding:8px 12px;font-size:12px;font-family:var(--font-mono);font-weight:600;color:var(--ink2);background:var(--bg3);border-bottom:1px solid var(--border);}
+.inv-label span{font-size:10px;color:var(--ink4);font-weight:400;margin-left:6px;}
+.inv-fb{padding:8px;}
+.inv-notes{padding:6px 12px 10px;font-size:11px;font-family:var(--font-mono);color:var(--ink3);}
+
+/* ── 탭 전환 ── */
+.page { display: none; }
+.page.active { display: block; }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Level VIII <em>— 기타 지판 학습 가이드</em></h1>
+  <p>Berklee Guitar Proficiency · 노션기타 Notion GTR 2.0</p>
+</header>
+
+<!-- 메인 탭 -->
+<div style="display:flex;gap:0;background:var(--ink1);padding:0 32px;">
+  <div id="tab-vl" style="padding:13px 24px;font-size:13px;font-weight:600;color:#f5f0e8;cursor:pointer;border-bottom:3px solid var(--accent);transition:all 0.15s;letter-spacing:0.01em;" onclick="switchTab('vl')">🎸 48 to 48 보이스 리딩</div>
+  <div id="tab-fp" style="padding:13px 24px;font-size:13px;font-weight:600;color:#a8a098;cursor:pointer;border-bottom:3px solid transparent;transition:all 0.15s;letter-spacing:0.01em;" onclick="switchTab('fp')">🎵 4성부 화음</div>
+</div>
+
+<!-- 3화음 보이스 리딩 페이지 -->
+<div id="page-vl" class="page active">
+<div class="controls">
+  <div class="ctrl-group">
+    <span class="ctrl-label">코드 A (시작)</span>
+    <select id="sel-a-root" onchange="L8_update()" style="padding:6px 10px;border-radius:6px;border:1.5px solid var(--border);background:var(--bg3);color:var(--ink1);font-family:var(--font-kr);font-size:13px;cursor:pointer;">
+      <option>C</option><option>Db</option><option>D</option><option>Eb</option>
+      <option>E</option><option>F</option><option>Gb</option><option>G</option>
+      <option>Ab</option><option>A</option><option>Bb</option><option>B</option>
+    </select>
+    <select id="sel-a-qual" onchange="L8_update()" style="padding:6px 10px;border-radius:6px;border:1.5px solid var(--border);background:var(--bg3);color:var(--ink1);font-family:var(--font-kr);font-size:13px;cursor:pointer;">
+      <option>Maj</option><option>Min</option><option>Aug</option><option>Dim</option>
+    </select>
+  </div>
+  <div class="ctrl-group">
+    <span class="ctrl-label">A 전위</span>
+    <button class="ctrl-btn active" data-l8-inv onclick="L8_setInv('Root',this)">근음</button>
+    <button class="ctrl-btn" data-l8-inv onclick="L8_setInv('1st',this)">1전위</button>
+    <button class="ctrl-btn" data-l8-inv onclick="L8_setInv('2nd',this)">2전위</button>
+  </div>
+  <div class="ctrl-group">
+    <span class="ctrl-label">코드 B (다음)</span>
+    <select id="sel-b-root" onchange="L8_update()" style="padding:6px 10px;border-radius:6px;border:1.5px solid var(--border);background:var(--bg3);color:var(--ink1);font-family:var(--font-kr);font-size:13px;cursor:pointer;">
+      <option>C</option><option>Db</option><option>D</option><option>Eb</option>
+      <option>E</option><option>F</option><option>Gb</option><option>G</option>
+      <option selected>Ab</option><option>A</option><option>Bb</option><option>B</option>
+    </select>
+    <select id="sel-b-qual" onchange="L8_update()" style="padding:6px 10px;border-radius:6px;border:1.5px solid var(--border);background:var(--bg3);color:var(--ink1);font-family:var(--font-kr);font-size:13px;cursor:pointer;">
+      <option>Maj</option><option selected>Min</option><option>Aug</option><option>Dim</option>
+    </select>
+  </div>
+  <div class="ctrl-group">
+    <span class="ctrl-label">보이싱</span>
+    <button class="ctrl-btn active" data-l8-vt onclick="L8_setVT('close',this)">Close ③②①</button>
+    <button class="ctrl-btn" data-l8-vt onclick="L8_setVT('spread643',this)">Spread ⑥④③</button>
+    <button class="ctrl-btn" data-l8-vt onclick="L8_setVT('spread542',this)">Spread ⑤④②</button>
+  </div>
+  <div class="ctrl-group">
+    <span class="ctrl-label">표시</span>
+    <button class="ctrl-btn" data-l8-view onclick="L8_toggleView(this)">음이름</button>
+  </div>
+</div>
+<main id="l8-main"></main>
+</div>
+
+
+<!-- 4성부 화음 페이지 -->
+<div id="page-fp" class="page">
+<div class="controls">
+  <div class="ctrl-group">
+    <span class="ctrl-label">KEY</span>
+    <button class="ctrl-btn active" data-fp-key onclick="FP_setKey('C',this)">C</button>
+    <button class="ctrl-btn" data-fp-key onclick="FP_setKey('F',this)">F</button>
+    <button class="ctrl-btn" data-fp-key onclick="FP_setKey('Bb',this)">B♭</button>
+    <button class="ctrl-btn" data-fp-key onclick="FP_setKey('Eb',this)">E♭</button>
+    <button class="ctrl-btn" data-fp-key onclick="FP_setKey('G',this)">G</button>
+    <button class="ctrl-btn" data-fp-key onclick="FP_setKey('D',this)">D</button>
+    <button class="ctrl-btn" data-fp-key onclick="FP_setKey('A',this)">A</button>
+  </div>
+  <div class="ctrl-group">
+    <span class="ctrl-label">보이싱</span>
+    <button class="ctrl-btn active" data-fp-voicing onclick="FP_setVoicing('drop2',this)">Drop 2 ⑤④③②</button>
+    <button class="ctrl-btn" data-fp-voicing onclick="FP_setVoicing('drop3',this)">Drop 3 ⑥④③②</button>
+  </div>
+  <div class="ctrl-group">
+    <span class="ctrl-label">표시</span>
+    <button class="ctrl-btn" data-fp-view onclick="FP_toggleView(this)">음이름</button>
+  </div>
+</div>
+<main id="fp-main"></main>
+</div>
+
+<script>
+// ── 탭 전환 ──────────────────────────────────
+function switchTab(tab) {
+  document.getElementById('page-vl').classList.toggle('active', tab==='vl');
+  document.getElementById('page-fp').classList.toggle('active', tab==='fp');
+  const tabVl = document.getElementById('tab-vl');
+  const tabFp = document.getElementById('tab-fp');
+  tabVl.style.color = tab==='vl'?'#f5f0e8':'#a8a098';
+  tabVl.style.borderBottomColor = tab==='vl'?'var(--accent)':'transparent';
+  tabFp.style.color = tab==='fp'?'#f5f0e8':'#a8a098';
+  tabFp.style.borderBottomColor = tab==='fp'?'var(--accent)':'transparent';
+}
+
+// ── 48 to 48 보이스 리딩 스크립트 ────────────────
+(function() {
+
+const OPEN_STR=[4,9,14,19,23,28];
+function getNote(ai,f){return(OPEN_STR[ai]+f)%12;}
+function nn(n){return['C','Db','D','Eb','E','F','Gb','G','Ab','A','Bb','B'][n];}
+function nts(n){const m={'C':0,'Db':1,'D':2,'Eb':3,'E':4,'F':5,'Gb':6,'G':7,'Ab':8,'A':9,'Bb':10,'B':11};return m[n]??0;}
+
+const IVS={Maj:[0,4,7],Min:[0,3,7],Aug:[0,4,8],Dim:[0,3,6]};
+const CLOSE_AI=[3,4,5];
+const SP643_AI=[0,2,3];
+const SP542_AI=[1,2,4];
+const CLOSE_ORDER=[[0,1,2],[1,2,0],[2,0,1]];
+const OPEN_ORDER=[[0,2,1],[1,0,2],[2,1,0]];
+const INV_NAMES=['Root','1st','2nd'];
+const STR_NAMES=['e','B','G','D','A','E'];
+const degMap={0:'1',1:'b2',2:'2',3:'b3',4:'3',5:'4',6:'b5',7:'5',8:'#5',9:'6',10:'b7',11:'7'};
+
+let currentVT='close', currentInv='Root', currentViewMode='note';
+
+function getAI(vt){return vt==='close'?CLOSE_AI:vt==='spread643'?SP643_AI:SP542_AI;}
+function getOrder(vt,inv){return (vt==='close'?CLOSE_ORDER:OPEN_ORDER)[INV_NAMES.indexOf(inv)];}
+function maxSpan(vt){return vt==='close'?4:5;}
+
+function findBestForm(rootSt, quality, vt, inv) {
+  const ai=getAI(vt), o=getOrder(vt,inv), tones=IVS[quality].map(i=>(rootSt+i)%12);
+  const ms=maxSpan(vt);
+  function fr(idx,t){const r=[];for(let f=0;f<=18;f++)if(getNote(ai[idx],f)===t)r.push(f);return r;}
+  let bestSp=999, bestFrets=null;
+  for(const f0 of fr(0,tones[o[0]]))
+    for(const f1 of fr(1,tones[o[1]]))
+      for(const f2 of fr(2,tones[o[2]])){
+        const all=[f0,f1,f2], sp=Math.max(...all)-Math.min(...all);
+        if(sp<=ms&&sp<bestSp){bestSp=sp;bestFrets=[...all];}
+      }
+  return bestFrets?{frets:bestFrets,inv,sp:bestSp}:null;
+}
+
+function findBestTransition(rootB, qualB, vt, prevFrets) {
+  let best=null, bestDist=999;
+  for(const inv of INV_NAMES){
+    const form=findBestForm(nts(rootB),qualB,vt,inv);
+    if(!form)continue;
+    const dist=form.frets.reduce((s,f,i)=>s+Math.abs(f-prevFrets[i]),0);
+    if(dist<bestDist){bestDist=dist;best={...form,dist};}
+  }
+  return best;
+}
+
+function makeFretboard(fretsA, fretsB, aiList, rootStA, rootStB, vt) {
+  const maxF=Math.max(...fretsA,...fretsB);
+  const endFret=Math.max(15,maxF+1);
+  const NUM_STR=6,SS=16,NR=7,FONT="'IBM Plex Mono',monospace";
+  const LABEL_W=14,NUT_W=5,padTop=14,padBot=22,padLeft=LABEL_W+NUT_W+3,padRight=12;
+  const strAreaH=SS*(NUM_STR-1),totalH=padTop+strAreaH+padBot;
+  const numFrets=endFret;
+  const w=700, fretW=(w-padLeft-padRight)/numFrets;
+  const fretX=padLeft,nutX=fretX-NUT_W;
+  const strY=row=>padTop+row*SS;
+  const toRow=si=>NUM_STR-1-si;
+  const OPEN_STR=[4,9,14,19,23,28];
+  const activeSet=new Set(aiList);
+
+  let s=`<svg viewBox="0 0 ${w} ${totalH}" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:auto;display:block">`;
+  s+=`<rect width="${w}" height="${totalH}" fill="#ede7d9" rx="4"/>`;
+
+  // 포지션 마커
+  [3,5,7,9,12].forEach(fp=>{
+    if(fp<=endFret){
+      const cx=fretX+(fp-.5)*fretW,dotY=padTop+strAreaH/2;
+      if(fp===12){s+=`<circle cx="${cx-fretW*.25}" cy="${dotY}" r="3" fill="#c8bfa8"/>`;s+=`<circle cx="${cx+fretW*.25}" cy="${dotY}" r="3" fill="#c8bfa8"/>`;}
+      else s+=`<circle cx="${cx}" cy="${dotY}" r="3" fill="#c8bfa8"/>`;
+    }
+  });
+
+  // 너트
+  s+=`<rect x="${nutX}" y="${strY(0)}" width="${NUT_W-1}" height="${strAreaH}" fill="#2c2820" rx="1"/>`;
+  // 프렛선
+  for(let f=1;f<=numFrets;f++)
+    s+=`<line x1="${fretX+f*fretW}" y1="${strY(0)}" x2="${fretX+f*fretW}" y2="${strY(5)}" stroke="#9a8f7a" stroke-width="1"/>`;
+  // 현
+  for(let si=0;si<NUM_STR;si++){
+    const row=toRow(si),y=strY(row);
+    const isAct=activeSet.has(si);
+    const th=(0.6+((NUM_STR-1-si)/(NUM_STR-1))*1.6).toFixed(2);
+    s+=`<line x1="${nutX}" y1="${y}" x2="${w-padRight}" y2="${y}" stroke="${isAct?'#8b7355':'#d0c8b4'}" stroke-width="${isAct?th:th*.5}"/>`;
+    s+=`<text x="${LABEL_W/2}" y="${y}" font-family="${FONT}" font-size="8" fill="${isAct?'#9a9080':'#ccc8be'}" text-anchor="middle" dominant-baseline="middle">${STR_NAMES[toRow(si)]}</text>`;
+  }
+  // 프렛 번호
+  for(let f=1;f<=numFrets;f++)
+    s+=`<text x="${fretX+(f-.5)*fretW}" y="${strY(5)+14}" font-family="${FONT}" font-size="7.5" fill="#9a9080" text-anchor="middle">${f}</text>`;
+
+  // 화살표 (A→B 이동 표시)
+  aiList.forEach((ai,i)=>{
+    const fA=fretsA[i], fB=fretsB[i];
+    if(fA===fB)return; // 같은 프렛이면 화살표 없음
+    const row=toRow(ai), y=strY(row);
+    const xA=fretX+(fA-.5)*fretW, xB=fretX+(fB-.5)*fretW;
+    const dir=fB>fA?1:-1;
+    const color=fB>fA?'#c05a28':'#2c5f8a';
+    s+=`<line x1="${xA}" y1="${y}" x2="${xB-dir*NR*1.2}" y2="${y}" stroke="${color}" stroke-width="1.5" stroke-dasharray="3,2" opacity="0.6"/>`;
+    const ax=xB-dir*NR*1.5, tip=xB-dir*NR;
+    s+=`<polygon points="${tip},${y} ${ax},${y-3} ${ax},${y+3}" fill="${color}" opacity="0.7"/>`;
+  });
+
+  // 코드 A 음표 (빨강)
+  aiList.forEach((ai,i)=>{
+    const f=fretsA[i], row=toRow(ai), y=strY(row);
+    const x=f===0?fretX-NUT_W*.5-NR:fretX+(f-.5)*fretW;
+    const noteSt=((OPEN_STR[ai]+f)%12+12)%12;
+    const isRoot=noteSt===((rootStA%12)+12)%12;
+    const label=currentViewMode==='degree'?degMap[(noteSt-rootStA+12)%12]:['C','Db','D','Eb','E','F','Gb','G','Ab','A','Bb','B'][noteSt];
+    const fill=isRoot?'#a63228':'#c07040';
+    if(f===0){
+      s+=`<circle cx="${fretX-NUT_W*.5-NR-2}" cy="${y}" r="${NR}" fill="#ede7d9" stroke="${fill}" stroke-width="1.5"/>`;
+      s+=`<text x="${fretX-NUT_W*.5-NR-2}" y="${y}" font-family="${FONT}" font-size="${label.length>1?'4':'5'}" fill="${fill}" text-anchor="middle" dominant-baseline="middle" font-weight="600">${label}</text>`;
+    } else {
+      s+=`<circle cx="${x}" cy="${y}" r="${NR}" fill="${fill}" opacity="0.85"/>`;
+      s+=`<text x="${x}" y="${y}" font-family="${FONT}" font-size="${label.length>1?'4.5':'5.5'}" fill="#fff" text-anchor="middle" dominant-baseline="middle" font-weight="600">${label}</text>`;
+    }
+  });
+
+  // 코드 B 음표 (파랑, 오른쪽 상단에 작게)
+  aiList.forEach((ai,i)=>{
+    const fA=fretsA[i], fB=fretsB[i], row=toRow(ai), y=strY(row);
+    if(fA===fB){
+      // 공통음: 초록 테두리
+      const x=fB===0?fretX-NUT_W*.5-NR-2:fretX+(fB-.5)*fretW;
+      s+=`<circle cx="${x}" cy="${y}" r="${NR+2}" fill="none" stroke="#4a7c4a" stroke-width="2" stroke-dasharray="2,1"/>`;
+      return;
+    }
+    const x=fB===0?fretX-NUT_W*.5-NR-2:fretX+(fB-.5)*fretW;
+    const noteSt=((OPEN_STR[ai]+fB)%12+12)%12;
+    const isRoot=noteSt===((rootStB%12)+12)%12;
+    const label=currentViewMode==='degree'?degMap[(noteSt-rootStB+12)%12]:['C','Db','D','Eb','E','F','Gb','G','Ab','A','Bb','B'][noteSt];
+    const fill=isRoot?'#2c5f8a':'#4a7ca8';
+    if(fB===0){
+      s+=`<circle cx="${x}" cy="${y}" r="${NR}" fill="#ede7d9" stroke="${fill}" stroke-width="1.5"/>`;
+      s+=`<text x="${x}" y="${y}" font-family="${FONT}" font-size="${label.length>1?'4':'5'}" fill="${fill}" text-anchor="middle" dominant-baseline="middle" font-weight="600">${label}</text>`;
+    } else {
+      s+=`<circle cx="${x}" cy="${y}" r="${NR}" fill="${fill}" opacity="0.85"/>`;
+      s+=`<text x="${x}" y="${y}" font-family="${FONT}" font-size="${label.length>1?'4.5':'5.5'}" fill="#fff" text-anchor="middle" dominant-baseline="middle" font-weight="600">${label}</text>`;
+    }
+  });
+
+  s+=`</svg>`;
+  return s;
+}
+
+function render() {
+  const rootA=document.getElementById('sel-a-root').value;
+  const qualA=document.getElementById('sel-a-qual').value;
+  const rootB=document.getElementById('sel-b-root').value;
+  const qualB=document.getElementById('sel-b-qual').value;
+  const vt=currentVT;
+  const ai=getAI(vt);
+  const rootStA=nts(rootA), rootStB=nts(rootB);
+
+  const formA=findBestForm(rootStA,qualA,vt,currentInv);
+  if(!formA){
+    document.getElementById('l8-main').innerHTML='<div style="padding:24px;color:var(--ink4)">선택한 보이싱으로 연주하기 어려운 폼이에요.</div>';
+    return;
+  }
+  const formB=findBestTransition(rootB,qualB,vt,formA.frets);
+  if(!formB){
+    document.getElementById('l8-main').innerHTML='<div style="padding:24px;color:var(--ink4)">B코드를 찾을 수 없어요.</div>';
+    return;
+  }
+
+  // 구성음 텍스트
+  const notesA=ai.map((a,i)=>nn(getNote(a,formA.frets[i]))).join(' · ');
+  const notesB=ai.map((a,i)=>nn(getNote(a,formB.frets[i]))).join(' · ');
+  const strLabel=vt==='close'?'③②①':vt==='spread643'?'⑥④③':'⑤④②';
+
+  // 공통음 확인
+  const tonesA=IVS[qualA].map(i=>(rootStA+i)%12);
+  const tonesB=IVS[qualB].map(i=>(rootStB+i)%12);
+  const common=tonesA.filter(t=>tonesB.includes(t));
+  const commonNames=common.map(t=>nn(t)).join(', ');
+
+  const fbSvg=makeFretboard(formA.frets,formB.frets,ai,rootStA,rootStB,vt);
+
+  const moveDir=formB.frets.map((f,i)=>{
+    const d=f-formA.frets[i];
+    return d===0?'유지':(d>0?`+${d}▲`:`${d}▼`);
+  }).join(' · ');
+
+  document.getElementById('l8-main').innerHTML=`
+  <div style="background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:20px 24px;margin:24px 32px 20px;">
+    <h3 style="font-size:15px;font-weight:700;margin-bottom:12px;">🎸 48 to 48 — 크로매틱 트라이어드 보이스 리딩</h3>
+    <p style="font-size:13px;color:var(--ink3);line-height:1.8;">
+      <strong>장조·단조·증3화음·감3화음 × 12키 = 48개</strong> 트라이어드 중 어떤 코드에서 어떤 코드로든 최소 이동으로 연결하는 단계예요.<br>
+      시험에서는 시험팀이 임의의 16개 트라이어드 시퀀스를 제시하며, Close · Spread 모두 연주해야 해요.
+    </p>
+    <div style="display:flex;gap:20px;margin-top:10px;flex-wrap:wrap;">
+      <div style="padding:8px 14px;background:var(--bg3);border-radius:6px;font-size:12px;font-family:var(--font-mono);">
+        <span style="color:#a63228;font-weight:700">■</span> 코드 A: ${rootA}${qualA} (${formA.inv}) · ${notesA}
+      </div>
+      <div style="padding:8px 14px;background:var(--bg3);border-radius:6px;font-size:12px;font-family:var(--font-mono);">
+        <span style="color:#2c5f8a;font-weight:700">■</span> 코드 B: ${rootB}${qualB} (${formB.inv}) · ${notesB}
+      </div>
+      ${common.length?`<div style="padding:8px 14px;background:var(--bg3);border-radius:6px;font-size:12px;font-family:var(--font-mono);">
+        <span style="color:#4a7c4a;font-weight:700">●</span> 공통음: ${commonNames}
+      </div>`:''}
+    </div>
+    <div style="margin-top:10px;font-size:12px;color:var(--ink4);font-family:var(--font-mono);">
+      성부 이동: ${moveDir} &nbsp;·&nbsp; 총 이동 거리: ${formB.dist}반음 &nbsp;·&nbsp; ${strLabel} 현 세트
+    </div>
+    <div style="margin-top:14px;padding:2px 0;">📌 <strong style="color:var(--ink2)">스케일:</strong> Harmonic Major 3옥타브 · Pentatonic (Major + Minor) 3옥타브 — Level IV 스케일 심화(3옥타브 확장)예요.</div>
+  </div>
+  <div style="padding:0 32px 32px;">
+    ${fbSvg}
+    <div style="margin-top:10px;font-size:11px;font-family:var(--font-mono);color:var(--ink4)">
+      ▲ 상행이동 &nbsp; ▼ 하행이동 &nbsp; <span style="color:#4a7c4a">● 점선</span> = 공통음(손가락 유지)
+    </div>
+  </div>
+  `;
+}
+
+function L8_setInv(inv, el) {
+  currentInv=inv;
+  document.querySelectorAll('[data-l8-inv]').forEach(b=>b.classList.remove('active'));
+  el.classList.add('active');
+  render();
+}
+function L8_setVT(vt, el) {
+  currentVT=vt;
+  document.querySelectorAll('[data-l8-vt]').forEach(b=>b.classList.remove('active'));
+  el.classList.add('active');
+  render();
+}
+function L8_toggleView(el) {
+  currentViewMode=currentViewMode==='note'?'degree':'note';
+  el.textContent=currentViewMode==='note'?'음이름':'도수';
+  el.classList.toggle('active',currentViewMode==='degree');
+  render();
+}
+function L8_update() { render(); }
+
+window.L8_setInv=L8_setInv;
+window.L8_setVT=L8_setVT;
+window.L8_toggleView=L8_toggleView;
+window.L8_update=L8_update;
+
+render();
+})();
+
+// ── 4성부 화음 스크립트 ───────────────────────
+(function() {
+
+const FOURPART_DATA = {"C":{"Min(maj7)":{"drop2":[{"frets":[3,5,4,4],"inv":"Root","rootSt":0},{"frets":[6,9,5,8],"inv":"1st","rootSt":0},{"frets":[10,10,8,12],"inv":"2nd","rootSt":0},{"frets":[14,13,12,13],"inv":"3rd","rootSt":0}],"drop3":[{"frets":[8,9,8,8],"inv":"Root","rootSt":0},{"frets":[11,10,12,12],"inv":"1st","rootSt":0},{"frets":[3,1,4,1],"inv":"2nd","rootSt":0},{"frets":[7,5,5,4],"inv":"3rd","rootSt":0}]},"Maj7#5":{"drop2":[{"frets":[3,6,4,5],"inv":"Root","rootSt":0},{"frets":[7,9,5,9],"inv":"1st","rootSt":0},{"frets":[11,10,9,12],"inv":"2nd","rootSt":0},{"frets":[2,2,1,1],"inv":"3rd","rootSt":0}],"drop3":[{"frets":[8,9,9,9],"inv":"Root","rootSt":0},{"frets":[12,10,13,12],"inv":"1st","rootSt":0},{"frets":[4,2,4,1],"inv":"2nd","rootSt":0},{"frets":[7,6,5,5],"inv":"3rd","rootSt":0}]},"Maj7b5":{"drop2":[{"frets":[3,4,4,5],"inv":"Root","rootSt":0},{"frets":[7,9,5,7],"inv":"1st","rootSt":0},{"frets":[9,10,9,12],"inv":"2nd","rootSt":0},{"frets":[14,14,11,13],"inv":"3rd","rootSt":0}],"drop3":[{"frets":[8,9,9,7],"inv":"Root","rootSt":0},{"frets":[12,10,11,12],"inv":"1st","rootSt":0},{"frets":[2,2,4,1],"inv":"2nd","rootSt":0},{"frets":[7,4,5,5],"inv":"3rd","rootSt":0}]},"Min7#5":{"drop2":[{"frets":[3,6,3,4],"inv":"Root","rootSt":0},{"frets":[6,8,5,9],"inv":"1st","rootSt":0},{"frets":[11,10,8,11],"inv":"2nd","rootSt":0},{"frets":[1,1,1,1],"inv":"3rd","rootSt":0}],"drop3":[{"frets":[8,8,8,9],"inv":"Root","rootSt":0},{"frets":[11,10,13,11],"inv":"1st","rootSt":0},{"frets":[4,1,3,1],"inv":"2nd","rootSt":0},{"frets":[6,6,5,4],"inv":"3rd","rootSt":0}]},"7b5":{"drop2":[{"frets":[3,4,3,5],"inv":"Root","rootSt":0},{"frets":[7,8,5,7],"inv":"1st","rootSt":0},{"frets":[9,10,9,11],"inv":"2nd","rootSt":0},{"frets":[13,14,11,13],"inv":"3rd","rootSt":0}],"drop3":[{"frets":[8,8,9,7],"inv":"Root","rootSt":0},{"frets":[12,10,11,11],"inv":"1st","rootSt":0},{"frets":[2,2,3,1],"inv":"2nd","rootSt":0},{"frets":[6,4,5,5],"inv":"3rd","rootSt":0}]},"Dim(Maj7)":{"drop2":[{"frets":[3,4,4,4],"inv":"Root","rootSt":0},{"frets":[6,9,5,7],"inv":"1st","rootSt":0},{"frets":[9,10,8,12],"inv":"2nd","rootSt":0},{"frets":[14,13,11,13],"inv":"3rd","rootSt":0}],"drop3":[{"frets":[8,9,8,7],"inv":"Root","rootSt":0},{"frets":[11,10,11,12],"inv":"1st","rootSt":0},{"frets":[2,1,4,1],"inv":"2nd","rootSt":0},{"frets":[7,4,5,4],"inv":"3rd","rootSt":0}]}},"F":{"Min(maj7)":{"drop2":[{"frets":[8,10,9,9],"inv":"Root","rootSt":5},{"frets":[11,14,10,13],"inv":"1st","rootSt":5},{"frets":[3,3,1,5],"inv":"2nd","rootSt":5},{"frets":[7,6,5,6],"inv":"3rd","rootSt":5}],"drop3":[{"frets":[1,2,1,1],"inv":"Root","rootSt":5},{"frets":[4,3,5,5],"inv":"1st","rootSt":5},{"frets":[8,6,9,6],"inv":"2nd","rootSt":5},{"frets":[12,10,10,9],"inv":"3rd","rootSt":5}]},"Maj7#5":{"drop2":[{"frets":[8,11,9,10],"inv":"Root","rootSt":5},{"frets":[12,14,10,14],"inv":"1st","rootSt":5},{"frets":[4,3,2,5],"inv":"2nd","rootSt":5},{"frets":[7,7,6,6],"inv":"3rd","rootSt":5}],"drop3":[{"frets":[1,2,2,2],"inv":"Root","rootSt":5},{"frets":[5,3,6,5],"inv":"1st","rootSt":5},{"frets":[9,7,9,6],"inv":"2nd","rootSt":5},{"frets":[12,11,10,10],"inv":"3rd","rootSt":5}]},"Maj7b5":{"drop2":[{"frets":[8,9,9,10],"inv":"Root","rootSt":5},{"frets":[12,14,10,12],"inv":"1st","rootSt":5},{"frets":[2,3,2,5],"inv":"2nd","rootSt":5},{"frets":[7,7,4,6],"inv":"3rd","rootSt":5}],"drop3":[{"frets":[13,14,14,12],"inv":"Root","rootSt":5},{"frets":[5,3,4,5],"inv":"1st","rootSt":5},{"frets":[7,7,9,6],"inv":"2nd","rootSt":5},{"frets":[12,9,10,10],"inv":"3rd","rootSt":5}]},"Min7#5":{"drop2":[{"frets":[8,11,8,9],"inv":"Root","rootSt":5},{"frets":[11,13,10,14],"inv":"1st","rootSt":5},{"frets":[4,3,1,4],"inv":"2nd","rootSt":5},{"frets":[6,6,6,6],"inv":"3rd","rootSt":5}],"drop3":[{"frets":[1,1,1,2],"inv":"Root","rootSt":5},{"frets":[4,3,6,4],"inv":"1st","rootSt":5},{"frets":[9,6,8,6],"inv":"2nd","rootSt":5},{"frets":[11,11,10,9],"inv":"3rd","rootSt":5}]},"7b5":{"drop2":[{"frets":[8,9,8,10],"inv":"Root","rootSt":5},{"frets":[12,13,10,12],"inv":"1st","rootSt":5},{"frets":[2,3,2,4],"inv":"2nd","rootSt":5},{"frets":[6,7,4,6],"inv":"3rd","rootSt":5}],"drop3":[{"frets":[13,13,14,12],"inv":"Root","rootSt":5},{"frets":[5,3,4,4],"inv":"1st","rootSt":5},{"frets":[7,7,8,6],"inv":"2nd","rootSt":5},{"frets":[11,9,10,10],"inv":"3rd","rootSt":5}]},"Dim(Maj7)":{"drop2":[{"frets":[8,9,9,9],"inv":"Root","rootSt":5},{"frets":[11,14,10,12],"inv":"1st","rootSt":5},{"frets":[2,3,1,5],"inv":"2nd","rootSt":5},{"frets":[7,6,4,6],"inv":"3rd","rootSt":5}],"drop3":[{"frets":[13,14,13,12],"inv":"Root","rootSt":5},{"frets":[4,3,4,5],"inv":"1st","rootSt":5},{"frets":[7,6,9,6],"inv":"2nd","rootSt":5},{"frets":[12,9,10,9],"inv":"3rd","rootSt":5}]}},"Bb":{"Min(maj7)":{"drop2":[{"frets":[1,3,2,2],"inv":"Root","rootSt":10},{"frets":[4,7,3,6],"inv":"1st","rootSt":10},{"frets":[8,8,6,10],"inv":"2nd","rootSt":10},{"frets":[12,11,10,11],"inv":"3rd","rootSt":10}],"drop3":[{"frets":[6,7,6,6],"inv":"Root","rootSt":10},{"frets":[9,8,10,10],"inv":"1st","rootSt":10},{"frets":[13,11,14,11],"inv":"2nd","rootSt":10},{"frets":[5,3,3,2],"inv":"3rd","rootSt":10}]},"Maj7#5":{"drop2":[{"frets":[1,4,2,3],"inv":"Root","rootSt":10},{"frets":[5,7,3,7],"inv":"1st","rootSt":10},{"frets":[9,8,7,10],"inv":"2nd","rootSt":10},{"frets":[12,12,11,11],"inv":"3rd","rootSt":10}],"drop3":[{"frets":[6,7,7,7],"inv":"Root","rootSt":10},{"frets":[10,8,11,10],"inv":"1st","rootSt":10},{"frets":[14,12,14,11],"inv":"2nd","rootSt":10},{"frets":[5,4,3,3],"inv":"3rd","rootSt":10}]},"Maj7b5":{"drop2":[{"frets":[1,2,2,3],"inv":"Root","rootSt":10},{"frets":[5,7,3,5],"inv":"1st","rootSt":10},{"frets":[7,8,7,10],"inv":"2nd","rootSt":10},{"frets":[12,12,9,11],"inv":"3rd","rootSt":10}],"drop3":[{"frets":[6,7,7,5],"inv":"Root","rootSt":10},{"frets":[10,8,9,10],"inv":"1st","rootSt":10},{"frets":[12,12,14,11],"inv":"2nd","rootSt":10},{"frets":[5,2,3,3],"inv":"3rd","rootSt":10}]},"Min7#5":{"drop2":[{"frets":[1,4,1,2],"inv":"Root","rootSt":10},{"frets":[4,6,3,7],"inv":"1st","rootSt":10},{"frets":[9,8,6,9],"inv":"2nd","rootSt":10},{"frets":[11,11,11,11],"inv":"3rd","rootSt":10}],"drop3":[{"frets":[6,6,6,7],"inv":"Root","rootSt":10},{"frets":[9,8,11,9],"inv":"1st","rootSt":10},{"frets":[14,11,13,11],"inv":"2nd","rootSt":10},{"frets":[4,4,3,2],"inv":"3rd","rootSt":10}]},"7b5":{"drop2":[{"frets":[1,2,1,3],"inv":"Root","rootSt":10},{"frets":[5,6,3,5],"inv":"1st","rootSt":10},{"frets":[7,8,7,9],"inv":"2nd","rootSt":10},{"frets":[11,12,9,11],"inv":"3rd","rootSt":10}],"drop3":[{"frets":[6,6,7,5],"inv":"Root","rootSt":10},{"frets":[10,8,9,9],"inv":"1st","rootSt":10},{"frets":[12,12,13,11],"inv":"2nd","rootSt":10},{"frets":[4,2,3,3],"inv":"3rd","rootSt":10}]},"Dim(Maj7)":{"drop2":[{"frets":[1,2,2,2],"inv":"Root","rootSt":10},{"frets":[4,7,3,5],"inv":"1st","rootSt":10},{"frets":[7,8,6,10],"inv":"2nd","rootSt":10},{"frets":[12,11,9,11],"inv":"3rd","rootSt":10}],"drop3":[{"frets":[6,7,6,5],"inv":"Root","rootSt":10},{"frets":[9,8,9,10],"inv":"1st","rootSt":10},{"frets":[12,11,14,11],"inv":"2nd","rootSt":10},{"frets":[5,2,3,2],"inv":"3rd","rootSt":10}]}},"Eb":{"Min(maj7)":{"drop2":[{"frets":[6,8,7,7],"inv":"Root","rootSt":3},{"frets":[9,12,8,11],"inv":"1st","rootSt":3},{"frets":[13,13,11,15],"inv":"2nd","rootSt":3},{"frets":[5,4,3,4],"inv":"3rd","rootSt":3}],"drop3":[{"frets":[11,12,11,11],"inv":"Root","rootSt":3},{"frets":[2,1,3,3],"inv":"1st","rootSt":3},{"frets":[6,4,7,4],"inv":"2nd","rootSt":3},{"frets":[10,8,8,7],"inv":"3rd","rootSt":3}]},"Maj7#5":{"drop2":[{"frets":[6,9,7,8],"inv":"Root","rootSt":3},{"frets":[10,12,8,12],"inv":"1st","rootSt":3},{"frets":[14,13,12,15],"inv":"2nd","rootSt":3},{"frets":[5,5,4,4],"inv":"3rd","rootSt":3}],"drop3":[{"frets":[11,12,12,12],"inv":"Root","rootSt":3},{"frets":[3,1,4,3],"inv":"1st","rootSt":3},{"frets":[7,5,7,4],"inv":"2nd","rootSt":3},{"frets":[10,9,8,8],"inv":"3rd","rootSt":3}]},"Maj7b5":{"drop2":[{"frets":[6,7,7,8],"inv":"Root","rootSt":3},{"frets":[10,12,8,10],"inv":"1st","rootSt":3},{"frets":[12,13,12,15],"inv":"2nd","rootSt":3},{"frets":[5,5,2,4],"inv":"3rd","rootSt":3}],"drop3":[{"frets":[11,12,12,10],"inv":"Root","rootSt":3},{"frets":[3,1,2,3],"inv":"1st","rootSt":3},{"frets":[5,5,7,4],"inv":"2nd","rootSt":3},{"frets":[10,7,8,8],"inv":"3rd","rootSt":3}]},"Min7#5":{"drop2":[{"frets":[6,9,6,7],"inv":"Root","rootSt":3},{"frets":[9,11,8,12],"inv":"1st","rootSt":3},{"frets":[14,13,11,14],"inv":"2nd","rootSt":3},{"frets":[4,4,4,4],"inv":"3rd","rootSt":3}],"drop3":[{"frets":[11,11,11,12],"inv":"Root","rootSt":3},{"frets":[2,1,4,2],"inv":"1st","rootSt":3},{"frets":[7,4,6,4],"inv":"2nd","rootSt":3},{"frets":[9,9,8,7],"inv":"3rd","rootSt":3}]},"7b5":{"drop2":[{"frets":[6,7,6,8],"inv":"Root","rootSt":3},{"frets":[10,11,8,10],"inv":"1st","rootSt":3},{"frets":[12,13,12,14],"inv":"2nd","rootSt":3},{"frets":[4,5,2,4],"inv":"3rd","rootSt":3}],"drop3":[{"frets":[11,11,12,10],"inv":"Root","rootSt":3},{"frets":[3,1,2,2],"inv":"1st","rootSt":3},{"frets":[5,5,6,4],"inv":"2nd","rootSt":3},{"frets":[9,7,8,8],"inv":"3rd","rootSt":3}]},"Dim(Maj7)":{"drop2":[{"frets":[6,7,7,7],"inv":"Root","rootSt":3},{"frets":[9,12,8,10],"inv":"1st","rootSt":3},{"frets":[12,13,11,15],"inv":"2nd","rootSt":3},{"frets":[5,4,2,4],"inv":"3rd","rootSt":3}],"drop3":[{"frets":[11,12,11,10],"inv":"Root","rootSt":3},{"frets":[2,1,2,3],"inv":"1st","rootSt":3},{"frets":[5,4,7,4],"inv":"2nd","rootSt":3},{"frets":[10,7,8,7],"inv":"3rd","rootSt":3}]}},"G":{"Min(maj7)":{"drop2":[{"frets":[10,12,11,11],"inv":"Root","rootSt":7},{"frets":[13,16,12,15],"inv":"1st","rootSt":7},{"frets":[5,5,3,7],"inv":"2nd","rootSt":7},{"frets":[9,8,7,8],"inv":"3rd","rootSt":7}],"drop3":[{"frets":[3,4,3,3],"inv":"Root","rootSt":7},{"frets":[6,5,7,7],"inv":"1st","rootSt":7},{"frets":[10,8,11,8],"inv":"2nd","rootSt":7},{"frets":[14,12,12,11],"inv":"3rd","rootSt":7}]},"Maj7#5":{"drop2":[{"frets":[10,13,11,12],"inv":"Root","rootSt":7},{"frets":[14,16,12,16],"inv":"1st","rootSt":7},{"frets":[6,5,4,7],"inv":"2nd","rootSt":7},{"frets":[9,9,8,8],"inv":"3rd","rootSt":7}],"drop3":[{"frets":[3,4,4,4],"inv":"Root","rootSt":7},{"frets":[7,5,8,7],"inv":"1st","rootSt":7},{"frets":[11,9,11,8],"inv":"2nd","rootSt":7},{"frets":[14,13,12,12],"inv":"3rd","rootSt":7}]},"Maj7b5":{"drop2":[{"frets":[10,11,11,12],"inv":"Root","rootSt":7},{"frets":[14,16,12,14],"inv":"1st","rootSt":7},{"frets":[4,5,4,7],"inv":"2nd","rootSt":7},{"frets":[9,9,6,8],"inv":"3rd","rootSt":7}],"drop3":[{"frets":[3,4,4,2],"inv":"Root","rootSt":7},{"frets":[7,5,6,7],"inv":"1st","rootSt":7},{"frets":[9,9,11,8],"inv":"2nd","rootSt":7},{"frets":[14,11,12,12],"inv":"3rd","rootSt":7}]},"Min7#5":{"drop2":[{"frets":[10,13,10,11],"inv":"Root","rootSt":7},{"frets":[13,15,12,16],"inv":"1st","rootSt":7},{"frets":[6,5,3,6],"inv":"2nd","rootSt":7},{"frets":[8,8,8,8],"inv":"3rd","rootSt":7}],"drop3":[{"frets":[3,3,3,4],"inv":"Root","rootSt":7},{"frets":[6,5,8,6],"inv":"1st","rootSt":7},{"frets":[11,8,10,8],"inv":"2nd","rootSt":7},{"frets":[13,13,12,11],"inv":"3rd","rootSt":7}]},"7b5":{"drop2":[{"frets":[10,11,10,12],"inv":"Root","rootSt":7},{"frets":[14,15,12,14],"inv":"1st","rootSt":7},{"frets":[4,5,4,6],"inv":"2nd","rootSt":7},{"frets":[8,9,6,8],"inv":"3rd","rootSt":7}],"drop3":[{"frets":[3,3,4,2],"inv":"Root","rootSt":7},{"frets":[7,5,6,6],"inv":"1st","rootSt":7},{"frets":[9,9,10,8],"inv":"2nd","rootSt":7},{"frets":[13,11,12,12],"inv":"3rd","rootSt":7}]},"Dim(Maj7)":{"drop2":[{"frets":[10,11,11,11],"inv":"Root","rootSt":7},{"frets":[13,16,12,14],"inv":"1st","rootSt":7},{"frets":[4,5,3,7],"inv":"2nd","rootSt":7},{"frets":[9,8,6,8],"inv":"3rd","rootSt":7}],"drop3":[{"frets":[3,4,3,2],"inv":"Root","rootSt":7},{"frets":[6,5,6,7],"inv":"1st","rootSt":7},{"frets":[9,8,11,8],"inv":"2nd","rootSt":7},{"frets":[14,11,12,11],"inv":"3rd","rootSt":7}]}},"D":{"Min(maj7)":{"drop2":[{"frets":[5,7,6,6],"inv":"Root","rootSt":2},{"frets":[8,11,7,10],"inv":"1st","rootSt":2},{"frets":[12,12,10,14],"inv":"2nd","rootSt":2},{"frets":[4,3,2,3],"inv":"3rd","rootSt":2}],"drop3":[{"frets":[10,11,10,10],"inv":"Root","rootSt":2},{"frets":[13,12,14,14],"inv":"1st","rootSt":2},{"frets":[5,3,6,3],"inv":"2nd","rootSt":2},{"frets":[9,7,7,6],"inv":"3rd","rootSt":2}]},"Maj7#5":{"drop2":[{"frets":[5,8,6,7],"inv":"Root","rootSt":2},{"frets":[9,11,7,11],"inv":"1st","rootSt":2},{"frets":[13,12,11,14],"inv":"2nd","rootSt":2},{"frets":[4,4,3,3],"inv":"3rd","rootSt":2}],"drop3":[{"frets":[10,11,11,11],"inv":"Root","rootSt":2},{"frets":[14,12,15,14],"inv":"1st","rootSt":2},{"frets":[6,4,6,3],"inv":"2nd","rootSt":2},{"frets":[9,8,7,7],"inv":"3rd","rootSt":2}]},"Maj7b5":{"drop2":[{"frets":[5,6,6,7],"inv":"Root","rootSt":2},{"frets":[9,11,7,9],"inv":"1st","rootSt":2},{"frets":[11,12,11,14],"inv":"2nd","rootSt":2},{"frets":[4,4,1,3],"inv":"3rd","rootSt":2}],"drop3":[{"frets":[10,11,11,9],"inv":"Root","rootSt":2},{"frets":[14,12,13,14],"inv":"1st","rootSt":2},{"frets":[4,4,6,3],"inv":"2nd","rootSt":2},{"frets":[9,6,7,7],"inv":"3rd","rootSt":2}]},"Min7#5":{"drop2":[{"frets":[5,8,5,6],"inv":"Root","rootSt":2},{"frets":[8,10,7,11],"inv":"1st","rootSt":2},{"frets":[13,12,10,13],"inv":"2nd","rootSt":2},{"frets":[3,3,3,3],"inv":"3rd","rootSt":2}],"drop3":[{"frets":[10,10,10,11],"inv":"Root","rootSt":2},{"frets":[13,12,15,13],"inv":"1st","rootSt":2},{"frets":[6,3,5,3],"inv":"2nd","rootSt":2},{"frets":[8,8,7,6],"inv":"3rd","rootSt":2}]},"7b5":{"drop2":[{"frets":[5,6,5,7],"inv":"Root","rootSt":2},{"frets":[9,10,7,9],"inv":"1st","rootSt":2},{"frets":[11,12,11,13],"inv":"2nd","rootSt":2},{"frets":[3,4,1,3],"inv":"3rd","rootSt":2}],"drop3":[{"frets":[10,10,11,9],"inv":"Root","rootSt":2},{"frets":[14,12,13,13],"inv":"1st","rootSt":2},{"frets":[4,4,5,3],"inv":"2nd","rootSt":2},{"frets":[8,6,7,7],"inv":"3rd","rootSt":2}]},"Dim(Maj7)":{"drop2":[{"frets":[5,6,6,6],"inv":"Root","rootSt":2},{"frets":[8,11,7,9],"inv":"1st","rootSt":2},{"frets":[11,12,10,14],"inv":"2nd","rootSt":2},{"frets":[4,3,1,3],"inv":"3rd","rootSt":2}],"drop3":[{"frets":[10,11,10,9],"inv":"Root","rootSt":2},{"frets":[13,12,13,14],"inv":"1st","rootSt":2},{"frets":[4,3,6,3],"inv":"2nd","rootSt":2},{"frets":[9,6,7,6],"inv":"3rd","rootSt":2}]}},"A":{"Min(maj7)":{"drop2":[{"frets":[12,14,13,13],"inv":"Root","rootSt":9},{"frets":[3,6,2,5],"inv":"1st","rootSt":9},{"frets":[7,7,5,9],"inv":"2nd","rootSt":9},{"frets":[11,10,9,10],"inv":"3rd","rootSt":9}],"drop3":[{"frets":[5,6,5,5],"inv":"Root","rootSt":9},{"frets":[8,7,9,9],"inv":"1st","rootSt":9},{"frets":[12,10,13,10],"inv":"2nd","rootSt":9},{"frets":[4,2,2,1],"inv":"3rd","rootSt":9}]},"Maj7#5":{"drop2":[{"frets":[12,15,13,14],"inv":"Root","rootSt":9},{"frets":[4,6,2,6],"inv":"1st","rootSt":9},{"frets":[8,7,6,9],"inv":"2nd","rootSt":9},{"frets":[11,11,10,10],"inv":"3rd","rootSt":9}],"drop3":[{"frets":[5,6,6,6],"inv":"Root","rootSt":9},{"frets":[9,7,10,9],"inv":"1st","rootSt":9},{"frets":[13,11,13,10],"inv":"2nd","rootSt":9},{"frets":[4,3,2,2],"inv":"3rd","rootSt":9}]},"Maj7b5":{"drop2":[{"frets":[12,13,13,14],"inv":"Root","rootSt":9},{"frets":[4,6,2,4],"inv":"1st","rootSt":9},{"frets":[6,7,6,9],"inv":"2nd","rootSt":9},{"frets":[11,11,8,10],"inv":"3rd","rootSt":9}],"drop3":[{"frets":[5,6,6,4],"inv":"Root","rootSt":9},{"frets":[9,7,8,9],"inv":"1st","rootSt":9},{"frets":[11,11,13,10],"inv":"2nd","rootSt":9},{"frets":[4,1,2,2],"inv":"3rd","rootSt":9}]},"Min7#5":{"drop2":[{"frets":[12,15,12,13],"inv":"Root","rootSt":9},{"frets":[3,5,2,6],"inv":"1st","rootSt":9},{"frets":[8,7,5,8],"inv":"2nd","rootSt":9},{"frets":[10,10,10,10],"inv":"3rd","rootSt":9}],"drop3":[{"frets":[5,5,5,6],"inv":"Root","rootSt":9},{"frets":[8,7,10,8],"inv":"1st","rootSt":9},{"frets":[13,10,12,10],"inv":"2nd","rootSt":9},{"frets":[3,3,2,1],"inv":"3rd","rootSt":9}]},"7b5":{"drop2":[{"frets":[12,13,12,14],"inv":"Root","rootSt":9},{"frets":[4,5,2,4],"inv":"1st","rootSt":9},{"frets":[6,7,6,8],"inv":"2nd","rootSt":9},{"frets":[10,11,8,10],"inv":"3rd","rootSt":9}],"drop3":[{"frets":[5,5,6,4],"inv":"Root","rootSt":9},{"frets":[9,7,8,8],"inv":"1st","rootSt":9},{"frets":[11,11,12,10],"inv":"2nd","rootSt":9},{"frets":[3,1,2,2],"inv":"3rd","rootSt":9}]},"Dim(Maj7)":{"drop2":[{"frets":[12,13,13,13],"inv":"Root","rootSt":9},{"frets":[3,6,2,4],"inv":"1st","rootSt":9},{"frets":[6,7,5,9],"inv":"2nd","rootSt":9},{"frets":[11,10,8,10],"inv":"3rd","rootSt":9}],"drop3":[{"frets":[5,6,5,4],"inv":"Root","rootSt":9},{"frets":[8,7,8,9],"inv":"1st","rootSt":9},{"frets":[11,10,13,10],"inv":"2nd","rootSt":9},{"frets":[4,1,2,1],"inv":"3rd","rootSt":9}]}}};
+const OPEN_STR=[4,9,14,19,23,28];
+function getNote(ai,f){return(OPEN_STR[ai]+f)%12;}
+function nn(n){return['C','Db','D','Eb','E','F','Gb','G','Ab','A','Bb','B'][n];}
+const degMap={0:'1',1:'b2',2:'2',3:'b3',4:'3',5:'4',6:'b5',7:'5',8:'#5',9:'6',10:'b7',11:'7'};
+
+const DROP2_AI=[1,2,3,4];
+const DROP3_AI=[0,2,3,4];
+const CHORD_INFO={
+  'Min(maj7)':{formula:'1 b3 5 7',   ko:'단장7화음',ivs:[0,3,7,11]},
+  'Maj7#5':   {formula:'1 3 #5 7',   ko:'증장7화음',ivs:[0,4,8,11]},
+  'Maj7b5':   {formula:'1 3 b5 7',   ko:'장7(b5)',  ivs:[0,4,6,11]},
+  'Min7#5':   {formula:'1 b3 #5 b7', ko:'증단7',    ivs:[0,3,8,10]},
+  '7b5':      {formula:'1 3 b5 b7',  ko:'속7(b5)',  ivs:[0,4,6,10]},
+  'Dim(Maj7)':{formula:'1 b3 b5 7',  ko:'감장7화음',ivs:[0,3,6,11]},
+};
+const INV_LABELS=['근음 포지션','1전위','2전위','3전위'];
+const INV_SHORT=['Root','1st Inv','2nd Inv','3rd Inv'];
+const STR_NAMES=['e','B','G','D','A','E'];
+
+let currentKey='C', currentVoicing='drop2', currentViewMode='note';
+
+// 6줄 가로 지판 SVG (Level 5 voice-leading과 동일 엔진)
+function makeFretboardSVG(chordFrets, activeAI, rootSt, width=220) {
+  const activeSet=new Set(activeAI);
+  const activeFrets=chordFrets.filter(f=>f>0);
+  const startFret=0;
+  const maxF=activeFrets.length?Math.max(...activeFrets):4;
+  const endFret=Math.max(15,maxF+1);
+
+  const NUM_STR=6,SS=14,NR=6,FDOTR=2.5;
+  const LABEL_W=14,OPEN_W=18,NUT_W=5;
+  const padTop=12,padBot=20,padLeft=LABEL_W+OPEN_W+NUT_W+3,padRight=12;
+  const strAreaH=SS*(NUM_STR-1),totalH=padTop+strAreaH+padBot;
+  const numFrets=endFret-startFret;
+  const fretW=(width-padLeft-padRight)/numFrets;
+  const fretX=padLeft,nutX=fretX-NUT_W,openNoteX=nutX-OPEN_W/2;
+  const strY=row=>padTop+row*SS;
+  const toRow=si=>NUM_STR-1-si;
+  const FONT="'IBM Plex Mono',monospace";
+
+  let s=`<svg viewBox="0 0 ${width} ${totalH}" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:auto;display:block">`;
+  s+=`<rect width="${width}" height="${totalH}" fill="#ede7d9" rx="3"/>`;
+
+  // 포지션 마커
+  const dotY=padTop+strAreaH/2;
+  [3,5,7,9,12].forEach(fp=>{
+    if(fp>startFret&&fp<=endFret){
+      const cx=fretX+(fp-startFret-0.5)*fretW;
+      if(fp===12){s+=`<circle cx="${cx-fretW*.25}" cy="${dotY}" r="${FDOTR}" fill="#c8bfa8"/>`;s+=`<circle cx="${cx+fretW*.25}" cy="${dotY}" r="${FDOTR}" fill="#c8bfa8"/>`;}
+      else s+=`<circle cx="${cx}" cy="${dotY}" r="${FDOTR}" fill="#c8bfa8"/>`;
+    }
+  });
+
+  // 너트
+  s+=`<rect x="${nutX}" y="${strY(0)}" width="${NUT_W-1}" height="${strAreaH}" fill="#2c2820" rx="1"/>`;
+
+  // 프렛선
+  for(let f=1;f<=numFrets;f++)
+    s+=`<line x1="${fretX+f*fretW}" y1="${strY(0)}" x2="${fretX+f*fretW}" y2="${strY(5)}" stroke="#9a8f7a" stroke-width="1"/>`;
+
+  // 현선 + 라벨
+  for(let si=0;si<NUM_STR;si++){
+    const row=toRow(si),y=strY(row);
+    const isAct=activeSet.has(si);
+    const th=(0.6+((NUM_STR-1-si)/(NUM_STR-1))*1.6).toFixed(2);
+    s+=`<line x1="${nutX}" y1="${y}" x2="${width-padRight}" y2="${y}" stroke="${isAct?'#8b7355':'#d0c8b4'}" stroke-width="${isAct?th:th*.5}"/>`;
+    s+=`<text x="${LABEL_W/2}" y="${y}" font-family="${FONT}" font-size="8" fill="${isAct?'#9a9080':'#ccc8be'}" text-anchor="middle" dominant-baseline="middle">${STR_NAMES[row]}</text>`;
+  }
+
+  // 프렛 번호
+  for(let f=1;f<=numFrets;f++)
+    s+=`<text x="${fretX+(f-.5)*fretW}" y="${strY(5)+13}" font-family="${FONT}" font-size="7" fill="#9a9080" text-anchor="middle">${f+startFret}</text>`;
+
+  // 음표
+  activeAI.forEach((ai,i)=>{
+    const fret=chordFrets[i];
+    const row=toRow(ai),y=strY(row);
+    const x=fret===0?openNoteX:fretX+(fret-startFret-.5)*fretW;
+    const noteSt=((OPEN_STR[ai]+fret)%12+12)%12;
+    const noteNm=nn(noteSt);
+    const isRoot=noteSt===((rootSt%12)+12)%12;
+    const interval=(noteSt-rootSt+12)%12;
+    const label=currentViewMode==='degree'?degMap[interval]:noteNm;
+    const fill=isRoot?'#a63228':'#2c5f8a';
+    if(fret===0){
+      s+=`<circle cx="${openNoteX}" cy="${y}" r="${NR}" fill="#ede7d9" stroke="${fill}" stroke-width="1.5"/>`;
+      s+=`<text x="${openNoteX}" y="${y}" font-family="${FONT}" font-size="5" fill="${fill}" text-anchor="middle" dominant-baseline="middle" font-weight="600">${label}</text>`;
+    } else {
+      s+=`<circle cx="${x}" cy="${y}" r="${NR}" fill="${fill}"/>`;
+      s+=`<text x="${x}" y="${y}" font-family="${FONT}" font-size="${label.length>1?'4.5':'5.5'}" fill="#f5f0e8" text-anchor="middle" dominant-baseline="middle" font-weight="600">${label}</text>`;
+    }
+  });
+  s+=`</svg>`;
+  return s;
+}
+
+function render() {
+  const aiList = currentVoicing==='drop2'?DROP2_AI:DROP3_AI;
+  const strSetLabel = currentVoicing==='drop2'?'⑤④③②':'⑥④③②';
+  const keyData = FOURPART_DATA[currentKey];
+  const rootSt = {'C':0,'F':5,'Bb':10,'Eb':3,'G':7,'D':2,'A':9}[currentKey];
+
+  let html = `<div class="concept-box">
+    <h3>🎸 4성부 화음 All Inversions</h3>
+    <p><strong>Level 8 요구사항:</strong> Min(maj7)/Maj7♯5/Maj7♭5/Min7♯5/7♭5/Dim(Maj7) · All Keys · 각 코드당 4전위 (근음·1전위·2전위·3전위) 모두 구사<br>
+    Level 6는 학생 선택 키(1개)였지만, Level 8는 <strong>모든 키(All Keys)</strong>에서 <strong>전위 4가지를 모두</strong> 연주할 수 있어야 해요.<br>
+    <span style="color:var(--red,#a63228)">●</span> 빨강 = 루트음 &nbsp; <span style="color:var(--accent2)">●</span> 파랑 = 나머지 구성음</p>
+  </div>`;
+
+  Object.keys(CHORD_INFO).forEach(chord=>{
+    const info=CHORD_INFO[chord];
+    const chordData=keyData?.[chord]?.[currentVoicing];
+    if(!chordData)return;
+
+    const chordRootName = currentKey + chord;
+
+    html+=`<div class="chord-section">
+      <div class="chord-header">${chordRootName}</div>
+      <div class="chord-formula">${info.formula} &nbsp;·&nbsp; ${strSetLabel} 현 세트</div>
+      <div class="inv-grid">`;
+
+    chordData.forEach((form,inv)=>{
+      if(!form){
+        html+=`<div class="inv-card"><div class="inv-label">${INV_LABELS[inv]}<span>${INV_SHORT[inv]}</span></div><div class="inv-notes" style="padding:16px;color:var(--ink4);font-size:11px">이 포지션은 해당 현 세트에서 4프렛 이내로 연주하기 어렵습니다</div></div>`;
+        return;
+      }
+      const notes=aiList.map((ai,i)=>nn(((OPEN_STR[ai]+form.frets[i])%12+12)%12)).join('·');
+      const degs=aiList.map((ai,i)=>degMap[((OPEN_STR[ai]+form.frets[i])%12+12-rootSt+12)%12]).join('·');
+      const display=currentViewMode==='degree'?degs:notes;
+      html+=`<div class="inv-card">
+        <div class="inv-label">${INV_LABELS[inv]}<span>${INV_SHORT[inv]}</span></div>
+        <div class="inv-fb">${makeFretboardSVG(form.frets,aiList,rootSt,220)}</div>
+        <div class="inv-notes">${display}</div>
+      </div>`;
+    });
+
+    html+=`</div></div>`;
+  });
+
+  document.getElementById('fp-main').innerHTML=html;
+}
+
+function setKey(k,el){
+  currentKey=k;
+  document.querySelectorAll('[data-fp-key]').forEach(b=>b.classList.remove('active'));
+  el.classList.add('active');
+  render();
+}
+function setVoicing(v,el){
+  currentVoicing=v;
+  document.querySelectorAll('[data-fp-voicing]').forEach(b=>b.classList.remove('active'));
+  el.classList.add('active');
+  render();
+}
+function toggleView(el){
+  currentViewMode=currentViewMode==='note'?'degree':'note';
+  el.textContent=currentViewMode==='note'?'음이름':'도수';
+  el.classList.toggle('active',currentViewMode==='degree');
+  render();
+}
+
+render();
+
+window.FP_setKey     = setKey;
+window.FP_setVoicing = setVoicing;
+window.FP_toggleView = toggleView;
+
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,996 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Level VI — 기타 지판 학습 가이드</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans+KR:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+
+:root {
+  --bg:    #f5f0e8;
+  --bg2:   #ede7d9;
+  --bg3:   #e4dece;
+  --ink1:  #2c2820;
+  --ink2:  #4a3f33;
+  --ink3:  #6b6452;
+  --ink4:  #9a9080;
+  --accent:#7a4c2c;
+  --accent2:#2c5f8a;
+  --accent3:#4a7c4a;
+  --red:   #a63228;
+  --border:#c8bfa8;
+  --font-mono: 'IBM Plex Mono', monospace;
+  --font-kr:   'IBM Plex Sans KR', sans-serif;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { background: var(--bg); color: var(--ink1); font-family: var(--font-kr); }
+
+header {
+  background: var(--ink1);
+  color: #f5f0e8;
+  padding: 20px 32px;
+}
+header h1 { font-size: 22px; font-weight: 700; letter-spacing: -0.02em; }
+header p  { font-size: 12px; color: #a8a098; font-family: var(--font-mono); margin-top: 4px; }
+
+.tab-bar {
+  display: flex;
+  gap: 0;
+  background: var(--ink1);
+  padding: 0 32px;
+}
+.tab {
+  padding: 13px 24px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #a8a098;
+  cursor: pointer;
+  border-bottom: 3px solid transparent;
+  transition: all 0.15s;
+  letter-spacing: 0.01em;
+}
+.tab.active { color: #f5f0e8; border-bottom-color: var(--accent); }
+.tab:hover:not(.active) { color: #d8d0c8; }
+
+.controls {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  background: var(--bg2);
+  border-bottom: 2px solid var(--border);
+  padding: 0 32px;
+  flex-wrap: wrap;
+}
+.ctrl-group {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 20px 10px 0;
+  border-right: 1px solid var(--border);
+  margin-right: 20px;
+}
+.ctrl-group:last-child { border-right: none; }
+.ctrl-label {
+  font-size: 11px;
+  color: var(--ink4);
+  font-family: var(--font-mono);
+  letter-spacing: 0.05em;
+  white-space: nowrap;
+  margin-right: 4px;
+}
+.ctrl-btn {
+  padding: 7px 16px;
+  border-radius: 6px;
+  border: 1.5px solid var(--border);
+  background: var(--bg3);
+  color: var(--ink2);
+  font-size: 13px;
+  font-family: var(--font-kr);
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s;
+  white-space: nowrap;
+}
+.ctrl-btn:hover  { border-color: var(--accent); color: var(--accent); background: var(--bg); }
+.ctrl-btn.active { background: var(--accent); border-color: var(--accent); color: #fff; box-shadow: 0 2px 6px rgba(122,76,44,0.2); }
+.ctrl-sep { display: none; }
+
+/* ── 공통 콘텐츠 영역 ── */
+main { padding: 28px 32px; max-width: 1100px; }
+
+/* ══════════════════════════════════════════
+   방식 A — 시퀀스 뷰 (8코드 가로 나열)
+══════════════════════════════════════════ */
+#view-A { display: block; }
+#view-B { display: none; }
+
+.seq-title {
+  font-size: 13px;
+  font-family: var(--font-mono);
+  color: var(--ink3);
+  margin-bottom: 16px;
+}
+.seq-title strong { color: var(--accent); }
+
+.sequence-container {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.chord-card {
+  display: grid;
+  grid-template-columns: 140px 1fr;
+  align-items: center;
+  gap: 16px;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--border);
+  position: relative;
+}
+.chord-card:last-child { border-bottom: none; }
+
+/* 아래 방향 화살표 */
+.chord-card:not(:last-child)::after {
+  content: '▼';
+  position: absolute;
+  left: 60px;
+  bottom: -14px;
+  font-size: 12px;
+  color: var(--border);
+  z-index: 2;
+  line-height: 1;
+}
+
+.chord-name {
+  font-size: 13px;
+  font-family: var(--font-mono);
+  color: var(--ink2);
+  text-align: center;
+  line-height: 1.6;
+  padding: 8px;
+  background: var(--bg2);
+  border-radius: 8px;
+  border: 1px solid var(--border);
+}
+.chord-name strong { font-size: 18px; font-family: var(--font-kr); display: block; }
+.chord-name .quality { color: var(--ink4); font-size: 11px; }
+
+/* 미니 지판 SVG */
+.mini-fretboard { display: block; }
+
+.voice-path {
+  margin-top: 8px;
+  display: flex;
+  gap: 4px;
+  justify-content: center;
+}
+.vp-dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: var(--border);
+}
+.vp-dot.move-up    { background: #e06040; }
+.vp-dot.move-down  { background: var(--accent2); }
+.vp-dot.stay       { background: var(--accent3); }
+
+.move-legend {
+  display: flex;
+  gap: 16px;
+  margin-top: 16px;
+  font-size: 11px;
+  font-family: var(--font-mono);
+  color: var(--ink4);
+}
+.ml-item { display: flex; align-items: center; gap: 6px; }
+.ml-dot  { width: 10px; height: 10px; border-radius: 50%; }
+
+/* ══════════════════════════════════════════
+   방식 B — 스텝 인터랙티브
+══════════════════════════════════════════ */
+.step-container {
+  display: flex;
+  gap: 24px;
+  align-items: flex-start;
+}
+
+.step-left { flex: 1; min-width: 0; }
+.step-right { width: 280px; flex-shrink: 0; }
+
+.step-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+.step-counter {
+  font-size: 11px;
+  font-family: var(--font-mono);
+  color: var(--ink4);
+}
+.step-chord-name {
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--ink1);
+}
+.step-inv {
+  font-size: 12px;
+  font-family: var(--font-mono);
+  color: var(--ink4);
+  background: var(--bg3);
+  padding: 3px 8px;
+  border-radius: 4px;
+}
+
+.step-fretboard { margin-bottom: 20px; }
+
+.step-nav {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+.nav-btn {
+  padding: 10px 20px;
+  border-radius: 8px;
+  border: 2px solid var(--border);
+  background: var(--bg3);
+  color: var(--ink2);
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.15s;
+  font-family: var(--font-kr);
+}
+.nav-btn:hover:not(:disabled) { border-color: var(--accent); color: var(--accent); }
+.nav-btn:disabled { opacity: 0.35; cursor: default; }
+.nav-btn.primary { background: var(--accent); border-color: var(--accent); color: #fff; }
+.nav-btn.primary:hover { background: var(--ink2); border-color: var(--ink2); }
+
+.step-dots {
+  display: flex;
+  gap: 6px;
+  margin-left: auto;
+}
+.sdot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: var(--border);
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.sdot.active   { background: var(--accent); }
+.sdot.visited  { background: var(--accent3); }
+
+/* 오른쪽 패널: 변화 표시 */
+.change-panel {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 16px;
+}
+.cp-title {
+  font-size: 11px;
+  font-family: var(--font-mono);
+  color: var(--ink4);
+  margin-bottom: 12px;
+  letter-spacing: 0.05em;
+}
+.cp-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--border);
+  font-family: var(--font-mono);
+  font-size: 12px;
+}
+.cp-row:last-child { border-bottom: none; }
+.cp-string { color: var(--ink4); width: 20px; }
+.cp-from   { color: var(--ink2); width: 40px; text-align: right; }
+.cp-arrow  { color: var(--border); width: 16px; text-align: center; }
+.cp-to     { width: 40px; font-weight: 600; }
+.cp-note   { font-size: 10px; color: var(--ink4); margin-left: auto; }
+
+.change-badge {
+  display: inline-block;
+  padding: 1px 6px;
+  border-radius: 3px;
+  font-size: 10px;
+  font-family: var(--font-mono);
+}
+.badge-stay  { background: #d4e8d4; color: #2a5a2a; }
+.badge-up    { background: #f8d4c8; color: #8a2a1a; }
+.badge-down  { background: #c8d8f0; color: #1a3a6a; }
+
+.seq-scroll-hint {
+  font-size: 10px;
+  font-family: var(--font-mono);
+  color: var(--ink4);
+  margin-top: 8px;
+  text-align: right;
+}
+
+/* ── 4성부 화음 전용 ── */
+
+
+*{box-sizing:border-box;margin:0;padding:0;}
+
+
+
+
+
+
+
+
+
+
+
+main{padding:28px 32px;max-width:1100px;}
+.concept-box{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:18px 22px;margin-bottom:24px;}
+.concept-box h3{font-size:15px;font-weight:700;color:var(--ink1);margin-bottom:10px;}
+.concept-box p{font-size:13px;color:var(--ink3);line-height:1.8;}
+.chord-section{margin-bottom:32px;}
+.chord-
+.chord-formula{font-size:12px;font-family:var(--font-mono);color:var(--ink4);margin-bottom:16px;margin-top:4px;}
+.inv-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;}
+.inv-card{background:var(--bg2);border:1px solid var(--border);border-radius:8px;overflow:hidden;}
+.inv-label{padding:8px 12px;font-size:12px;font-family:var(--font-mono);font-weight:600;color:var(--ink2);background:var(--bg3);border-bottom:1px solid var(--border);}
+.inv-label span{font-size:10px;color:var(--ink4);font-weight:400;margin-left:6px;}
+.inv-fb{padding:8px;}
+.inv-notes{padding:6px 12px 10px;font-size:11px;font-family:var(--font-mono);color:var(--ink3);}
+
+/* ── 탭 전환 ── */
+.page { display: none; }
+.page.active { display: block; }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Level VI <em>— 기타 지판 학습 가이드</em></h1>
+  <p>Berklee Guitar Proficiency · 노션기타 Notion GTR 2.0</p>
+</header>
+
+<!-- 메인 탭 -->
+<div style="display:flex;gap:0;background:var(--ink1);padding:0 32px;">
+  <div id="tab-vl" style="padding:13px 24px;font-size:13px;font-weight:600;color:#f5f0e8;cursor:pointer;border-bottom:3px solid var(--accent);transition:all 0.15s;letter-spacing:0.01em;" onclick="switchTab('vl')">🎸 3화음 보이스 리딩</div>
+  <div id="tab-fp" style="padding:13px 24px;font-size:13px;font-weight:600;color:#a8a098;cursor:pointer;border-bottom:3px solid transparent;transition:all 0.15s;letter-spacing:0.01em;" onclick="switchTab('fp')">🎵 4성부 화음</div>
+</div>
+
+<!-- 3화음 보이스 리딩 페이지 -->
+<div id="page-vl" class="page active">
+<div class="controls">
+  <div class="ctrl-group">
+    <span class="ctrl-label">KEY</span>
+    <button class="ctrl-btn active" data-vl-key onclick="VL_setKey('C', this)">C</button>
+    <button class="ctrl-btn" data-vl-key onclick="VL_setKey('F', this)">F</button>
+    <button class="ctrl-btn" data-vl-key onclick="VL_setKey('Bb', this)">B♭</button>
+    <button class="ctrl-btn" data-vl-key onclick="VL_setKey('Eb', this)">E♭</button>
+    <button class="ctrl-btn" data-vl-key onclick="VL_setKey('G', this)">G</button>
+    <button class="ctrl-btn" data-vl-key onclick="VL_setKey('D', this)">D</button>
+    <button class="ctrl-btn" data-vl-key onclick="VL_setKey('A', this)">A</button>
+  </div>
+  <div class="ctrl-group">
+    <span class="ctrl-label">CYCLE</span>
+    <button class="ctrl-btn active" data-vl-cycle onclick="VL_setCycle(2, this)">Cycle 2 <span style="font-weight:400;font-size:11px;opacity:0.7">(2도씩)</span></button>
+    <button class="ctrl-btn" data-vl-cycle onclick="VL_setCycle(6, this)">Cycle 6 <span style="font-weight:400;font-size:11px;opacity:0.7">(6도씩)</span></button>
+  </div>
+  <div class="ctrl-group">
+    <span class="ctrl-label">보이싱</span>
+    <button class="ctrl-btn active" data-vl-voicing onclick="VL_setVoicing('close', this)">Close ③②①</button>
+    <button class="ctrl-btn" data-vl-voicing onclick="VL_setVoicing('spread643', this)">Spread ⑥④③</button>
+    <button class="ctrl-btn" data-vl-voicing onclick="VL_setVoicing('spread542', this)">Spread ⑤④②</button>
+  </div>
+  <div class="ctrl-group">
+    <span class="ctrl-label">시작 전위</span>
+    <button class="ctrl-btn active" data-vl-inv onclick="VL_setInvPos('root', this)">근음</button>
+    <button class="ctrl-btn" data-vl-inv onclick="VL_setInvPos('1st', this)">1전위</button>
+    <button class="ctrl-btn" data-vl-inv onclick="VL_setInvPos('2nd', this)">2전위</button>
+  </div>
+  <div class="ctrl-group">
+    <span class="ctrl-label">표시</span>
+    <button class="ctrl-btn" data-vl-view onclick="VL_toggleViewMode(this)">음이름</button>
+  </div>
+</div>
+
+<main>
+  <!-- 방식 A -->
+  <div id="view-A">
+
+    <!-- 개념 설명 박스 -->
+    <div style="background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:18px 22px;margin-bottom:24px;">
+      <div style="font-size:15px;font-family:var(--font-kr);font-weight:700;color:var(--ink1);margin-bottom:10px;">
+        🎸 다이아토닉 트라이어드 보이스 리딩이란?
+      </div>
+      <div style="font-size:13px;color:var(--ink3);line-height:1.8;font-family:var(--font-kr);">
+        <strong style="color:var(--ink1)">C Melodic Minor 다이아토닉 3화음</strong> — 다 멜로딕 마이너 안에 존재하는 7개의 3화음이에요:
+        <span style="font-family:var(--font-mono);background:var(--bg3);padding:2px 8px;border-radius:4px;margin:0 4px;font-size:12px">Cm · Dm · Ebaug · F · G · Adim · Bdim</span>
+      </div>
+      <div style="font-size:13px;color:var(--ink3);line-height:1.8;font-family:var(--font-kr);margin-top:8px;">
+        <strong style="color:var(--ink1)">보이스 리딩(Voice-leading)</strong>이란 코드가 바뀔 때 각 성부(음)가 <strong style="color:var(--accent)">최소한으로 이동</strong>하며 자연스럽게 연결되는 것이에요.
+        코드 폼을 통째로 바꾸는 게 아니라, 한두 음만 조금씩 움직여서 다음 코드로 넘어가요.
+      </div>
+      <div style="font-size:13px;color:var(--ink3);line-height:1.8;font-family:var(--font-kr);margin-top:8px;">
+        <strong style="color:var(--ink1)">사이클(Cycle)</strong>은 근음이 이동하는 방향이에요.
+        Cycle 2는 2도씩 (<span style="font-family:var(--font-mono);font-size:12px">Cm→Dm→Ebaug→F→G→Adim→Bdim→Cm</span>),
+        Cycle 6는 6도씩 (<span style="font-family:var(--font-mono);font-size:12px">Cm→Adim→F→Dm→Bdim→G→Ebaug→Cm</span>) 이동해요.
+      </div>
+      <div style="margin-top:10px;padding-top:10px;border-top:1px solid var(--border);font-size:12px;color:var(--ink4);font-family:var(--font-mono);">
+        📌 <strong style="color:var(--ink2)">스케일:</strong> Melodic Minor 3옥타브 · Whole-tone 3옥타브 (all keys) — Level II 스케일의 심화(3옥타브 확장)예요.
+      </div>
+      <div style="margin-top:12px;padding-top:12px;border-top:1px solid var(--border);display:flex;gap:16px;flex-wrap:wrap;">
+        <div style="display:flex;align-items:center;gap:6px;font-size:12px;font-family:var(--font-mono);color:var(--ink3)">
+          <div style="width:12px;height:12px;border-radius:50%;background:#4a7c4a"></div>유지 — 공통음 (손가락 그대로)
+        </div>
+        <div style="display:flex;align-items:center;gap:6px;font-size:12px;font-family:var(--font-mono);color:var(--ink3)">
+          <div style="width:12px;height:12px;border-radius:50%;background:#c04030"></div>상행 ↑ — 프렛 올라감
+        </div>
+        <div style="display:flex;align-items:center;gap:6px;font-size:12px;font-family:var(--font-mono);color:var(--ink3)">
+          <div style="width:12px;height:12px;border-radius:50%;background:#2c5f8a"></div>하행 ↓ — 프렛 내려감
+        </div>
+      </div>
+    </div>
+
+    <div class="seq-title">
+      <strong id="A-title">C Major · Cycle 3 · 근음 포지션 시작</strong>
+      · ③②① 현 세트 · Close Voicing
+    </div>
+    <div class="sequence-container" id="seq-container"></div>
+    <div class="seq-scroll-hint">← 스크롤하여 전체 보기 →</div>
+  </div>
+
+  <!-- 방식 B -->
+  <div id="view-B">
+    <div class="step-container">
+      <div class="step-left">
+        <div class="step-header">
+          <span class="step-counter" id="B-counter">1 / 8</span>
+          <span class="step-chord-name" id="B-chordname">C</span>
+          <span class="step-inv" id="B-inv">근음 포지션</span>
+        </div>
+        <div class="step-fretboard" id="B-fretboard"></div>
+        <div class="step-nav">
+          <button class="nav-btn" id="btn-prev" onclick="stepNav(-1)" disabled>← 이전</button>
+          <button class="nav-btn primary" id="btn-next" onclick="stepNav(1)">다음 →</button>
+          <div class="step-dots" id="step-dots"></div>
+        </div>
+      </div>
+      <div class="step-right">
+        <div class="change-panel" id="change-panel">
+          <div class="cp-title">성부 변화</div>
+          <div id="cp-rows"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+</div>
+
+<!-- 4성부 화음 페이지 -->
+<div id="page-fp" class="page">
+<div class="controls">
+  <div class="ctrl-group">
+    <span class="ctrl-label">KEY</span>
+    <button class="ctrl-btn active" data-fp-key onclick="FP_setKey('C',this)">C</button>
+    <button class="ctrl-btn" data-fp-key onclick="FP_setKey('F',this)">F</button>
+    <button class="ctrl-btn" data-fp-key onclick="FP_setKey('Bb',this)">B♭</button>
+    <button class="ctrl-btn" data-fp-key onclick="FP_setKey('Eb',this)">E♭</button>
+    <button class="ctrl-btn" data-fp-key onclick="FP_setKey('G',this)">G</button>
+    <button class="ctrl-btn" data-fp-key onclick="FP_setKey('D',this)">D</button>
+    <button class="ctrl-btn" data-fp-key onclick="FP_setKey('A',this)">A</button>
+  </div>
+  <div class="ctrl-group">
+    <span class="ctrl-label">보이싱</span>
+    <button class="ctrl-btn active" data-fp-voicing onclick="FP_setVoicing('drop2',this)">Drop 2 ⑤④③②</button>
+    <button class="ctrl-btn" data-fp-voicing onclick="FP_setVoicing('drop3',this)">Drop 3 ⑥④③②</button>
+  </div>
+  <div class="ctrl-group">
+    <span class="ctrl-label">표시</span>
+    <button class="ctrl-btn" data-fp-view onclick="FP_toggleView(this)">음이름</button>
+  </div>
+</div>
+<main id="fp-main"></main>
+</div>
+
+<script>
+// ── 탭 전환 ──────────────────────────────────
+function switchTab(tab) {
+  document.getElementById('page-vl').classList.toggle('active', tab==='vl');
+  document.getElementById('page-fp').classList.toggle('active', tab==='fp');
+  const tabVl = document.getElementById('tab-vl');
+  const tabFp = document.getElementById('tab-fp');
+  tabVl.style.color = tab==='vl'?'#f5f0e8':'#a8a098';
+  tabVl.style.borderBottomColor = tab==='vl'?'var(--accent)':'transparent';
+  tabFp.style.color = tab==='fp'?'#f5f0e8':'#a8a098';
+  tabFp.style.borderBottomColor = tab==='fp'?'var(--accent)':'transparent';
+}
+
+// ── 3화음 보이스 리딩 스크립트 ────────────────
+(function() {
+
+// ══ 데이터 ══════════════════════════════════════════
+const OPEN_STR = [4,9,14,19,23,28]; // E A D G B e
+function getNote(ai,f){return(OPEN_STR[ai]+f)%12;}
+const NOTE_NAMES = ['C','C#','D','Eb','E','F','F#','G','Ab','A','Bb','B'];
+function nn(n){return NOTE_NAMES[(n+12)%12];}
+
+// G현=ai3, B현=ai4, e현=ai5
+const STR_IDXS = [3,4,5]; // ③②① 현
+
+const ALL_KEYS_DATA = {"C": {"cycle2": {"close_root": [{"name": "Cm", "inv": "Root", "frets": [5, 4, 3], "rootSt": 0}, {"name": "Dm", "inv": "Root", "frets": [7, 6, 5], "rootSt": 2}, {"name": "Ebaug", "inv": "Root", "frets": [8, 8, 7], "rootSt": 3}, {"name": "F", "inv": "Root", "frets": [10, 10, 8], "rootSt": 5}, {"name": "G", "inv": "Root", "frets": [12, 12, 10], "rootSt": 7}, {"name": "Adim", "inv": "Root", "frets": [14, 13, 11], "rootSt": 9}, {"name": "Bdim", "inv": "2nd", "frets": [10, 12, 10], "rootSt": 11}, {"name": "Cm", "inv": "2nd", "frets": [12, 13, 11], "rootSt": 0}], "close_1st": [{"name": "Cm", "inv": "1st", "frets": [8, 8, 8], "rootSt": 0}, {"name": "Dm", "inv": "Root", "frets": [7, 6, 5], "rootSt": 2}, {"name": "Ebaug", "inv": "Root", "frets": [8, 8, 7], "rootSt": 3}, {"name": "F", "inv": "Root", "frets": [10, 10, 8], "rootSt": 5}, {"name": "G", "inv": "Root", "frets": [12, 12, 10], "rootSt": 7}, {"name": "Adim", "inv": "Root", "frets": [14, 13, 11], "rootSt": 9}, {"name": "Bdim", "inv": "2nd", "frets": [10, 12, 10], "rootSt": 11}, {"name": "Cm", "inv": "2nd", "frets": [12, 13, 11], "rootSt": 0}], "close_2nd": [{"name": "Cm", "inv": "2nd", "frets": [12, 13, 11], "rootSt": 0}, {"name": "Dm", "inv": "1st", "frets": [10, 10, 10], "rootSt": 2}, {"name": "Ebaug", "inv": "1st", "frets": [12, 12, 11], "rootSt": 3}, {"name": "F", "inv": "Root", "frets": [10, 10, 8], "rootSt": 5}, {"name": "G", "inv": "Root", "frets": [12, 12, 10], "rootSt": 7}, {"name": "Adim", "inv": "Root", "frets": [14, 13, 11], "rootSt": 9}, {"name": "Bdim", "inv": "2nd", "frets": [10, 12, 10], "rootSt": 11}, {"name": "Cm", "inv": "2nd", "frets": [12, 13, 11], "rootSt": 0}], "spread643_root": [{"name": "Cm", "inv": "Root", "frets": [8, 5, 8], "rootSt": 0}, {"name": "Dm", "inv": "Root", "frets": [10, 7, 10], "rootSt": 2}, {"name": "Ebaug", "inv": "Root", "frets": [11, 9, 12], "rootSt": 3}, {"name": "F", "inv": "Root", "frets": [13, 10, 14], "rootSt": 5}, {"name": "G", "inv": "2nd", "frets": [10, 9, 12], "rootSt": 7}, {"name": "Adim", "inv": "2nd", "frets": [11, 10, 14], "rootSt": 9}, {"name": "Bdim", "inv": "1st", "frets": [10, 9, 10], "rootSt": 11}, {"name": "Cm", "inv": "1st", "frets": [11, 10, 12], "rootSt": 0}], "spread643_1st": [{"name": "Cm", "inv": "1st", "frets": [11, 10, 12], "rootSt": 0}, {"name": "Dm", "inv": "Root", "frets": [10, 7, 10], "rootSt": 2}, {"name": "Ebaug", "inv": "Root", "frets": [11, 9, 12], "rootSt": 3}, {"name": "F", "inv": "Root", "frets": [13, 10, 14], "rootSt": 5}, {"name": "G", "inv": "2nd", "frets": [10, 9, 12], "rootSt": 7}, {"name": "Adim", "inv": "2nd", "frets": [11, 10, 14], "rootSt": 9}, {"name": "Bdim", "inv": "1st", "frets": [10, 9, 10], "rootSt": 11}, {"name": "Cm", "inv": "1st", "frets": [11, 10, 12], "rootSt": 0}], "spread643_2nd": [{"name": "Cm", "inv": "2nd", "frets": [3, 1, 5], "rootSt": 0}, {"name": "Dm", "inv": "1st", "frets": [1, 0, 2], "rootSt": 2}, {"name": "Ebaug", "inv": "1st", "frets": [3, 1, 4], "rootSt": 3}, {"name": "F", "inv": "1st", "frets": [5, 3, 5], "rootSt": 5}, {"name": "G", "inv": "Root", "frets": [3, 0, 4], "rootSt": 7}, {"name": "Adim", "inv": "Root", "frets": [5, 1, 5], "rootSt": 9}, {"name": "Bdim", "inv": "Root", "frets": [7, 3, 7], "rootSt": 11}, {"name": "Cm", "inv": "Root", "frets": [8, 5, 8], "rootSt": 0}], "spread542_root": [{"name": "Cm", "inv": "Root", "frets": [3, 5, 4], "rootSt": 0}, {"name": "Dm", "inv": "Root", "frets": [5, 7, 6], "rootSt": 2}, {"name": "Ebaug", "inv": "Root", "frets": [6, 9, 8], "rootSt": 3}, {"name": "F", "inv": "Root", "frets": [8, 10, 10], "rootSt": 5}, {"name": "G", "inv": "Root", "frets": [10, 12, 12], "rootSt": 7}, {"name": "Adim", "inv": "2nd", "frets": [6, 10, 10], "rootSt": 9}, {"name": "Bdim", "inv": "1st", "frets": [5, 9, 6], "rootSt": 11}, {"name": "Cm", "inv": "1st", "frets": [6, 10, 8], "rootSt": 0}], "spread542_1st": [{"name": "Cm", "inv": "1st", "frets": [6, 10, 8], "rootSt": 0}, {"name": "Dm", "inv": "Root", "frets": [5, 7, 6], "rootSt": 2}, {"name": "Ebaug", "inv": "Root", "frets": [6, 9, 8], "rootSt": 3}, {"name": "F", "inv": "Root", "frets": [8, 10, 10], "rootSt": 5}, {"name": "G", "inv": "Root", "frets": [10, 12, 12], "rootSt": 7}, {"name": "Adim", "inv": "2nd", "frets": [6, 10, 10], "rootSt": 9}, {"name": "Bdim", "inv": "1st", "frets": [5, 9, 6], "rootSt": 11}, {"name": "Cm", "inv": "1st", "frets": [6, 10, 8], "rootSt": 0}], "spread542_2nd": [{"name": "Cm", "inv": "2nd", "frets": [10, 13, 13], "rootSt": 0}, {"name": "Dm", "inv": "1st", "frets": [8, 12, 10], "rootSt": 2}, {"name": "Ebaug", "inv": "1st", "frets": [10, 13, 12], "rootSt": 3}, {"name": "F", "inv": "Root", "frets": [8, 10, 10], "rootSt": 5}, {"name": "G", "inv": "Root", "frets": [10, 12, 12], "rootSt": 7}, {"name": "Adim", "inv": "2nd", "frets": [6, 10, 10], "rootSt": 9}, {"name": "Bdim", "inv": "1st", "frets": [5, 9, 6], "rootSt": 11}, {"name": "Cm", "inv": "1st", "frets": [6, 10, 8], "rootSt": 0}]}, "cycle6": {"close_root": [{"name": "Cm", "inv": "Root", "frets": [5, 4, 3], "rootSt": 0}, {"name": "Adim", "inv": "1st", "frets": [5, 4, 5], "rootSt": 9}, {"name": "F", "inv": "2nd", "frets": [5, 6, 5], "rootSt": 5}, {"name": "Dm", "inv": "Root", "frets": [7, 6, 5], "rootSt": 2}, {"name": "Bdim", "inv": "1st", "frets": [7, 6, 7], "rootSt": 11}, {"name": "G", "inv": "2nd", "frets": [7, 8, 7], "rootSt": 7}, {"name": "Ebaug", "inv": "Root", "frets": [8, 8, 7], "rootSt": 3}, {"name": "Cm", "inv": "1st", "frets": [8, 8, 8], "rootSt": 0}], "close_1st": [{"name": "Cm", "inv": "1st", "frets": [8, 8, 8], "rootSt": 0}, {"name": "Adim", "inv": "2nd", "frets": [8, 10, 8], "rootSt": 9}, {"name": "F", "inv": "Root", "frets": [10, 10, 8], "rootSt": 5}, {"name": "Dm", "inv": "1st", "frets": [10, 10, 10], "rootSt": 2}, {"name": "Bdim", "inv": "2nd", "frets": [10, 12, 10], "rootSt": 11}, {"name": "G", "inv": "Root", "frets": [12, 12, 10], "rootSt": 7}, {"name": "Ebaug", "inv": "1st", "frets": [12, 12, 11], "rootSt": 3}, {"name": "Cm", "inv": "2nd", "frets": [12, 13, 11], "rootSt": 0}], "close_2nd": [{"name": "Cm", "inv": "2nd", "frets": [12, 13, 11], "rootSt": 0}, {"name": "Adim", "inv": "Root", "frets": [14, 13, 11], "rootSt": 9}, {"name": "F", "inv": "Root", "frets": [10, 10, 8], "rootSt": 5}, {"name": "Dm", "inv": "1st", "frets": [10, 10, 10], "rootSt": 2}, {"name": "Bdim", "inv": "2nd", "frets": [10, 12, 10], "rootSt": 11}, {"name": "G", "inv": "Root", "frets": [12, 12, 10], "rootSt": 7}, {"name": "Ebaug", "inv": "1st", "frets": [12, 12, 11], "rootSt": 3}, {"name": "Cm", "inv": "2nd", "frets": [12, 13, 11], "rootSt": 0}], "spread643_root": [{"name": "Cm", "inv": "Root", "frets": [8, 5, 8], "rootSt": 0}, {"name": "Adim", "inv": "1st", "frets": [8, 7, 8], "rootSt": 9}, {"name": "F", "inv": "2nd", "frets": [8, 7, 10], "rootSt": 5}, {"name": "Dm", "inv": "Root", "frets": [10, 7, 10], "rootSt": 2}, {"name": "Bdim", "inv": "1st", "frets": [10, 9, 10], "rootSt": 11}, {"name": "G", "inv": "2nd", "frets": [10, 9, 12], "rootSt": 7}, {"name": "Ebaug", "inv": "Root", "frets": [11, 9, 12], "rootSt": 3}, {"name": "Cm", "inv": "1st", "frets": [11, 10, 12], "rootSt": 0}], "spread643_1st": [{"name": "Cm", "inv": "1st", "frets": [11, 10, 12], "rootSt": 0}, {"name": "Adim", "inv": "2nd", "frets": [11, 10, 14], "rootSt": 9}, {"name": "F", "inv": "Root", "frets": [13, 10, 14], "rootSt": 5}, {"name": "Dm", "inv": "Root", "frets": [10, 7, 10], "rootSt": 2}, {"name": "Bdim", "inv": "1st", "frets": [10, 9, 10], "rootSt": 11}, {"name": "G", "inv": "2nd", "frets": [10, 9, 12], "rootSt": 7}, {"name": "Ebaug", "inv": "Root", "frets": [11, 9, 12], "rootSt": 3}, {"name": "Cm", "inv": "1st", "frets": [11, 10, 12], "rootSt": 0}], "spread643_2nd": [{"name": "Cm", "inv": "2nd", "frets": [3, 1, 5], "rootSt": 0}, {"name": "Adim", "inv": "Root", "frets": [5, 1, 5], "rootSt": 9}, {"name": "F", "inv": "1st", "frets": [5, 3, 5], "rootSt": 5}, {"name": "Dm", "inv": "2nd", "frets": [5, 3, 7], "rootSt": 2}, {"name": "Bdim", "inv": "Root", "frets": [7, 3, 7], "rootSt": 11}, {"name": "G", "inv": "1st", "frets": [7, 5, 7], "rootSt": 7}, {"name": "Ebaug", "inv": "2nd", "frets": [7, 5, 8], "rootSt": 3}, {"name": "Cm", "inv": "Root", "frets": [8, 5, 8], "rootSt": 0}], "spread542_root": [{"name": "Cm", "inv": "Root", "frets": [3, 5, 4], "rootSt": 0}, {"name": "Adim", "inv": "1st", "frets": [3, 7, 4], "rootSt": 9}, {"name": "F", "inv": "2nd", "frets": [3, 7, 6], "rootSt": 5}, {"name": "Dm", "inv": "Root", "frets": [5, 7, 6], "rootSt": 2}, {"name": "Bdim", "inv": "1st", "frets": [5, 9, 6], "rootSt": 11}, {"name": "G", "inv": "2nd", "frets": [5, 9, 8], "rootSt": 7}, {"name": "Ebaug", "inv": "Root", "frets": [6, 9, 8], "rootSt": 3}, {"name": "Cm", "inv": "1st", "frets": [6, 10, 8], "rootSt": 0}], "spread542_1st": [{"name": "Cm", "inv": "1st", "frets": [6, 10, 8], "rootSt": 0}, {"name": "Adim", "inv": "2nd", "frets": [6, 10, 10], "rootSt": 9}, {"name": "F", "inv": "Root", "frets": [8, 10, 10], "rootSt": 5}, {"name": "Dm", "inv": "1st", "frets": [8, 12, 10], "rootSt": 2}, {"name": "Bdim", "inv": "2nd", "frets": [8, 12, 12], "rootSt": 11}, {"name": "G", "inv": "Root", "frets": [10, 12, 12], "rootSt": 7}, {"name": "Ebaug", "inv": "1st", "frets": [10, 13, 12], "rootSt": 3}, {"name": "Cm", "inv": "2nd", "frets": [10, 13, 13], "rootSt": 0}], "spread542_2nd": [{"name": "Cm", "inv": "2nd", "frets": [10, 13, 13], "rootSt": 0}, {"name": "Adim", "inv": "2nd", "frets": [6, 10, 10], "rootSt": 9}, {"name": "F", "inv": "Root", "frets": [8, 10, 10], "rootSt": 5}, {"name": "Dm", "inv": "1st", "frets": [8, 12, 10], "rootSt": 2}, {"name": "Bdim", "inv": "2nd", "frets": [8, 12, 12], "rootSt": 11}, {"name": "G", "inv": "Root", "frets": [10, 12, 12], "rootSt": 7}, {"name": "Ebaug", "inv": "1st", "frets": [10, 13, 12], "rootSt": 3}, {"name": "Cm", "inv": "2nd", "frets": [10, 13, 13], "rootSt": 0}]}}, "F": {"cycle2": {"close_root": [{"name": "Fm", "inv": "Root", "frets": [10, 9, 8], "rootSt": 5}, {"name": "Gm", "inv": "Root", "frets": [12, 11, 10], "rootSt": 7}, {"name": "Abaug", "inv": "Root", "frets": [13, 13, 12], "rootSt": 8}, {"name": "Bb", "inv": "2nd", "frets": [10, 11, 10], "rootSt": 10}, {"name": "C", "inv": "1st", "frets": [9, 8, 8], "rootSt": 0}, {"name": "Ddim", "inv": "1st", "frets": [10, 9, 10], "rootSt": 2}, {"name": "Edim", "inv": "Root", "frets": [9, 8, 6], "rootSt": 4}, {"name": "Fm", "inv": "Root", "frets": [10, 9, 8], "rootSt": 5}], "close_1st": [{"name": "Fm", "inv": "1st", "frets": [1, 1, 1], "rootSt": 5}, {"name": "Gm", "inv": "1st", "frets": [3, 3, 3], "rootSt": 7}, {"name": "Abaug", "inv": "1st", "frets": [5, 5, 4], "rootSt": 8}, {"name": "Bb", "inv": "1st", "frets": [7, 6, 6], "rootSt": 10}, {"name": "C", "inv": "Root", "frets": [5, 5, 3], "rootSt": 0}, {"name": "Ddim", "inv": "Root", "frets": [7, 6, 4], "rootSt": 2}, {"name": "Edim", "inv": "Root", "frets": [9, 8, 6], "rootSt": 4}, {"name": "Fm", "inv": "Root", "frets": [10, 9, 8], "rootSt": 5}], "close_2nd": [{"name": "Fm", "inv": "2nd", "frets": [5, 6, 4], "rootSt": 5}, {"name": "Gm", "inv": "1st", "frets": [3, 3, 3], "rootSt": 7}, {"name": "Abaug", "inv": "1st", "frets": [5, 5, 4], "rootSt": 8}, {"name": "Bb", "inv": "1st", "frets": [7, 6, 6], "rootSt": 10}, {"name": "C", "inv": "Root", "frets": [5, 5, 3], "rootSt": 0}, {"name": "Ddim", "inv": "Root", "frets": [7, 6, 4], "rootSt": 2}, {"name": "Edim", "inv": "Root", "frets": [9, 8, 6], "rootSt": 4}, {"name": "Fm", "inv": "Root", "frets": [10, 9, 8], "rootSt": 5}], "spread643_root": [{"name": "Fm", "inv": "Root", "frets": [13, 10, 13], "rootSt": 5}, {"name": "Gm", "inv": "2nd", "frets": [10, 8, 12], "rootSt": 7}, {"name": "Abaug", "inv": "2nd", "frets": [12, 10, 13], "rootSt": 8}, {"name": "Bb", "inv": "1st", "frets": [10, 8, 10], "rootSt": 10}, {"name": "C", "inv": "Root", "frets": [8, 5, 9], "rootSt": 0}, {"name": "Ddim", "inv": "Root", "frets": [10, 6, 10], "rootSt": 2}, {"name": "Edim", "inv": "Root", "frets": [12, 8, 12], "rootSt": 4}, {"name": "Fm", "inv": "Root", "frets": [13, 10, 13], "rootSt": 5}], "spread643_1st": [{"name": "Fm", "inv": "1st", "frets": [4, 3, 5], "rootSt": 5}, {"name": "Gm", "inv": "Root", "frets": [3, 0, 3], "rootSt": 7}, {"name": "Abaug", "inv": "Root", "frets": [4, 2, 5], "rootSt": 8}, {"name": "Bb", "inv": "Root", "frets": [6, 3, 7], "rootSt": 10}, {"name": "C", "inv": "Root", "frets": [8, 5, 9], "rootSt": 0}, {"name": "Ddim", "inv": "Root", "frets": [10, 6, 10], "rootSt": 2}, {"name": "Edim", "inv": "Root", "frets": [12, 8, 12], "rootSt": 4}, {"name": "Fm", "inv": "Root", "frets": [13, 10, 13], "rootSt": 5}], "spread643_2nd": [{"name": "Fm", "inv": "2nd", "frets": [8, 6, 10], "rootSt": 5}, {"name": "Gm", "inv": "1st", "frets": [6, 5, 7], "rootSt": 7}, {"name": "Abaug", "inv": "1st", "frets": [8, 6, 9], "rootSt": 8}, {"name": "Bb", "inv": "1st", "frets": [10, 8, 10], "rootSt": 10}, {"name": "C", "inv": "Root", "frets": [8, 5, 9], "rootSt": 0}, {"name": "Ddim", "inv": "Root", "frets": [10, 6, 10], "rootSt": 2}, {"name": "Edim", "inv": "Root", "frets": [12, 8, 12], "rootSt": 4}, {"name": "Fm", "inv": "Root", "frets": [13, 10, 13], "rootSt": 5}], "spread542_root": [{"name": "Fm", "inv": "Root", "frets": [8, 10, 9], "rootSt": 5}, {"name": "Gm", "inv": "Root", "frets": [10, 12, 11], "rootSt": 7}, {"name": "Abaug", "inv": "Root", "frets": [11, 14, 13], "rootSt": 8}, {"name": "Bb", "inv": "2nd", "frets": [8, 12, 11], "rootSt": 10}, {"name": "C", "inv": "1st", "frets": [7, 10, 8], "rootSt": 0}, {"name": "Ddim", "inv": "1st", "frets": [8, 12, 9], "rootSt": 2}, {"name": "Edim", "inv": "Root", "frets": [7, 8, 8], "rootSt": 4}, {"name": "Fm", "inv": "Root", "frets": [8, 10, 9], "rootSt": 5}], "spread542_1st": [{"name": "Fm", "inv": "1st", "frets": [11, 15, 13], "rootSt": 5}, {"name": "Gm", "inv": "Root", "frets": [10, 12, 11], "rootSt": 7}, {"name": "Abaug", "inv": "Root", "frets": [11, 14, 13], "rootSt": 8}, {"name": "Bb", "inv": "2nd", "frets": [8, 12, 11], "rootSt": 10}, {"name": "C", "inv": "1st", "frets": [7, 10, 8], "rootSt": 0}, {"name": "Ddim", "inv": "1st", "frets": [8, 12, 9], "rootSt": 2}, {"name": "Edim", "inv": "Root", "frets": [7, 8, 8], "rootSt": 4}, {"name": "Fm", "inv": "Root", "frets": [8, 10, 9], "rootSt": 5}], "spread542_2nd": [{"name": "Fm", "inv": "2nd", "frets": [3, 6, 6], "rootSt": 5}, {"name": "Gm", "inv": "1st", "frets": [1, 5, 3], "rootSt": 7}, {"name": "Abaug", "inv": "1st", "frets": [3, 6, 5], "rootSt": 8}, {"name": "Bb", "inv": "1st", "frets": [5, 8, 6], "rootSt": 10}, {"name": "C", "inv": "Root", "frets": [3, 5, 5], "rootSt": 0}, {"name": "Ddim", "inv": "Root", "frets": [5, 6, 6], "rootSt": 2}, {"name": "Edim", "inv": "Root", "frets": [7, 8, 8], "rootSt": 4}, {"name": "Fm", "inv": "Root", "frets": [8, 10, 9], "rootSt": 5}]}, "cycle6": {"close_root": [{"name": "Fm", "inv": "Root", "frets": [10, 9, 8], "rootSt": 5}, {"name": "Ddim", "inv": "1st", "frets": [10, 9, 10], "rootSt": 2}, {"name": "Bb", "inv": "2nd", "frets": [10, 11, 10], "rootSt": 10}, {"name": "Gm", "inv": "Root", "frets": [12, 11, 10], "rootSt": 7}, {"name": "Edim", "inv": "1st", "frets": [12, 11, 12], "rootSt": 4}, {"name": "C", "inv": "2nd", "frets": [12, 13, 12], "rootSt": 0}, {"name": "Abaug", "inv": "Root", "frets": [13, 13, 12], "rootSt": 8}, {"name": "Fm", "inv": "Root", "frets": [10, 9, 8], "rootSt": 5}], "close_1st": [{"name": "Fm", "inv": "1st", "frets": [1, 1, 1], "rootSt": 5}, {"name": "Ddim", "inv": "2nd", "frets": [1, 3, 1], "rootSt": 2}, {"name": "Bb", "inv": "Root", "frets": [3, 3, 1], "rootSt": 10}, {"name": "Gm", "inv": "1st", "frets": [3, 3, 3], "rootSt": 7}, {"name": "Edim", "inv": "2nd", "frets": [3, 5, 3], "rootSt": 4}, {"name": "C", "inv": "Root", "frets": [5, 5, 3], "rootSt": 0}, {"name": "Abaug", "inv": "1st", "frets": [5, 5, 4], "rootSt": 8}, {"name": "Fm", "inv": "2nd", "frets": [5, 6, 4], "rootSt": 5}], "close_2nd": [{"name": "Fm", "inv": "2nd", "frets": [5, 6, 4], "rootSt": 5}, {"name": "Ddim", "inv": "Root", "frets": [7, 6, 4], "rootSt": 2}, {"name": "Bb", "inv": "1st", "frets": [7, 6, 6], "rootSt": 10}, {"name": "Gm", "inv": "2nd", "frets": [7, 8, 6], "rootSt": 7}, {"name": "Edim", "inv": "Root", "frets": [9, 8, 6], "rootSt": 4}, {"name": "C", "inv": "1st", "frets": [9, 8, 8], "rootSt": 0}, {"name": "Abaug", "inv": "2nd", "frets": [9, 9, 8], "rootSt": 8}, {"name": "Fm", "inv": "Root", "frets": [10, 9, 8], "rootSt": 5}], "spread643_root": [{"name": "Fm", "inv": "Root", "frets": [13, 10, 13], "rootSt": 5}, {"name": "Ddim", "inv": "Root", "frets": [10, 6, 10], "rootSt": 2}, {"name": "Bb", "inv": "1st", "frets": [10, 8, 10], "rootSt": 10}, {"name": "Gm", "inv": "2nd", "frets": [10, 8, 12], "rootSt": 7}, {"name": "Edim", "inv": "Root", "frets": [12, 8, 12], "rootSt": 4}, {"name": "C", "inv": "1st", "frets": [12, 10, 12], "rootSt": 0}, {"name": "Abaug", "inv": "2nd", "frets": [12, 10, 13], "rootSt": 8}, {"name": "Fm", "inv": "Root", "frets": [13, 10, 13], "rootSt": 5}], "spread643_1st": [{"name": "Fm", "inv": "1st", "frets": [4, 3, 5], "rootSt": 5}, {"name": "Ddim", "inv": "2nd", "frets": [4, 3, 7], "rootSt": 2}, {"name": "Bb", "inv": "Root", "frets": [6, 3, 7], "rootSt": 10}, {"name": "Gm", "inv": "1st", "frets": [6, 5, 7], "rootSt": 7}, {"name": "Edim", "inv": "2nd", "frets": [6, 5, 9], "rootSt": 4}, {"name": "C", "inv": "Root", "frets": [8, 5, 9], "rootSt": 0}, {"name": "Abaug", "inv": "1st", "frets": [8, 6, 9], "rootSt": 8}, {"name": "Fm", "inv": "2nd", "frets": [8, 6, 10], "rootSt": 5}], "spread643_2nd": [{"name": "Fm", "inv": "2nd", "frets": [8, 6, 10], "rootSt": 5}, {"name": "Ddim", "inv": "Root", "frets": [10, 6, 10], "rootSt": 2}, {"name": "Bb", "inv": "1st", "frets": [10, 8, 10], "rootSt": 10}, {"name": "Gm", "inv": "2nd", "frets": [10, 8, 12], "rootSt": 7}, {"name": "Edim", "inv": "Root", "frets": [12, 8, 12], "rootSt": 4}, {"name": "C", "inv": "1st", "frets": [12, 10, 12], "rootSt": 0}, {"name": "Abaug", "inv": "2nd", "frets": [12, 10, 13], "rootSt": 8}, {"name": "Fm", "inv": "Root", "frets": [13, 10, 13], "rootSt": 5}], "spread542_root": [{"name": "Fm", "inv": "Root", "frets": [8, 10, 9], "rootSt": 5}, {"name": "Ddim", "inv": "1st", "frets": [8, 12, 9], "rootSt": 2}, {"name": "Bb", "inv": "2nd", "frets": [8, 12, 11], "rootSt": 10}, {"name": "Gm", "inv": "Root", "frets": [10, 12, 11], "rootSt": 7}, {"name": "Edim", "inv": "1st", "frets": [10, 14, 11], "rootSt": 4}, {"name": "C", "inv": "2nd", "frets": [10, 14, 13], "rootSt": 0}, {"name": "Abaug", "inv": "Root", "frets": [11, 14, 13], "rootSt": 8}, {"name": "Fm", "inv": "1st", "frets": [11, 15, 13], "rootSt": 5}], "spread542_1st": [{"name": "Fm", "inv": "1st", "frets": [11, 15, 13], "rootSt": 5}, {"name": "Ddim", "inv": "2nd", "frets": [11, 15, 15], "rootSt": 2}, {"name": "Bb", "inv": "2nd", "frets": [8, 12, 11], "rootSt": 10}, {"name": "Gm", "inv": "Root", "frets": [10, 12, 11], "rootSt": 7}, {"name": "Edim", "inv": "1st", "frets": [10, 14, 11], "rootSt": 4}, {"name": "C", "inv": "2nd", "frets": [10, 14, 13], "rootSt": 0}, {"name": "Abaug", "inv": "Root", "frets": [11, 14, 13], "rootSt": 8}, {"name": "Fm", "inv": "1st", "frets": [11, 15, 13], "rootSt": 5}], "spread542_2nd": [{"name": "Fm", "inv": "2nd", "frets": [3, 6, 6], "rootSt": 5}, {"name": "Ddim", "inv": "Root", "frets": [5, 6, 6], "rootSt": 2}, {"name": "Bb", "inv": "1st", "frets": [5, 8, 6], "rootSt": 10}, {"name": "Gm", "inv": "2nd", "frets": [5, 8, 8], "rootSt": 7}, {"name": "Edim", "inv": "Root", "frets": [7, 8, 8], "rootSt": 4}, {"name": "C", "inv": "1st", "frets": [7, 10, 8], "rootSt": 0}, {"name": "Abaug", "inv": "2nd", "frets": [7, 10, 9], "rootSt": 8}, {"name": "Fm", "inv": "Root", "frets": [8, 10, 9], "rootSt": 5}]}}, "Bb": {"cycle2": {"close_root": [{"name": "Bbm", "inv": "Root", "frets": [3, 2, 1], "rootSt": 10}, {"name": "Cm", "inv": "Root", "frets": [5, 4, 3], "rootSt": 0}, {"name": "Dbaug", "inv": "Root", "frets": [6, 6, 5], "rootSt": 1}, {"name": "Eb", "inv": "Root", "frets": [8, 8, 6], "rootSt": 3}, {"name": "F", "inv": "Root", "frets": [10, 10, 8], "rootSt": 5}, {"name": "Gdim", "inv": "Root", "frets": [12, 11, 9], "rootSt": 7}, {"name": "Adim", "inv": "Root", "frets": [14, 13, 11], "rootSt": 9}, {"name": "Bbm", "inv": "2nd", "frets": [10, 11, 9], "rootSt": 10}], "close_1st": [{"name": "Bbm", "inv": "1st", "frets": [6, 6, 6], "rootSt": 10}, {"name": "Cm", "inv": "Root", "frets": [5, 4, 3], "rootSt": 0}, {"name": "Dbaug", "inv": "Root", "frets": [6, 6, 5], "rootSt": 1}, {"name": "Eb", "inv": "Root", "frets": [8, 8, 6], "rootSt": 3}, {"name": "F", "inv": "Root", "frets": [10, 10, 8], "rootSt": 5}, {"name": "Gdim", "inv": "Root", "frets": [12, 11, 9], "rootSt": 7}, {"name": "Adim", "inv": "Root", "frets": [14, 13, 11], "rootSt": 9}, {"name": "Bbm", "inv": "2nd", "frets": [10, 11, 9], "rootSt": 10}], "close_2nd": [{"name": "Bbm", "inv": "2nd", "frets": [10, 11, 9], "rootSt": 10}, {"name": "Cm", "inv": "1st", "frets": [8, 8, 8], "rootSt": 0}, {"name": "Dbaug", "inv": "1st", "frets": [10, 10, 9], "rootSt": 1}, {"name": "Eb", "inv": "1st", "frets": [12, 11, 11], "rootSt": 3}, {"name": "F", "inv": "Root", "frets": [10, 10, 8], "rootSt": 5}, {"name": "Gdim", "inv": "Root", "frets": [12, 11, 9], "rootSt": 7}, {"name": "Adim", "inv": "Root", "frets": [14, 13, 11], "rootSt": 9}, {"name": "Bbm", "inv": "2nd", "frets": [10, 11, 9], "rootSt": 10}], "spread643_root": [{"name": "Bbm", "inv": "Root", "frets": [6, 3, 6], "rootSt": 10}, {"name": "Cm", "inv": "Root", "frets": [8, 5, 8], "rootSt": 0}, {"name": "Dbaug", "inv": "Root", "frets": [9, 7, 10], "rootSt": 1}, {"name": "Eb", "inv": "Root", "frets": [11, 8, 12], "rootSt": 3}, {"name": "F", "inv": "Root", "frets": [13, 10, 14], "rootSt": 5}, {"name": "Gdim", "inv": "Root", "frets": [15, 11, 15], "rootSt": 7}, {"name": "Adim", "inv": "2nd", "frets": [11, 10, 14], "rootSt": 9}, {"name": "Bbm", "inv": "2nd", "frets": [13, 11, 15], "rootSt": 10}], "spread643_1st": [{"name": "Bbm", "inv": "1st", "frets": [9, 8, 10], "rootSt": 10}, {"name": "Cm", "inv": "Root", "frets": [8, 5, 8], "rootSt": 0}, {"name": "Dbaug", "inv": "Root", "frets": [9, 7, 10], "rootSt": 1}, {"name": "Eb", "inv": "Root", "frets": [11, 8, 12], "rootSt": 3}, {"name": "F", "inv": "Root", "frets": [13, 10, 14], "rootSt": 5}, {"name": "Gdim", "inv": "Root", "frets": [15, 11, 15], "rootSt": 7}, {"name": "Adim", "inv": "2nd", "frets": [11, 10, 14], "rootSt": 9}, {"name": "Bbm", "inv": "2nd", "frets": [13, 11, 15], "rootSt": 10}], "spread643_2nd": [{"name": "Bbm", "inv": "2nd", "frets": [13, 11, 15], "rootSt": 10}, {"name": "Cm", "inv": "1st", "frets": [11, 10, 12], "rootSt": 0}, {"name": "Dbaug", "inv": "1st", "frets": [13, 11, 14], "rootSt": 1}, {"name": "Eb", "inv": "Root", "frets": [11, 8, 12], "rootSt": 3}, {"name": "F", "inv": "Root", "frets": [13, 10, 14], "rootSt": 5}, {"name": "Gdim", "inv": "Root", "frets": [15, 11, 15], "rootSt": 7}, {"name": "Adim", "inv": "2nd", "frets": [11, 10, 14], "rootSt": 9}, {"name": "Bbm", "inv": "2nd", "frets": [13, 11, 15], "rootSt": 10}], "spread542_root": [{"name": "Bbm", "inv": "Root", "frets": [1, 3, 2], "rootSt": 10}, {"name": "Cm", "inv": "Root", "frets": [3, 5, 4], "rootSt": 0}, {"name": "Dbaug", "inv": "Root", "frets": [4, 7, 6], "rootSt": 1}, {"name": "Eb", "inv": "Root", "frets": [6, 8, 8], "rootSt": 3}, {"name": "F", "inv": "Root", "frets": [8, 10, 10], "rootSt": 5}, {"name": "Gdim", "inv": "Root", "frets": [10, 11, 11], "rootSt": 7}, {"name": "Adim", "inv": "2nd", "frets": [6, 10, 10], "rootSt": 9}, {"name": "Bbm", "inv": "2nd", "frets": [8, 11, 11], "rootSt": 10}], "spread542_1st": [{"name": "Bbm", "inv": "1st", "frets": [4, 8, 6], "rootSt": 10}, {"name": "Cm", "inv": "Root", "frets": [3, 5, 4], "rootSt": 0}, {"name": "Dbaug", "inv": "Root", "frets": [4, 7, 6], "rootSt": 1}, {"name": "Eb", "inv": "Root", "frets": [6, 8, 8], "rootSt": 3}, {"name": "F", "inv": "Root", "frets": [8, 10, 10], "rootSt": 5}, {"name": "Gdim", "inv": "Root", "frets": [10, 11, 11], "rootSt": 7}, {"name": "Adim", "inv": "2nd", "frets": [6, 10, 10], "rootSt": 9}, {"name": "Bbm", "inv": "2nd", "frets": [8, 11, 11], "rootSt": 10}], "spread542_2nd": [{"name": "Bbm", "inv": "2nd", "frets": [8, 11, 11], "rootSt": 10}, {"name": "Cm", "inv": "1st", "frets": [6, 10, 8], "rootSt": 0}, {"name": "Dbaug", "inv": "1st", "frets": [8, 11, 10], "rootSt": 1}, {"name": "Eb", "inv": "1st", "frets": [10, 13, 11], "rootSt": 3}, {"name": "F", "inv": "Root", "frets": [8, 10, 10], "rootSt": 5}, {"name": "Gdim", "inv": "Root", "frets": [10, 11, 11], "rootSt": 7}, {"name": "Adim", "inv": "2nd", "frets": [6, 10, 10], "rootSt": 9}, {"name": "Bbm", "inv": "2nd", "frets": [8, 11, 11], "rootSt": 10}]}, "cycle6": {"close_root": [{"name": "Bbm", "inv": "Root", "frets": [3, 2, 1], "rootSt": 10}, {"name": "Gdim", "inv": "1st", "frets": [3, 2, 3], "rootSt": 7}, {"name": "Eb", "inv": "2nd", "frets": [3, 4, 3], "rootSt": 3}, {"name": "Cm", "inv": "Root", "frets": [5, 4, 3], "rootSt": 0}, {"name": "Adim", "inv": "1st", "frets": [5, 4, 5], "rootSt": 9}, {"name": "F", "inv": "2nd", "frets": [5, 6, 5], "rootSt": 5}, {"name": "Dbaug", "inv": "Root", "frets": [6, 6, 5], "rootSt": 1}, {"name": "Bbm", "inv": "1st", "frets": [6, 6, 6], "rootSt": 10}], "close_1st": [{"name": "Bbm", "inv": "1st", "frets": [6, 6, 6], "rootSt": 10}, {"name": "Gdim", "inv": "2nd", "frets": [6, 8, 6], "rootSt": 7}, {"name": "Eb", "inv": "Root", "frets": [8, 8, 6], "rootSt": 3}, {"name": "Cm", "inv": "1st", "frets": [8, 8, 8], "rootSt": 0}, {"name": "Adim", "inv": "2nd", "frets": [8, 10, 8], "rootSt": 9}, {"name": "F", "inv": "Root", "frets": [10, 10, 8], "rootSt": 5}, {"name": "Dbaug", "inv": "1st", "frets": [10, 10, 9], "rootSt": 1}, {"name": "Bbm", "inv": "2nd", "frets": [10, 11, 9], "rootSt": 10}], "close_2nd": [{"name": "Bbm", "inv": "2nd", "frets": [10, 11, 9], "rootSt": 10}, {"name": "Gdim", "inv": "Root", "frets": [12, 11, 9], "rootSt": 7}, {"name": "Eb", "inv": "1st", "frets": [12, 11, 11], "rootSt": 3}, {"name": "Cm", "inv": "2nd", "frets": [12, 13, 11], "rootSt": 0}, {"name": "Adim", "inv": "Root", "frets": [14, 13, 11], "rootSt": 9}, {"name": "F", "inv": "Root", "frets": [10, 10, 8], "rootSt": 5}, {"name": "Dbaug", "inv": "1st", "frets": [10, 10, 9], "rootSt": 1}, {"name": "Bbm", "inv": "2nd", "frets": [10, 11, 9], "rootSt": 10}], "spread643_root": [{"name": "Bbm", "inv": "Root", "frets": [6, 3, 6], "rootSt": 10}, {"name": "Gdim", "inv": "1st", "frets": [6, 5, 6], "rootSt": 7}, {"name": "Eb", "inv": "2nd", "frets": [6, 5, 8], "rootSt": 3}, {"name": "Cm", "inv": "Root", "frets": [8, 5, 8], "rootSt": 0}, {"name": "Adim", "inv": "1st", "frets": [8, 7, 8], "rootSt": 9}, {"name": "F", "inv": "2nd", "frets": [8, 7, 10], "rootSt": 5}, {"name": "Dbaug", "inv": "Root", "frets": [9, 7, 10], "rootSt": 1}, {"name": "Bbm", "inv": "1st", "frets": [9, 8, 10], "rootSt": 10}], "spread643_1st": [{"name": "Bbm", "inv": "1st", "frets": [9, 8, 10], "rootSt": 10}, {"name": "Gdim", "inv": "2nd", "frets": [9, 8, 12], "rootSt": 7}, {"name": "Eb", "inv": "Root", "frets": [11, 8, 12], "rootSt": 3}, {"name": "Cm", "inv": "1st", "frets": [11, 10, 12], "rootSt": 0}, {"name": "Adim", "inv": "2nd", "frets": [11, 10, 14], "rootSt": 9}, {"name": "F", "inv": "Root", "frets": [13, 10, 14], "rootSt": 5}, {"name": "Dbaug", "inv": "1st", "frets": [13, 11, 14], "rootSt": 1}, {"name": "Bbm", "inv": "2nd", "frets": [13, 11, 15], "rootSt": 10}], "spread643_2nd": [{"name": "Bbm", "inv": "2nd", "frets": [13, 11, 15], "rootSt": 10}, {"name": "Gdim", "inv": "Root", "frets": [15, 11, 15], "rootSt": 7}, {"name": "Eb", "inv": "Root", "frets": [11, 8, 12], "rootSt": 3}, {"name": "Cm", "inv": "1st", "frets": [11, 10, 12], "rootSt": 0}, {"name": "Adim", "inv": "2nd", "frets": [11, 10, 14], "rootSt": 9}, {"name": "F", "inv": "Root", "frets": [13, 10, 14], "rootSt": 5}, {"name": "Dbaug", "inv": "1st", "frets": [13, 11, 14], "rootSt": 1}, {"name": "Bbm", "inv": "2nd", "frets": [13, 11, 15], "rootSt": 10}], "spread542_root": [{"name": "Bbm", "inv": "Root", "frets": [1, 3, 2], "rootSt": 10}, {"name": "Gdim", "inv": "1st", "frets": [1, 5, 2], "rootSt": 7}, {"name": "Eb", "inv": "2nd", "frets": [1, 5, 4], "rootSt": 3}, {"name": "Cm", "inv": "Root", "frets": [3, 5, 4], "rootSt": 0}, {"name": "Adim", "inv": "1st", "frets": [3, 7, 4], "rootSt": 9}, {"name": "F", "inv": "2nd", "frets": [3, 7, 6], "rootSt": 5}, {"name": "Dbaug", "inv": "Root", "frets": [4, 7, 6], "rootSt": 1}, {"name": "Bbm", "inv": "1st", "frets": [4, 8, 6], "rootSt": 10}], "spread542_1st": [{"name": "Bbm", "inv": "1st", "frets": [4, 8, 6], "rootSt": 10}, {"name": "Gdim", "inv": "2nd", "frets": [4, 8, 8], "rootSt": 7}, {"name": "Eb", "inv": "Root", "frets": [6, 8, 8], "rootSt": 3}, {"name": "Cm", "inv": "1st", "frets": [6, 10, 8], "rootSt": 0}, {"name": "Adim", "inv": "2nd", "frets": [6, 10, 10], "rootSt": 9}, {"name": "F", "inv": "Root", "frets": [8, 10, 10], "rootSt": 5}, {"name": "Dbaug", "inv": "1st", "frets": [8, 11, 10], "rootSt": 1}, {"name": "Bbm", "inv": "2nd", "frets": [8, 11, 11], "rootSt": 10}], "spread542_2nd": [{"name": "Bbm", "inv": "2nd", "frets": [8, 11, 11], "rootSt": 10}, {"name": "Gdim", "inv": "Root", "frets": [10, 11, 11], "rootSt": 7}, {"name": "Eb", "inv": "1st", "frets": [10, 13, 11], "rootSt": 3}, {"name": "Cm", "inv": "2nd", "frets": [10, 13, 13], "rootSt": 0}, {"name": "Adim", "inv": "2nd", "frets": [6, 10, 10], "rootSt": 9}, {"name": "F", "inv": "Root", "frets": [8, 10, 10], "rootSt": 5}, {"name": "Dbaug", "inv": "1st", "frets": [8, 11, 10], "rootSt": 1}, {"name": "Bbm", "inv": "2nd", "frets": [8, 11, 11], "rootSt": 10}]}}, "Eb": {"cycle2": {"close_root": [{"name": "Ebm", "inv": "Root", "frets": [8, 7, 6], "rootSt": 3}, {"name": "Fm", "inv": "Root", "frets": [10, 9, 8], "rootSt": 5}, {"name": "Gbaug", "inv": "Root", "frets": [11, 11, 10], "rootSt": 6}, {"name": "Ab", "inv": "Root", "frets": [13, 13, 11], "rootSt": 8}, {"name": "Bb", "inv": "2nd", "frets": [10, 11, 10], "rootSt": 10}, {"name": "Cdim", "inv": "2nd", "frets": [11, 13, 11], "rootSt": 0}, {"name": "Ddim", "inv": "1st", "frets": [10, 9, 10], "rootSt": 2}, {"name": "Ebm", "inv": "1st", "frets": [11, 11, 11], "rootSt": 3}], "close_1st": [{"name": "Ebm", "inv": "1st", "frets": [11, 11, 11], "rootSt": 3}, {"name": "Fm", "inv": "Root", "frets": [10, 9, 8], "rootSt": 5}, {"name": "Gbaug", "inv": "Root", "frets": [11, 11, 10], "rootSt": 6}, {"name": "Ab", "inv": "Root", "frets": [13, 13, 11], "rootSt": 8}, {"name": "Bb", "inv": "2nd", "frets": [10, 11, 10], "rootSt": 10}, {"name": "Cdim", "inv": "2nd", "frets": [11, 13, 11], "rootSt": 0}, {"name": "Ddim", "inv": "1st", "frets": [10, 9, 10], "rootSt": 2}, {"name": "Ebm", "inv": "1st", "frets": [11, 11, 11], "rootSt": 3}], "close_2nd": [{"name": "Ebm", "inv": "2nd", "frets": [3, 4, 2], "rootSt": 3}, {"name": "Fm", "inv": "1st", "frets": [1, 1, 1], "rootSt": 5}, {"name": "Gbaug", "inv": "1st", "frets": [3, 3, 2], "rootSt": 6}, {"name": "Ab", "inv": "1st", "frets": [5, 4, 4], "rootSt": 8}, {"name": "Bb", "inv": "Root", "frets": [3, 3, 1], "rootSt": 10}, {"name": "Cdim", "inv": "Root", "frets": [5, 4, 2], "rootSt": 0}, {"name": "Ddim", "inv": "Root", "frets": [7, 6, 4], "rootSt": 2}, {"name": "Ebm", "inv": "Root", "frets": [8, 7, 6], "rootSt": 3}], "spread643_root": [{"name": "Ebm", "inv": "Root", "frets": [11, 8, 11], "rootSt": 3}, {"name": "Fm", "inv": "Root", "frets": [13, 10, 13], "rootSt": 5}, {"name": "Gbaug", "inv": "2nd", "frets": [10, 8, 11], "rootSt": 6}, {"name": "Ab", "inv": "2nd", "frets": [11, 10, 13], "rootSt": 8}, {"name": "Bb", "inv": "1st", "frets": [10, 8, 10], "rootSt": 10}, {"name": "Cdim", "inv": "1st", "frets": [11, 10, 11], "rootSt": 0}, {"name": "Ddim", "inv": "Root", "frets": [10, 6, 10], "rootSt": 2}, {"name": "Ebm", "inv": "Root", "frets": [11, 8, 11], "rootSt": 3}], "spread643_1st": [{"name": "Ebm", "inv": "1st", "frets": [2, 1, 3], "rootSt": 3}, {"name": "Fm", "inv": "1st", "frets": [4, 3, 5], "rootSt": 5}, {"name": "Gbaug", "inv": "1st", "frets": [6, 4, 7], "rootSt": 6}, {"name": "Ab", "inv": "1st", "frets": [8, 6, 8], "rootSt": 8}, {"name": "Bb", "inv": "Root", "frets": [6, 3, 7], "rootSt": 10}, {"name": "Cdim", "inv": "Root", "frets": [8, 4, 8], "rootSt": 0}, {"name": "Ddim", "inv": "Root", "frets": [10, 6, 10], "rootSt": 2}, {"name": "Ebm", "inv": "Root", "frets": [11, 8, 11], "rootSt": 3}], "spread643_2nd": [{"name": "Ebm", "inv": "2nd", "frets": [6, 4, 8], "rootSt": 3}, {"name": "Fm", "inv": "1st", "frets": [4, 3, 5], "rootSt": 5}, {"name": "Gbaug", "inv": "1st", "frets": [6, 4, 7], "rootSt": 6}, {"name": "Ab", "inv": "1st", "frets": [8, 6, 8], "rootSt": 8}, {"name": "Bb", "inv": "Root", "frets": [6, 3, 7], "rootSt": 10}, {"name": "Cdim", "inv": "Root", "frets": [8, 4, 8], "rootSt": 0}, {"name": "Ddim", "inv": "Root", "frets": [10, 6, 10], "rootSt": 2}, {"name": "Ebm", "inv": "Root", "frets": [11, 8, 11], "rootSt": 3}], "spread542_root": [{"name": "Ebm", "inv": "Root", "frets": [6, 8, 7], "rootSt": 3}, {"name": "Fm", "inv": "Root", "frets": [8, 10, 9], "rootSt": 5}, {"name": "Gbaug", "inv": "Root", "frets": [9, 12, 11], "rootSt": 6}, {"name": "Ab", "inv": "Root", "frets": [11, 13, 13], "rootSt": 8}, {"name": "Bb", "inv": "2nd", "frets": [8, 12, 11], "rootSt": 10}, {"name": "Cdim", "inv": "2nd", "frets": [9, 13, 13], "rootSt": 0}, {"name": "Ddim", "inv": "1st", "frets": [8, 12, 9], "rootSt": 2}, {"name": "Ebm", "inv": "1st", "frets": [9, 13, 11], "rootSt": 3}], "spread542_1st": [{"name": "Ebm", "inv": "1st", "frets": [9, 13, 11], "rootSt": 3}, {"name": "Fm", "inv": "Root", "frets": [8, 10, 9], "rootSt": 5}, {"name": "Gbaug", "inv": "Root", "frets": [9, 12, 11], "rootSt": 6}, {"name": "Ab", "inv": "Root", "frets": [11, 13, 13], "rootSt": 8}, {"name": "Bb", "inv": "2nd", "frets": [8, 12, 11], "rootSt": 10}, {"name": "Cdim", "inv": "2nd", "frets": [9, 13, 13], "rootSt": 0}, {"name": "Ddim", "inv": "1st", "frets": [8, 12, 9], "rootSt": 2}, {"name": "Ebm", "inv": "1st", "frets": [9, 13, 11], "rootSt": 3}], "spread542_2nd": [{"name": "Ebm", "inv": "2nd", "frets": [1, 4, 4], "rootSt": 3}, {"name": "Fm", "inv": "2nd", "frets": [3, 6, 6], "rootSt": 5}, {"name": "Gbaug", "inv": "2nd", "frets": [5, 8, 7], "rootSt": 6}, {"name": "Ab", "inv": "2nd", "frets": [6, 10, 9], "rootSt": 8}, {"name": "Bb", "inv": "1st", "frets": [5, 8, 6], "rootSt": 10}, {"name": "Cdim", "inv": "1st", "frets": [6, 10, 7], "rootSt": 0}, {"name": "Ddim", "inv": "Root", "frets": [5, 6, 6], "rootSt": 2}, {"name": "Ebm", "inv": "Root", "frets": [6, 8, 7], "rootSt": 3}]}, "cycle6": {"close_root": [{"name": "Ebm", "inv": "Root", "frets": [8, 7, 6], "rootSt": 3}, {"name": "Cdim", "inv": "1st", "frets": [8, 7, 8], "rootSt": 0}, {"name": "Ab", "inv": "2nd", "frets": [8, 9, 8], "rootSt": 8}, {"name": "Fm", "inv": "Root", "frets": [10, 9, 8], "rootSt": 5}, {"name": "Ddim", "inv": "1st", "frets": [10, 9, 10], "rootSt": 2}, {"name": "Bb", "inv": "2nd", "frets": [10, 11, 10], "rootSt": 10}, {"name": "Gbaug", "inv": "Root", "frets": [11, 11, 10], "rootSt": 6}, {"name": "Ebm", "inv": "1st", "frets": [11, 11, 11], "rootSt": 3}], "close_1st": [{"name": "Ebm", "inv": "1st", "frets": [11, 11, 11], "rootSt": 3}, {"name": "Cdim", "inv": "2nd", "frets": [11, 13, 11], "rootSt": 0}, {"name": "Ab", "inv": "Root", "frets": [13, 13, 11], "rootSt": 8}, {"name": "Fm", "inv": "Root", "frets": [10, 9, 8], "rootSt": 5}, {"name": "Ddim", "inv": "1st", "frets": [10, 9, 10], "rootSt": 2}, {"name": "Bb", "inv": "2nd", "frets": [10, 11, 10], "rootSt": 10}, {"name": "Gbaug", "inv": "Root", "frets": [11, 11, 10], "rootSt": 6}, {"name": "Ebm", "inv": "1st", "frets": [11, 11, 11], "rootSt": 3}], "close_2nd": [{"name": "Ebm", "inv": "2nd", "frets": [3, 4, 2], "rootSt": 3}, {"name": "Cdim", "inv": "Root", "frets": [5, 4, 2], "rootSt": 0}, {"name": "Ab", "inv": "1st", "frets": [5, 4, 4], "rootSt": 8}, {"name": "Fm", "inv": "2nd", "frets": [5, 6, 4], "rootSt": 5}, {"name": "Ddim", "inv": "Root", "frets": [7, 6, 4], "rootSt": 2}, {"name": "Bb", "inv": "1st", "frets": [7, 6, 6], "rootSt": 10}, {"name": "Gbaug", "inv": "2nd", "frets": [7, 7, 6], "rootSt": 6}, {"name": "Ebm", "inv": "Root", "frets": [8, 7, 6], "rootSt": 3}], "spread643_root": [{"name": "Ebm", "inv": "Root", "frets": [11, 8, 11], "rootSt": 3}, {"name": "Cdim", "inv": "1st", "frets": [11, 10, 11], "rootSt": 0}, {"name": "Ab", "inv": "2nd", "frets": [11, 10, 13], "rootSt": 8}, {"name": "Fm", "inv": "Root", "frets": [13, 10, 13], "rootSt": 5}, {"name": "Ddim", "inv": "Root", "frets": [10, 6, 10], "rootSt": 2}, {"name": "Bb", "inv": "1st", "frets": [10, 8, 10], "rootSt": 10}, {"name": "Gbaug", "inv": "2nd", "frets": [10, 8, 11], "rootSt": 6}, {"name": "Ebm", "inv": "Root", "frets": [11, 8, 11], "rootSt": 3}], "spread643_1st": [{"name": "Ebm", "inv": "1st", "frets": [2, 1, 3], "rootSt": 3}, {"name": "Cdim", "inv": "2nd", "frets": [2, 1, 5], "rootSt": 0}, {"name": "Ab", "inv": "Root", "frets": [4, 1, 5], "rootSt": 8}, {"name": "Fm", "inv": "1st", "frets": [4, 3, 5], "rootSt": 5}, {"name": "Ddim", "inv": "2nd", "frets": [4, 3, 7], "rootSt": 2}, {"name": "Bb", "inv": "Root", "frets": [6, 3, 7], "rootSt": 10}, {"name": "Gbaug", "inv": "1st", "frets": [6, 4, 7], "rootSt": 6}, {"name": "Ebm", "inv": "2nd", "frets": [6, 4, 8], "rootSt": 3}], "spread643_2nd": [{"name": "Ebm", "inv": "2nd", "frets": [6, 4, 8], "rootSt": 3}, {"name": "Cdim", "inv": "Root", "frets": [8, 4, 8], "rootSt": 0}, {"name": "Ab", "inv": "1st", "frets": [8, 6, 8], "rootSt": 8}, {"name": "Fm", "inv": "2nd", "frets": [8, 6, 10], "rootSt": 5}, {"name": "Ddim", "inv": "Root", "frets": [10, 6, 10], "rootSt": 2}, {"name": "Bb", "inv": "1st", "frets": [10, 8, 10], "rootSt": 10}, {"name": "Gbaug", "inv": "2nd", "frets": [10, 8, 11], "rootSt": 6}, {"name": "Ebm", "inv": "Root", "frets": [11, 8, 11], "rootSt": 3}], "spread542_root": [{"name": "Ebm", "inv": "Root", "frets": [6, 8, 7], "rootSt": 3}, {"name": "Cdim", "inv": "1st", "frets": [6, 10, 7], "rootSt": 0}, {"name": "Ab", "inv": "2nd", "frets": [6, 10, 9], "rootSt": 8}, {"name": "Fm", "inv": "Root", "frets": [8, 10, 9], "rootSt": 5}, {"name": "Ddim", "inv": "1st", "frets": [8, 12, 9], "rootSt": 2}, {"name": "Bb", "inv": "2nd", "frets": [8, 12, 11], "rootSt": 10}, {"name": "Gbaug", "inv": "Root", "frets": [9, 12, 11], "rootSt": 6}, {"name": "Ebm", "inv": "1st", "frets": [9, 13, 11], "rootSt": 3}], "spread542_1st": [{"name": "Ebm", "inv": "1st", "frets": [9, 13, 11], "rootSt": 3}, {"name": "Cdim", "inv": "2nd", "frets": [9, 13, 13], "rootSt": 0}, {"name": "Ab", "inv": "Root", "frets": [11, 13, 13], "rootSt": 8}, {"name": "Fm", "inv": "1st", "frets": [11, 15, 13], "rootSt": 5}, {"name": "Ddim", "inv": "2nd", "frets": [11, 15, 15], "rootSt": 2}, {"name": "Bb", "inv": "2nd", "frets": [8, 12, 11], "rootSt": 10}, {"name": "Gbaug", "inv": "Root", "frets": [9, 12, 11], "rootSt": 6}, {"name": "Ebm", "inv": "1st", "frets": [9, 13, 11], "rootSt": 3}], "spread542_2nd": [{"name": "Ebm", "inv": "2nd", "frets": [1, 4, 4], "rootSt": 3}, {"name": "Cdim", "inv": "Root", "frets": [3, 4, 4], "rootSt": 0}, {"name": "Ab", "inv": "1st", "frets": [3, 6, 4], "rootSt": 8}, {"name": "Fm", "inv": "2nd", "frets": [3, 6, 6], "rootSt": 5}, {"name": "Ddim", "inv": "Root", "frets": [5, 6, 6], "rootSt": 2}, {"name": "Bb", "inv": "1st", "frets": [5, 8, 6], "rootSt": 10}, {"name": "Gbaug", "inv": "2nd", "frets": [5, 8, 7], "rootSt": 6}, {"name": "Ebm", "inv": "Root", "frets": [6, 8, 7], "rootSt": 3}]}}, "G": {"cycle2": {"close_root": [{"name": "Gm", "inv": "Root", "frets": [12, 11, 10], "rootSt": 7}, {"name": "Am", "inv": "Root", "frets": [14, 13, 12], "rootSt": 9}, {"name": "Bbaug", "inv": "2nd", "frets": [11, 11, 10], "rootSt": 10}, {"name": "C", "inv": "2nd", "frets": [12, 13, 12], "rootSt": 0}, {"name": "D", "inv": "1st", "frets": [11, 10, 10], "rootSt": 2}, {"name": "Edim", "inv": "1st", "frets": [12, 11, 12], "rootSt": 4}, {"name": "Gbdim", "inv": "Root", "frets": [11, 10, 8], "rootSt": 6}, {"name": "Gm", "inv": "Root", "frets": [12, 11, 10], "rootSt": 7}], "close_1st": [{"name": "Gm", "inv": "1st", "frets": [3, 3, 3], "rootSt": 7}, {"name": "Am", "inv": "1st", "frets": [5, 5, 5], "rootSt": 9}, {"name": "Bbaug", "inv": "1st", "frets": [7, 7, 6], "rootSt": 10}, {"name": "C", "inv": "1st", "frets": [9, 8, 8], "rootSt": 0}, {"name": "D", "inv": "Root", "frets": [7, 7, 5], "rootSt": 2}, {"name": "Edim", "inv": "Root", "frets": [9, 8, 6], "rootSt": 4}, {"name": "Gbdim", "inv": "Root", "frets": [11, 10, 8], "rootSt": 6}, {"name": "Gm", "inv": "Root", "frets": [12, 11, 10], "rootSt": 7}], "close_2nd": [{"name": "Gm", "inv": "2nd", "frets": [7, 8, 6], "rootSt": 7}, {"name": "Am", "inv": "1st", "frets": [5, 5, 5], "rootSt": 9}, {"name": "Bbaug", "inv": "1st", "frets": [7, 7, 6], "rootSt": 10}, {"name": "C", "inv": "1st", "frets": [9, 8, 8], "rootSt": 0}, {"name": "D", "inv": "Root", "frets": [7, 7, 5], "rootSt": 2}, {"name": "Edim", "inv": "Root", "frets": [9, 8, 6], "rootSt": 4}, {"name": "Gbdim", "inv": "Root", "frets": [11, 10, 8], "rootSt": 6}, {"name": "Gm", "inv": "Root", "frets": [12, 11, 10], "rootSt": 7}], "spread643_root": [{"name": "Gm", "inv": "Root", "frets": [3, 0, 3], "rootSt": 7}, {"name": "Am", "inv": "Root", "frets": [5, 2, 5], "rootSt": 9}, {"name": "Bbaug", "inv": "Root", "frets": [6, 4, 7], "rootSt": 10}, {"name": "C", "inv": "Root", "frets": [8, 5, 9], "rootSt": 0}, {"name": "D", "inv": "Root", "frets": [10, 7, 11], "rootSt": 2}, {"name": "Edim", "inv": "Root", "frets": [12, 8, 12], "rootSt": 4}, {"name": "Gbdim", "inv": "Root", "frets": [14, 10, 14], "rootSt": 6}, {"name": "Gm", "inv": "2nd", "frets": [10, 8, 12], "rootSt": 7}], "spread643_1st": [{"name": "Gm", "inv": "1st", "frets": [6, 5, 7], "rootSt": 7}, {"name": "Am", "inv": "Root", "frets": [5, 2, 5], "rootSt": 9}, {"name": "Bbaug", "inv": "Root", "frets": [6, 4, 7], "rootSt": 10}, {"name": "C", "inv": "Root", "frets": [8, 5, 9], "rootSt": 0}, {"name": "D", "inv": "Root", "frets": [10, 7, 11], "rootSt": 2}, {"name": "Edim", "inv": "Root", "frets": [12, 8, 12], "rootSt": 4}, {"name": "Gbdim", "inv": "Root", "frets": [14, 10, 14], "rootSt": 6}, {"name": "Gm", "inv": "2nd", "frets": [10, 8, 12], "rootSt": 7}], "spread643_2nd": [{"name": "Gm", "inv": "2nd", "frets": [10, 8, 12], "rootSt": 7}, {"name": "Am", "inv": "1st", "frets": [8, 7, 9], "rootSt": 9}, {"name": "Bbaug", "inv": "1st", "frets": [10, 8, 11], "rootSt": 10}, {"name": "C", "inv": "1st", "frets": [12, 10, 12], "rootSt": 0}, {"name": "D", "inv": "Root", "frets": [10, 7, 11], "rootSt": 2}, {"name": "Edim", "inv": "Root", "frets": [12, 8, 12], "rootSt": 4}, {"name": "Gbdim", "inv": "Root", "frets": [14, 10, 14], "rootSt": 6}, {"name": "Gm", "inv": "2nd", "frets": [10, 8, 12], "rootSt": 7}], "spread542_root": [{"name": "Gm", "inv": "Root", "frets": [10, 12, 11], "rootSt": 7}, {"name": "Am", "inv": "2nd", "frets": [7, 10, 10], "rootSt": 9}, {"name": "Bbaug", "inv": "2nd", "frets": [9, 12, 11], "rootSt": 10}, {"name": "C", "inv": "2nd", "frets": [10, 14, 13], "rootSt": 0}, {"name": "D", "inv": "1st", "frets": [9, 12, 10], "rootSt": 2}, {"name": "Edim", "inv": "1st", "frets": [10, 14, 11], "rootSt": 4}, {"name": "Gbdim", "inv": "Root", "frets": [9, 10, 10], "rootSt": 6}, {"name": "Gm", "inv": "Root", "frets": [10, 12, 11], "rootSt": 7}], "spread542_1st": [{"name": "Gm", "inv": "1st", "frets": [1, 5, 3], "rootSt": 7}, {"name": "Am", "inv": "Root", "frets": [0, 2, 1], "rootSt": 9}, {"name": "Bbaug", "inv": "Root", "frets": [1, 4, 3], "rootSt": 10}, {"name": "C", "inv": "Root", "frets": [3, 5, 5], "rootSt": 0}, {"name": "D", "inv": "Root", "frets": [5, 7, 7], "rootSt": 2}, {"name": "Edim", "inv": "Root", "frets": [7, 8, 8], "rootSt": 4}, {"name": "Gbdim", "inv": "Root", "frets": [9, 10, 10], "rootSt": 6}, {"name": "Gm", "inv": "Root", "frets": [10, 12, 11], "rootSt": 7}], "spread542_2nd": [{"name": "Gm", "inv": "2nd", "frets": [5, 8, 8], "rootSt": 7}, {"name": "Am", "inv": "1st", "frets": [3, 7, 5], "rootSt": 9}, {"name": "Bbaug", "inv": "1st", "frets": [5, 8, 7], "rootSt": 10}, {"name": "C", "inv": "1st", "frets": [7, 10, 8], "rootSt": 0}, {"name": "D", "inv": "Root", "frets": [5, 7, 7], "rootSt": 2}, {"name": "Edim", "inv": "Root", "frets": [7, 8, 8], "rootSt": 4}, {"name": "Gbdim", "inv": "Root", "frets": [9, 10, 10], "rootSt": 6}, {"name": "Gm", "inv": "Root", "frets": [10, 12, 11], "rootSt": 7}]}, "cycle6": {"close_root": [{"name": "Gm", "inv": "Root", "frets": [12, 11, 10], "rootSt": 7}, {"name": "Edim", "inv": "1st", "frets": [12, 11, 12], "rootSt": 4}, {"name": "C", "inv": "2nd", "frets": [12, 13, 12], "rootSt": 0}, {"name": "Am", "inv": "Root", "frets": [14, 13, 12], "rootSt": 9}, {"name": "Gbdim", "inv": "Root", "frets": [11, 10, 8], "rootSt": 6}, {"name": "D", "inv": "1st", "frets": [11, 10, 10], "rootSt": 2}, {"name": "Bbaug", "inv": "2nd", "frets": [11, 11, 10], "rootSt": 10}, {"name": "Gm", "inv": "Root", "frets": [12, 11, 10], "rootSt": 7}], "close_1st": [{"name": "Gm", "inv": "1st", "frets": [3, 3, 3], "rootSt": 7}, {"name": "Edim", "inv": "2nd", "frets": [3, 5, 3], "rootSt": 4}, {"name": "C", "inv": "Root", "frets": [5, 5, 3], "rootSt": 0}, {"name": "Am", "inv": "1st", "frets": [5, 5, 5], "rootSt": 9}, {"name": "Gbdim", "inv": "2nd", "frets": [5, 7, 5], "rootSt": 6}, {"name": "D", "inv": "Root", "frets": [7, 7, 5], "rootSt": 2}, {"name": "Bbaug", "inv": "1st", "frets": [7, 7, 6], "rootSt": 10}, {"name": "Gm", "inv": "2nd", "frets": [7, 8, 6], "rootSt": 7}], "close_2nd": [{"name": "Gm", "inv": "2nd", "frets": [7, 8, 6], "rootSt": 7}, {"name": "Edim", "inv": "Root", "frets": [9, 8, 6], "rootSt": 4}, {"name": "C", "inv": "1st", "frets": [9, 8, 8], "rootSt": 0}, {"name": "Am", "inv": "2nd", "frets": [9, 10, 8], "rootSt": 9}, {"name": "Gbdim", "inv": "Root", "frets": [11, 10, 8], "rootSt": 6}, {"name": "D", "inv": "1st", "frets": [11, 10, 10], "rootSt": 2}, {"name": "Bbaug", "inv": "2nd", "frets": [11, 11, 10], "rootSt": 10}, {"name": "Gm", "inv": "Root", "frets": [12, 11, 10], "rootSt": 7}], "spread643_root": [{"name": "Gm", "inv": "Root", "frets": [3, 0, 3], "rootSt": 7}, {"name": "Edim", "inv": "1st", "frets": [3, 2, 3], "rootSt": 4}, {"name": "C", "inv": "2nd", "frets": [3, 2, 5], "rootSt": 0}, {"name": "Am", "inv": "Root", "frets": [5, 2, 5], "rootSt": 9}, {"name": "Gbdim", "inv": "1st", "frets": [5, 4, 5], "rootSt": 6}, {"name": "D", "inv": "2nd", "frets": [5, 4, 7], "rootSt": 2}, {"name": "Bbaug", "inv": "Root", "frets": [6, 4, 7], "rootSt": 10}, {"name": "Gm", "inv": "1st", "frets": [6, 5, 7], "rootSt": 7}], "spread643_1st": [{"name": "Gm", "inv": "1st", "frets": [6, 5, 7], "rootSt": 7}, {"name": "Edim", "inv": "2nd", "frets": [6, 5, 9], "rootSt": 4}, {"name": "C", "inv": "Root", "frets": [8, 5, 9], "rootSt": 0}, {"name": "Am", "inv": "1st", "frets": [8, 7, 9], "rootSt": 9}, {"name": "Gbdim", "inv": "2nd", "frets": [8, 7, 11], "rootSt": 6}, {"name": "D", "inv": "Root", "frets": [10, 7, 11], "rootSt": 2}, {"name": "Bbaug", "inv": "1st", "frets": [10, 8, 11], "rootSt": 10}, {"name": "Gm", "inv": "2nd", "frets": [10, 8, 12], "rootSt": 7}], "spread643_2nd": [{"name": "Gm", "inv": "2nd", "frets": [10, 8, 12], "rootSt": 7}, {"name": "Edim", "inv": "Root", "frets": [12, 8, 12], "rootSt": 4}, {"name": "C", "inv": "1st", "frets": [12, 10, 12], "rootSt": 0}, {"name": "Am", "inv": "2nd", "frets": [12, 10, 14], "rootSt": 9}, {"name": "Gbdim", "inv": "Root", "frets": [14, 10, 14], "rootSt": 6}, {"name": "D", "inv": "Root", "frets": [10, 7, 11], "rootSt": 2}, {"name": "Bbaug", "inv": "1st", "frets": [10, 8, 11], "rootSt": 10}, {"name": "Gm", "inv": "2nd", "frets": [10, 8, 12], "rootSt": 7}], "spread542_root": [{"name": "Gm", "inv": "Root", "frets": [10, 12, 11], "rootSt": 7}, {"name": "Edim", "inv": "1st", "frets": [10, 14, 11], "rootSt": 4}, {"name": "C", "inv": "2nd", "frets": [10, 14, 13], "rootSt": 0}, {"name": "Am", "inv": "2nd", "frets": [7, 10, 10], "rootSt": 9}, {"name": "Gbdim", "inv": "Root", "frets": [9, 10, 10], "rootSt": 6}, {"name": "D", "inv": "1st", "frets": [9, 12, 10], "rootSt": 2}, {"name": "Bbaug", "inv": "2nd", "frets": [9, 12, 11], "rootSt": 10}, {"name": "Gm", "inv": "Root", "frets": [10, 12, 11], "rootSt": 7}], "spread542_1st": [{"name": "Gm", "inv": "1st", "frets": [1, 5, 3], "rootSt": 7}, {"name": "Edim", "inv": "2nd", "frets": [1, 5, 5], "rootSt": 4}, {"name": "C", "inv": "Root", "frets": [3, 5, 5], "rootSt": 0}, {"name": "Am", "inv": "1st", "frets": [3, 7, 5], "rootSt": 9}, {"name": "Gbdim", "inv": "2nd", "frets": [3, 7, 7], "rootSt": 6}, {"name": "D", "inv": "Root", "frets": [5, 7, 7], "rootSt": 2}, {"name": "Bbaug", "inv": "1st", "frets": [5, 8, 7], "rootSt": 10}, {"name": "Gm", "inv": "2nd", "frets": [5, 8, 8], "rootSt": 7}], "spread542_2nd": [{"name": "Gm", "inv": "2nd", "frets": [5, 8, 8], "rootSt": 7}, {"name": "Edim", "inv": "Root", "frets": [7, 8, 8], "rootSt": 4}, {"name": "C", "inv": "1st", "frets": [7, 10, 8], "rootSt": 0}, {"name": "Am", "inv": "2nd", "frets": [7, 10, 10], "rootSt": 9}, {"name": "Gbdim", "inv": "Root", "frets": [9, 10, 10], "rootSt": 6}, {"name": "D", "inv": "1st", "frets": [9, 12, 10], "rootSt": 2}, {"name": "Bbaug", "inv": "2nd", "frets": [9, 12, 11], "rootSt": 10}, {"name": "Gm", "inv": "Root", "frets": [10, 12, 11], "rootSt": 7}]}}, "D": {"cycle2": {"close_root": [{"name": "Dm", "inv": "Root", "frets": [7, 6, 5], "rootSt": 2}, {"name": "Em", "inv": "Root", "frets": [9, 8, 7], "rootSt": 4}, {"name": "Faug", "inv": "Root", "frets": [10, 10, 9], "rootSt": 5}, {"name": "G", "inv": "Root", "frets": [12, 12, 10], "rootSt": 7}, {"name": "A", "inv": "Root", "frets": [14, 14, 12], "rootSt": 9}, {"name": "Bdim", "inv": "2nd", "frets": [10, 12, 10], "rootSt": 11}, {"name": "Dbdim", "inv": "1st", "frets": [9, 8, 9], "rootSt": 1}, {"name": "Dm", "inv": "1st", "frets": [10, 10, 10], "rootSt": 2}], "close_1st": [{"name": "Dm", "inv": "1st", "frets": [10, 10, 10], "rootSt": 2}, {"name": "Em", "inv": "Root", "frets": [9, 8, 7], "rootSt": 4}, {"name": "Faug", "inv": "Root", "frets": [10, 10, 9], "rootSt": 5}, {"name": "G", "inv": "Root", "frets": [12, 12, 10], "rootSt": 7}, {"name": "A", "inv": "Root", "frets": [14, 14, 12], "rootSt": 9}, {"name": "Bdim", "inv": "2nd", "frets": [10, 12, 10], "rootSt": 11}, {"name": "Dbdim", "inv": "1st", "frets": [9, 8, 9], "rootSt": 1}, {"name": "Dm", "inv": "1st", "frets": [10, 10, 10], "rootSt": 2}], "close_2nd": [{"name": "Dm", "inv": "2nd", "frets": [2, 3, 1], "rootSt": 2}, {"name": "Em", "inv": "2nd", "frets": [4, 5, 3], "rootSt": 4}, {"name": "Faug", "inv": "2nd", "frets": [6, 6, 5], "rootSt": 5}, {"name": "G", "inv": "2nd", "frets": [7, 8, 7], "rootSt": 7}, {"name": "A", "inv": "1st", "frets": [6, 5, 5], "rootSt": 9}, {"name": "Bdim", "inv": "1st", "frets": [7, 6, 7], "rootSt": 11}, {"name": "Dbdim", "inv": "Root", "frets": [6, 5, 3], "rootSt": 1}, {"name": "Dm", "inv": "Root", "frets": [7, 6, 5], "rootSt": 2}], "spread643_root": [{"name": "Dm", "inv": "Root", "frets": [10, 7, 10], "rootSt": 2}, {"name": "Em", "inv": "Root", "frets": [12, 9, 12], "rootSt": 4}, {"name": "Faug", "inv": "Root", "frets": [13, 11, 14], "rootSt": 5}, {"name": "G", "inv": "2nd", "frets": [10, 9, 12], "rootSt": 7}, {"name": "A", "inv": "1st", "frets": [9, 7, 9], "rootSt": 9}, {"name": "Bdim", "inv": "1st", "frets": [10, 9, 10], "rootSt": 11}, {"name": "Dbdim", "inv": "Root", "frets": [9, 5, 9], "rootSt": 1}, {"name": "Dm", "inv": "Root", "frets": [10, 7, 10], "rootSt": 2}], "spread643_1st": [{"name": "Dm", "inv": "1st", "frets": [1, 0, 2], "rootSt": 2}, {"name": "Em", "inv": "1st", "frets": [3, 2, 4], "rootSt": 4}, {"name": "Faug", "inv": "1st", "frets": [5, 3, 6], "rootSt": 5}, {"name": "G", "inv": "1st", "frets": [7, 5, 7], "rootSt": 7}, {"name": "A", "inv": "Root", "frets": [5, 2, 6], "rootSt": 9}, {"name": "Bdim", "inv": "Root", "frets": [7, 3, 7], "rootSt": 11}, {"name": "Dbdim", "inv": "Root", "frets": [9, 5, 9], "rootSt": 1}, {"name": "Dm", "inv": "Root", "frets": [10, 7, 10], "rootSt": 2}], "spread643_2nd": [{"name": "Dm", "inv": "2nd", "frets": [5, 3, 7], "rootSt": 2}, {"name": "Em", "inv": "1st", "frets": [3, 2, 4], "rootSt": 4}, {"name": "Faug", "inv": "1st", "frets": [5, 3, 6], "rootSt": 5}, {"name": "G", "inv": "1st", "frets": [7, 5, 7], "rootSt": 7}, {"name": "A", "inv": "Root", "frets": [5, 2, 6], "rootSt": 9}, {"name": "Bdim", "inv": "Root", "frets": [7, 3, 7], "rootSt": 11}, {"name": "Dbdim", "inv": "Root", "frets": [9, 5, 9], "rootSt": 1}, {"name": "Dm", "inv": "Root", "frets": [10, 7, 10], "rootSt": 2}], "spread542_root": [{"name": "Dm", "inv": "Root", "frets": [5, 7, 6], "rootSt": 2}, {"name": "Em", "inv": "Root", "frets": [7, 9, 8], "rootSt": 4}, {"name": "Faug", "inv": "Root", "frets": [8, 11, 10], "rootSt": 5}, {"name": "G", "inv": "Root", "frets": [10, 12, 12], "rootSt": 7}, {"name": "A", "inv": "2nd", "frets": [7, 11, 10], "rootSt": 9}, {"name": "Bdim", "inv": "2nd", "frets": [8, 12, 12], "rootSt": 11}, {"name": "Dbdim", "inv": "1st", "frets": [7, 11, 8], "rootSt": 1}, {"name": "Dm", "inv": "1st", "frets": [8, 12, 10], "rootSt": 2}], "spread542_1st": [{"name": "Dm", "inv": "1st", "frets": [8, 12, 10], "rootSt": 2}, {"name": "Em", "inv": "Root", "frets": [7, 9, 8], "rootSt": 4}, {"name": "Faug", "inv": "Root", "frets": [8, 11, 10], "rootSt": 5}, {"name": "G", "inv": "Root", "frets": [10, 12, 12], "rootSt": 7}, {"name": "A", "inv": "2nd", "frets": [7, 11, 10], "rootSt": 9}, {"name": "Bdim", "inv": "2nd", "frets": [8, 12, 12], "rootSt": 11}, {"name": "Dbdim", "inv": "1st", "frets": [7, 11, 8], "rootSt": 1}, {"name": "Dm", "inv": "1st", "frets": [8, 12, 10], "rootSt": 2}], "spread542_2nd": [{"name": "Dm", "inv": "2nd", "frets": [0, 3, 3], "rootSt": 2}, {"name": "Em", "inv": "2nd", "frets": [2, 5, 5], "rootSt": 4}, {"name": "Faug", "inv": "2nd", "frets": [4, 7, 6], "rootSt": 5}, {"name": "G", "inv": "2nd", "frets": [5, 9, 8], "rootSt": 7}, {"name": "A", "inv": "1st", "frets": [4, 7, 5], "rootSt": 9}, {"name": "Bdim", "inv": "1st", "frets": [5, 9, 6], "rootSt": 11}, {"name": "Dbdim", "inv": "Root", "frets": [4, 5, 5], "rootSt": 1}, {"name": "Dm", "inv": "Root", "frets": [5, 7, 6], "rootSt": 2}]}, "cycle6": {"close_root": [{"name": "Dm", "inv": "Root", "frets": [7, 6, 5], "rootSt": 2}, {"name": "Bdim", "inv": "1st", "frets": [7, 6, 7], "rootSt": 11}, {"name": "G", "inv": "2nd", "frets": [7, 8, 7], "rootSt": 7}, {"name": "Em", "inv": "Root", "frets": [9, 8, 7], "rootSt": 4}, {"name": "Dbdim", "inv": "1st", "frets": [9, 8, 9], "rootSt": 1}, {"name": "A", "inv": "2nd", "frets": [9, 10, 9], "rootSt": 9}, {"name": "Faug", "inv": "Root", "frets": [10, 10, 9], "rootSt": 5}, {"name": "Dm", "inv": "1st", "frets": [10, 10, 10], "rootSt": 2}], "close_1st": [{"name": "Dm", "inv": "1st", "frets": [10, 10, 10], "rootSt": 2}, {"name": "Bdim", "inv": "2nd", "frets": [10, 12, 10], "rootSt": 11}, {"name": "G", "inv": "Root", "frets": [12, 12, 10], "rootSt": 7}, {"name": "Em", "inv": "1st", "frets": [12, 12, 12], "rootSt": 4}, {"name": "Dbdim", "inv": "2nd", "frets": [12, 14, 12], "rootSt": 1}, {"name": "A", "inv": "Root", "frets": [14, 14, 12], "rootSt": 9}, {"name": "Faug", "inv": "Root", "frets": [10, 10, 9], "rootSt": 5}, {"name": "Dm", "inv": "1st", "frets": [10, 10, 10], "rootSt": 2}], "close_2nd": [{"name": "Dm", "inv": "2nd", "frets": [2, 3, 1], "rootSt": 2}, {"name": "Bdim", "inv": "Root", "frets": [4, 3, 1], "rootSt": 11}, {"name": "G", "inv": "1st", "frets": [4, 3, 3], "rootSt": 7}, {"name": "Em", "inv": "2nd", "frets": [4, 5, 3], "rootSt": 4}, {"name": "Dbdim", "inv": "Root", "frets": [6, 5, 3], "rootSt": 1}, {"name": "A", "inv": "1st", "frets": [6, 5, 5], "rootSt": 9}, {"name": "Faug", "inv": "2nd", "frets": [6, 6, 5], "rootSt": 5}, {"name": "Dm", "inv": "Root", "frets": [7, 6, 5], "rootSt": 2}], "spread643_root": [{"name": "Dm", "inv": "Root", "frets": [10, 7, 10], "rootSt": 2}, {"name": "Bdim", "inv": "1st", "frets": [10, 9, 10], "rootSt": 11}, {"name": "G", "inv": "2nd", "frets": [10, 9, 12], "rootSt": 7}, {"name": "Em", "inv": "Root", "frets": [12, 9, 12], "rootSt": 4}, {"name": "Dbdim", "inv": "1st", "frets": [12, 11, 12], "rootSt": 1}, {"name": "A", "inv": "2nd", "frets": [12, 11, 14], "rootSt": 9}, {"name": "Faug", "inv": "Root", "frets": [13, 11, 14], "rootSt": 5}, {"name": "Dm", "inv": "Root", "frets": [10, 7, 10], "rootSt": 2}], "spread643_1st": [{"name": "Dm", "inv": "1st", "frets": [1, 0, 2], "rootSt": 2}, {"name": "Bdim", "inv": "2nd", "frets": [1, 0, 4], "rootSt": 11}, {"name": "G", "inv": "Root", "frets": [3, 0, 4], "rootSt": 7}, {"name": "Em", "inv": "1st", "frets": [3, 2, 4], "rootSt": 4}, {"name": "Dbdim", "inv": "2nd", "frets": [3, 2, 6], "rootSt": 1}, {"name": "A", "inv": "Root", "frets": [5, 2, 6], "rootSt": 9}, {"name": "Faug", "inv": "1st", "frets": [5, 3, 6], "rootSt": 5}, {"name": "Dm", "inv": "2nd", "frets": [5, 3, 7], "rootSt": 2}], "spread643_2nd": [{"name": "Dm", "inv": "2nd", "frets": [5, 3, 7], "rootSt": 2}, {"name": "Bdim", "inv": "Root", "frets": [7, 3, 7], "rootSt": 11}, {"name": "G", "inv": "1st", "frets": [7, 5, 7], "rootSt": 7}, {"name": "Em", "inv": "2nd", "frets": [7, 5, 9], "rootSt": 4}, {"name": "Dbdim", "inv": "Root", "frets": [9, 5, 9], "rootSt": 1}, {"name": "A", "inv": "1st", "frets": [9, 7, 9], "rootSt": 9}, {"name": "Faug", "inv": "2nd", "frets": [9, 7, 10], "rootSt": 5}, {"name": "Dm", "inv": "Root", "frets": [10, 7, 10], "rootSt": 2}], "spread542_root": [{"name": "Dm", "inv": "Root", "frets": [5, 7, 6], "rootSt": 2}, {"name": "Bdim", "inv": "1st", "frets": [5, 9, 6], "rootSt": 11}, {"name": "G", "inv": "2nd", "frets": [5, 9, 8], "rootSt": 7}, {"name": "Em", "inv": "Root", "frets": [7, 9, 8], "rootSt": 4}, {"name": "Dbdim", "inv": "1st", "frets": [7, 11, 8], "rootSt": 1}, {"name": "A", "inv": "2nd", "frets": [7, 11, 10], "rootSt": 9}, {"name": "Faug", "inv": "Root", "frets": [8, 11, 10], "rootSt": 5}, {"name": "Dm", "inv": "1st", "frets": [8, 12, 10], "rootSt": 2}], "spread542_1st": [{"name": "Dm", "inv": "1st", "frets": [8, 12, 10], "rootSt": 2}, {"name": "Bdim", "inv": "2nd", "frets": [8, 12, 12], "rootSt": 11}, {"name": "G", "inv": "Root", "frets": [10, 12, 12], "rootSt": 7}, {"name": "Em", "inv": "1st", "frets": [10, 14, 12], "rootSt": 4}, {"name": "Dbdim", "inv": "2nd", "frets": [10, 14, 14], "rootSt": 1}, {"name": "A", "inv": "2nd", "frets": [7, 11, 10], "rootSt": 9}, {"name": "Faug", "inv": "Root", "frets": [8, 11, 10], "rootSt": 5}, {"name": "Dm", "inv": "1st", "frets": [8, 12, 10], "rootSt": 2}], "spread542_2nd": [{"name": "Dm", "inv": "2nd", "frets": [0, 3, 3], "rootSt": 2}, {"name": "Bdim", "inv": "Root", "frets": [2, 3, 3], "rootSt": 11}, {"name": "G", "inv": "1st", "frets": [2, 5, 3], "rootSt": 7}, {"name": "Em", "inv": "2nd", "frets": [2, 5, 5], "rootSt": 4}, {"name": "Dbdim", "inv": "Root", "frets": [4, 5, 5], "rootSt": 1}, {"name": "A", "inv": "1st", "frets": [4, 7, 5], "rootSt": 9}, {"name": "Faug", "inv": "2nd", "frets": [4, 7, 6], "rootSt": 5}, {"name": "Dm", "inv": "Root", "frets": [5, 7, 6], "rootSt": 2}]}}, "A": {"cycle2": {"close_root": [{"name": "Am", "inv": "Root", "frets": [14, 13, 12], "rootSt": 9}, {"name": "Bm", "inv": "2nd", "frets": [11, 12, 10], "rootSt": 11}, {"name": "Caug", "inv": "2nd", "frets": [13, 13, 12], "rootSt": 0}, {"name": "D", "inv": "1st", "frets": [11, 10, 10], "rootSt": 2}, {"name": "E", "inv": "Root", "frets": [9, 9, 7], "rootSt": 4}, {"name": "Gbdim", "inv": "Root", "frets": [11, 10, 8], "rootSt": 6}, {"name": "Abdim", "inv": "Root", "frets": [13, 12, 10], "rootSt": 8}, {"name": "Am", "inv": "Root", "frets": [14, 13, 12], "rootSt": 9}], "close_1st": [{"name": "Am", "inv": "1st", "frets": [5, 5, 5], "rootSt": 9}, {"name": "Bm", "inv": "Root", "frets": [4, 3, 2], "rootSt": 11}, {"name": "Caug", "inv": "Root", "frets": [5, 5, 4], "rootSt": 0}, {"name": "D", "inv": "Root", "frets": [7, 7, 5], "rootSt": 2}, {"name": "E", "inv": "Root", "frets": [9, 9, 7], "rootSt": 4}, {"name": "Gbdim", "inv": "Root", "frets": [11, 10, 8], "rootSt": 6}, {"name": "Abdim", "inv": "Root", "frets": [13, 12, 10], "rootSt": 8}, {"name": "Am", "inv": "Root", "frets": [14, 13, 12], "rootSt": 9}], "close_2nd": [{"name": "Am", "inv": "2nd", "frets": [9, 10, 8], "rootSt": 9}, {"name": "Bm", "inv": "1st", "frets": [7, 7, 7], "rootSt": 11}, {"name": "Caug", "inv": "1st", "frets": [9, 9, 8], "rootSt": 0}, {"name": "D", "inv": "1st", "frets": [11, 10, 10], "rootSt": 2}, {"name": "E", "inv": "Root", "frets": [9, 9, 7], "rootSt": 4}, {"name": "Gbdim", "inv": "Root", "frets": [11, 10, 8], "rootSt": 6}, {"name": "Abdim", "inv": "Root", "frets": [13, 12, 10], "rootSt": 8}, {"name": "Am", "inv": "Root", "frets": [14, 13, 12], "rootSt": 9}], "spread643_root": [{"name": "Am", "inv": "Root", "frets": [5, 2, 5], "rootSt": 9}, {"name": "Bm", "inv": "Root", "frets": [7, 4, 7], "rootSt": 11}, {"name": "Caug", "inv": "Root", "frets": [8, 6, 9], "rootSt": 0}, {"name": "D", "inv": "Root", "frets": [10, 7, 11], "rootSt": 2}, {"name": "E", "inv": "Root", "frets": [12, 9, 13], "rootSt": 4}, {"name": "Gbdim", "inv": "Root", "frets": [14, 10, 14], "rootSt": 6}, {"name": "Abdim", "inv": "2nd", "frets": [10, 9, 13], "rootSt": 8}, {"name": "Am", "inv": "2nd", "frets": [12, 10, 14], "rootSt": 9}], "spread643_1st": [{"name": "Am", "inv": "1st", "frets": [8, 7, 9], "rootSt": 9}, {"name": "Bm", "inv": "Root", "frets": [7, 4, 7], "rootSt": 11}, {"name": "Caug", "inv": "Root", "frets": [8, 6, 9], "rootSt": 0}, {"name": "D", "inv": "Root", "frets": [10, 7, 11], "rootSt": 2}, {"name": "E", "inv": "Root", "frets": [12, 9, 13], "rootSt": 4}, {"name": "Gbdim", "inv": "Root", "frets": [14, 10, 14], "rootSt": 6}, {"name": "Abdim", "inv": "2nd", "frets": [10, 9, 13], "rootSt": 8}, {"name": "Am", "inv": "2nd", "frets": [12, 10, 14], "rootSt": 9}], "spread643_2nd": [{"name": "Am", "inv": "2nd", "frets": [12, 10, 14], "rootSt": 9}, {"name": "Bm", "inv": "1st", "frets": [10, 9, 11], "rootSt": 11}, {"name": "Caug", "inv": "1st", "frets": [12, 10, 13], "rootSt": 0}, {"name": "D", "inv": "Root", "frets": [10, 7, 11], "rootSt": 2}, {"name": "E", "inv": "Root", "frets": [12, 9, 13], "rootSt": 4}, {"name": "Gbdim", "inv": "Root", "frets": [14, 10, 14], "rootSt": 6}, {"name": "Abdim", "inv": "2nd", "frets": [10, 9, 13], "rootSt": 8}, {"name": "Am", "inv": "2nd", "frets": [12, 10, 14], "rootSt": 9}], "spread542_root": [{"name": "Am", "inv": "Root", "frets": [0, 2, 1], "rootSt": 9}, {"name": "Bm", "inv": "Root", "frets": [2, 4, 3], "rootSt": 11}, {"name": "Caug", "inv": "Root", "frets": [3, 6, 5], "rootSt": 0}, {"name": "D", "inv": "Root", "frets": [5, 7, 7], "rootSt": 2}, {"name": "E", "inv": "Root", "frets": [7, 9, 9], "rootSt": 4}, {"name": "Gbdim", "inv": "Root", "frets": [9, 10, 10], "rootSt": 6}, {"name": "Abdim", "inv": "Root", "frets": [11, 12, 12], "rootSt": 8}, {"name": "Am", "inv": "2nd", "frets": [7, 10, 10], "rootSt": 9}], "spread542_1st": [{"name": "Am", "inv": "1st", "frets": [3, 7, 5], "rootSt": 9}, {"name": "Bm", "inv": "Root", "frets": [2, 4, 3], "rootSt": 11}, {"name": "Caug", "inv": "Root", "frets": [3, 6, 5], "rootSt": 0}, {"name": "D", "inv": "Root", "frets": [5, 7, 7], "rootSt": 2}, {"name": "E", "inv": "Root", "frets": [7, 9, 9], "rootSt": 4}, {"name": "Gbdim", "inv": "Root", "frets": [9, 10, 10], "rootSt": 6}, {"name": "Abdim", "inv": "Root", "frets": [11, 12, 12], "rootSt": 8}, {"name": "Am", "inv": "2nd", "frets": [7, 10, 10], "rootSt": 9}], "spread542_2nd": [{"name": "Am", "inv": "2nd", "frets": [7, 10, 10], "rootSt": 9}, {"name": "Bm", "inv": "1st", "frets": [5, 9, 7], "rootSt": 11}, {"name": "Caug", "inv": "1st", "frets": [7, 10, 9], "rootSt": 0}, {"name": "D", "inv": "1st", "frets": [9, 12, 10], "rootSt": 2}, {"name": "E", "inv": "Root", "frets": [7, 9, 9], "rootSt": 4}, {"name": "Gbdim", "inv": "Root", "frets": [9, 10, 10], "rootSt": 6}, {"name": "Abdim", "inv": "Root", "frets": [11, 12, 12], "rootSt": 8}, {"name": "Am", "inv": "2nd", "frets": [7, 10, 10], "rootSt": 9}]}, "cycle6": {"close_root": [{"name": "Am", "inv": "Root", "frets": [14, 13, 12], "rootSt": 9}, {"name": "Gbdim", "inv": "Root", "frets": [11, 10, 8], "rootSt": 6}, {"name": "D", "inv": "1st", "frets": [11, 10, 10], "rootSt": 2}, {"name": "Bm", "inv": "2nd", "frets": [11, 12, 10], "rootSt": 11}, {"name": "Abdim", "inv": "Root", "frets": [13, 12, 10], "rootSt": 8}, {"name": "E", "inv": "1st", "frets": [13, 12, 12], "rootSt": 4}, {"name": "Caug", "inv": "2nd", "frets": [13, 13, 12], "rootSt": 0}, {"name": "Am", "inv": "Root", "frets": [14, 13, 12], "rootSt": 9}], "close_1st": [{"name": "Am", "inv": "1st", "frets": [5, 5, 5], "rootSt": 9}, {"name": "Gbdim", "inv": "2nd", "frets": [5, 7, 5], "rootSt": 6}, {"name": "D", "inv": "Root", "frets": [7, 7, 5], "rootSt": 2}, {"name": "Bm", "inv": "1st", "frets": [7, 7, 7], "rootSt": 11}, {"name": "Abdim", "inv": "2nd", "frets": [7, 9, 7], "rootSt": 8}, {"name": "E", "inv": "Root", "frets": [9, 9, 7], "rootSt": 4}, {"name": "Caug", "inv": "1st", "frets": [9, 9, 8], "rootSt": 0}, {"name": "Am", "inv": "2nd", "frets": [9, 10, 8], "rootSt": 9}], "close_2nd": [{"name": "Am", "inv": "2nd", "frets": [9, 10, 8], "rootSt": 9}, {"name": "Gbdim", "inv": "Root", "frets": [11, 10, 8], "rootSt": 6}, {"name": "D", "inv": "1st", "frets": [11, 10, 10], "rootSt": 2}, {"name": "Bm", "inv": "2nd", "frets": [11, 12, 10], "rootSt": 11}, {"name": "Abdim", "inv": "Root", "frets": [13, 12, 10], "rootSt": 8}, {"name": "E", "inv": "1st", "frets": [13, 12, 12], "rootSt": 4}, {"name": "Caug", "inv": "2nd", "frets": [13, 13, 12], "rootSt": 0}, {"name": "Am", "inv": "Root", "frets": [14, 13, 12], "rootSt": 9}], "spread643_root": [{"name": "Am", "inv": "Root", "frets": [5, 2, 5], "rootSt": 9}, {"name": "Gbdim", "inv": "1st", "frets": [5, 4, 5], "rootSt": 6}, {"name": "D", "inv": "2nd", "frets": [5, 4, 7], "rootSt": 2}, {"name": "Bm", "inv": "Root", "frets": [7, 4, 7], "rootSt": 11}, {"name": "Abdim", "inv": "1st", "frets": [7, 6, 7], "rootSt": 8}, {"name": "E", "inv": "2nd", "frets": [7, 6, 9], "rootSt": 4}, {"name": "Caug", "inv": "Root", "frets": [8, 6, 9], "rootSt": 0}, {"name": "Am", "inv": "1st", "frets": [8, 7, 9], "rootSt": 9}], "spread643_1st": [{"name": "Am", "inv": "1st", "frets": [8, 7, 9], "rootSt": 9}, {"name": "Gbdim", "inv": "2nd", "frets": [8, 7, 11], "rootSt": 6}, {"name": "D", "inv": "Root", "frets": [10, 7, 11], "rootSt": 2}, {"name": "Bm", "inv": "1st", "frets": [10, 9, 11], "rootSt": 11}, {"name": "Abdim", "inv": "2nd", "frets": [10, 9, 13], "rootSt": 8}, {"name": "E", "inv": "Root", "frets": [12, 9, 13], "rootSt": 4}, {"name": "Caug", "inv": "1st", "frets": [12, 10, 13], "rootSt": 0}, {"name": "Am", "inv": "2nd", "frets": [12, 10, 14], "rootSt": 9}], "spread643_2nd": [{"name": "Am", "inv": "2nd", "frets": [12, 10, 14], "rootSt": 9}, {"name": "Gbdim", "inv": "Root", "frets": [14, 10, 14], "rootSt": 6}, {"name": "D", "inv": "Root", "frets": [10, 7, 11], "rootSt": 2}, {"name": "Bm", "inv": "1st", "frets": [10, 9, 11], "rootSt": 11}, {"name": "Abdim", "inv": "2nd", "frets": [10, 9, 13], "rootSt": 8}, {"name": "E", "inv": "Root", "frets": [12, 9, 13], "rootSt": 4}, {"name": "Caug", "inv": "1st", "frets": [12, 10, 13], "rootSt": 0}, {"name": "Am", "inv": "2nd", "frets": [12, 10, 14], "rootSt": 9}], "spread542_root": [{"name": "Am", "inv": "Root", "frets": [0, 2, 1], "rootSt": 9}, {"name": "Gbdim", "inv": "1st", "frets": [0, 4, 1], "rootSt": 6}, {"name": "D", "inv": "2nd", "frets": [0, 4, 3], "rootSt": 2}, {"name": "Bm", "inv": "Root", "frets": [2, 4, 3], "rootSt": 11}, {"name": "Abdim", "inv": "1st", "frets": [2, 6, 3], "rootSt": 8}, {"name": "E", "inv": "2nd", "frets": [2, 6, 5], "rootSt": 4}, {"name": "Caug", "inv": "Root", "frets": [3, 6, 5], "rootSt": 0}, {"name": "Am", "inv": "1st", "frets": [3, 7, 5], "rootSt": 9}], "spread542_1st": [{"name": "Am", "inv": "1st", "frets": [3, 7, 5], "rootSt": 9}, {"name": "Gbdim", "inv": "2nd", "frets": [3, 7, 7], "rootSt": 6}, {"name": "D", "inv": "Root", "frets": [5, 7, 7], "rootSt": 2}, {"name": "Bm", "inv": "1st", "frets": [5, 9, 7], "rootSt": 11}, {"name": "Abdim", "inv": "2nd", "frets": [5, 9, 9], "rootSt": 8}, {"name": "E", "inv": "Root", "frets": [7, 9, 9], "rootSt": 4}, {"name": "Caug", "inv": "1st", "frets": [7, 10, 9], "rootSt": 0}, {"name": "Am", "inv": "2nd", "frets": [7, 10, 10], "rootSt": 9}], "spread542_2nd": [{"name": "Am", "inv": "2nd", "frets": [7, 10, 10], "rootSt": 9}, {"name": "Gbdim", "inv": "Root", "frets": [9, 10, 10], "rootSt": 6}, {"name": "D", "inv": "1st", "frets": [9, 12, 10], "rootSt": 2}, {"name": "Bm", "inv": "2nd", "frets": [9, 12, 12], "rootSt": 11}, {"name": "Abdim", "inv": "Root", "frets": [11, 12, 12], "rootSt": 8}, {"name": "E", "inv": "1st", "frets": [11, 14, 12], "rootSt": 4}, {"name": "Caug", "inv": "2nd", "frets": [11, 14, 13], "rootSt": 0}, {"name": "Am", "inv": "2nd", "frets": [7, 10, 10], "rootSt": 9}]}}};
+;
+
+// ══ 상태 ════════════════════════════════════════════
+let currentCycle    = 2;
+let currentInv      = 'close_root'; // close_root/1st/2nd, spread643_root/1st/2nd, spread542_root/1st/2nd
+let currentStep     = 0;
+let currentView     = 'A';
+let currentViewMode = 'note'; // 'note' | 'degree'
+let currentKey     = 'C';
+
+function getSeq() {
+  const d = ALL_KEYS_DATA[currentKey];
+  if(!d) return ALL_KEYS_DATA['C']['cycle2']['close_root'];
+  const cycleData = d['cycle'+currentCycle] || d['cycle2'];
+  return cycleData[currentInv] || cycleData['close_root'];
+}
+
+// ══ 미니 지판 SVG 생성 ══════════════════════════════
+// 하이라이트: 이전 코드 대비 변화 강조
+
+// ══ 6줄 가로 지판 — voice-leading 전용 ══════════════
+// chordFrets: [G현프렛, B현프렛, e현프렛] (③②① = absIdx 3,4,5)
+// prevFrets: 이전 코드 (변화 색상용, null이면 첫 코드)
+// width: SVG 너비
+function makeVoiceLeadingFretboard(chordFrets, prevFrets=null, width=700, viewMode='note', rootNote=0, activeAI=[3,4,5]) {
+  const ACTIVE_AI = activeAI;
+  const activeSet = new Set(ACTIVE_AI);
+
+  const activeFrets = chordFrets.filter(f => f > 0);
+  const minF = activeFrets.length ? Math.min(...activeFrets) : 0;
+  const maxF = activeFrets.length ? Math.max(...activeFrets) : 4;
+  const startFret = 0;
+  const endFret   = Math.max(15, maxF + 1);
+
+  const NUM_STR = 6, SS = 16, NR = 7, FDOTR = 3;
+  const showOpen = startFret === 0;
+  const LABEL_W  = 16, OPEN_W = showOpen?20:0, NUT_W = showOpen?6:0;
+  const padTop=14, padBot=22, padLeft=LABEL_W+OPEN_W+NUT_W+4, padRight=16;
+  const strAreaH = SS*(NUM_STR-1), totalH = padTop+strAreaH+padBot;
+  const numFrets = endFret-startFret;
+  const fretW    = (width-padLeft-padRight)/numFrets;
+  const fretX    = padLeft, nutX = fretX-NUT_W;
+  const openNoteX = nutX-OPEN_W/2, labelX = LABEL_W/2;
+  const strY  = (row) => padTop+row*SS;
+  const toRow = (si)  => NUM_STR-1-si;
+  const toSN  = (si)  => NUM_STR-si;
+  const FONT  = "'IBM Plex Mono','IBM Plex Sans KR',monospace";
+  const strLabels = ['e','B','G','D','A','E'];
+
+  let s = `<svg viewBox="0 0 ${width} ${totalH}" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:auto;display:block">`;
+  s += `<rect width="${width}" height="${totalH}" fill="#ede7d9" rx="4"/>`;
+
+  // 프렛 포지션 마커
+  const dotY = padTop+strAreaH/2;
+  [3,5,7,9,12].forEach(fp => {
+    if(fp>startFret && fp<=endFret){
+      const cx = fretX+(fp-startFret-0.5)*fretW;
+      if(fp===12){
+        s += `<circle cx="${cx-fretW*.25}" cy="${dotY}" r="${FDOTR}" fill="#c8bfa8"/>`;
+        s += `<circle cx="${cx+fretW*.25}" cy="${dotY}" r="${FDOTR}" fill="#c8bfa8"/>`;
+      } else s += `<circle cx="${cx}" cy="${dotY}" r="${FDOTR}" fill="#c8bfa8"/>`;
+    }
+  });
+
+  // 너트
+  if(showOpen) s += `<rect x="${nutX}" y="${strY(0)}" width="${NUT_W-1}" height="${strAreaH}" fill="#2c2820" rx="1"/>`;
+
+  // 프렛 선
+  for(let f=showOpen?1:0; f<=numFrets; f++)
+    s += `<line x1="${fretX+f*fretW}" y1="${strY(0)}" x2="${fretX+f*fretW}" y2="${strY(5)}" stroke="#9a8f7a" stroke-width="1.2"/>`;
+
+  // 현 선 + 라벨
+  for(let si=0; si<NUM_STR; si++){
+    const row=toRow(si), y=strY(row);
+    const isAct=activeSet.has(si);
+    const th=(0.7+((NUM_STR-1-si)/(NUM_STR-1))*1.7).toFixed(2);
+    s += `<line x1="${showOpen?nutX:fretX}" y1="${y}" x2="${width-padRight}" y2="${y}" stroke="${isAct?'#8b7355':'#d0c8b4'}" stroke-width="${isAct?th:(th*.5)}"/>`;
+    s += `<text x="${labelX}" y="${y}" font-family="${FONT}" font-size="9" fill="${isAct?'#9a9080':'#ccc8be'}" text-anchor="middle" dominant-baseline="middle">${strLabels[row]}</text>`;
+  }
+
+  // 프렛 번호
+  for(let f=1; f<=numFrets; f++)
+    s += `<text x="${fretX+(f-.5)*fretW}" y="${strY(5)+15}" font-family="${FONT}" font-size="8" fill="#9a9080" text-anchor="middle">${f+startFret}</text>`;
+
+  // 음표 (활성 현만)
+  ACTIVE_AI.forEach((ai, i) => {
+    const fret = chordFrets[i];
+    const prev = prevFrets ? prevFrets[i] : null;
+    const chg  = prev!==null ? fret-prev : null;
+    const row  = toRow(ai), y = strY(row);
+    const x    = fret===0 ? openNoteX : fretX+(fret-startFret-.5)*fretW;
+
+    // 보이스 리딩 색상: 유지=초록, 상행=빨강, 하행=파랑, 첫코드=파랑
+    const fill = chg===null?'#2c5f8a': chg===0?'#4a7c4a': chg>0?'#c04030':'#2c5f8a';
+    const noteSt = ((OPEN_STR[ai]+fret)%12+12)%12;
+    const noteNm = ['C','C#','D','Eb','E','F','F#','G','Ab','A','Bb','B'][noteSt];
+
+    // 도수 동적 계산: 루트(C=0)와의 반음 차이로 결정
+    const rootSt = rootNote !== undefined ? rootNote : 0;
+    const interval = (noteSt - rootSt + 12) % 12;
+    const degMap = {0:'1', 1:'b2', 2:'2', 3:'b3', 4:'3', 5:'4', 6:'b5', 7:'5', 8:'#5', 9:'6', 10:'b7', 11:'7'};
+    const degLabel = degMap[interval] || '?';
+    const label = (viewMode==='degree') ? degLabel : noteNm;
+
+    if(fret===0){
+      s += `<circle cx="${openNoteX}" cy="${y}" r="${NR}" fill="#ede7d9" stroke="${fill}" stroke-width="2"/>`;
+      s += `<text x="${openNoteX}" y="${y}" font-family="${FONT}" font-size="6" fill="${fill}" text-anchor="middle" dominant-baseline="middle" font-weight="600">${label}</text>`;
+    } else {
+      s += `<circle cx="${x}" cy="${y}" r="${NR}" fill="${fill}"/>`;
+      s += `<text x="${x}" y="${y}" font-family="${FONT}" font-size="${label.length>1?'5.5':'6.5'}" fill="#f5f0e8" text-anchor="middle" dominant-baseline="middle" font-weight="600">${label}</text>`;
+    }
+  });
+
+  s += `</svg>`;
+  return s;
+}
+
+
+// ══ 방식 A: 시퀀스 렌더 ════════════════════════════
+function renderSequenceA() {
+  const seq = getSeq();
+  document.getElementById('A-title').textContent = `${currentKey} Melodic Minor · Cycle ${currentCycle} · ${
+      {'close_root':'Close 근음','close_1st':'Close 1전위','close_2nd':'Close 2전위',
+       'spread643_root':'Spread⑥④③ 근음','spread643_1st':'Spread⑥④③ 1전위','spread643_2nd':'Spread⑥④③ 2전위',
+       'spread542_root':'Spread⑤④② 근음','spread542_1st':'Spread⑤④② 1전위','spread542_2nd':'Spread⑤④② 2전위'
+      }[currentInv] || currentInv
+    } 시작`;
+  const container = document.getElementById('seq-container');
+  container.innerHTML = '';
+
+  // 현재 보이싱 타입에 맞는 활성 현 absIdx
+  const activeAI = currentVoicing === 'spread643' ? [0,2,3]
+                 : currentVoicing === 'spread542' ? [1,2,4]
+                 : [3,4,5]; // close ③②①
+
+  seq.forEach((chord, idx) => {
+    const prev = idx > 0 ? seq[idx-1].frets : null;
+    const card = document.createElement('div');
+    card.className = 'chord-card';
+
+    const invLabel = {'Root':'근음 포지션','1st':'1전위','2nd':'2전위'}[chord.inv];
+    const notes = activeAI.map((ai,i) => nn(getNote(ai, chord.frets[i]))).join(' · ');
+
+    // 코드 루트 반음값: 코드명에서 계산
+    const chordRootMap = {'C':0,'D':2,'E':4,'F':5,'G':7,'A':9,'B':11,'Db':1,'Eb':3,'Gb':6,'Ab':8,'Bb':10,'Dm':2,'Em':4,'Am':9,'Bdim':11};
+    const chordRootSt = chordRootMap[chord.name] ?? 0;
+
+    card.innerHTML = `
+      <div class="chord-name">
+        <strong>${chord.name}</strong>
+        <span class="quality">${invLabel}</span>
+        <span style="font-size:11px;color:var(--ink4);font-family:var(--font-mono);display:block;margin-top:4px">${notes}</span>
+      </div>
+      <div>${makeVoiceLeadingFretboard(chord.frets, prev, 700, currentViewMode, chordRootSt, activeAI)}</div>
+    `;
+    container.appendChild(card);
+  });
+}
+
+// ══ 방식 B: 스텝 렌더 ══════════════════════════════
+function renderStepB() {
+  const seq = getSeq();
+  const chord = seq[currentStep];
+  const prev  = currentStep > 0 ? seq[currentStep-1] : null;
+
+  // 헤더
+  document.getElementById('B-counter').textContent = `${currentStep+1} / ${seq.length}`;
+  document.getElementById('B-chordname').textContent = chord.name;
+  document.getElementById('B-inv').textContent = {'Root':'근음 포지션','1st':'1전위','2nd':'2전위'}[chord.inv];
+
+  // 지판
+  document.getElementById('B-fretboard').innerHTML = makeVoiceLeadingFretboard(chord.frets, prev ? prev.frets : null, 660);
+
+  // 버튼 상태
+  document.getElementById('btn-prev').disabled = currentStep === 0;
+  document.getElementById('btn-next').disabled = currentStep === seq.length-1;
+
+  // 스텝 도트
+  const dotsEl = document.getElementById('step-dots');
+  dotsEl.innerHTML = '';
+  seq.forEach((_,i) => {
+    const d = document.createElement('div');
+    d.className = 'sdot' + (i===currentStep?' active': i<currentStep?' visited':'');
+    d.onclick = () => { currentStep=i; renderStepB(); };
+    dotsEl.appendChild(d);
+  });
+
+  // 변화 패널
+  const cpRows = document.getElementById('cp-rows');
+  cpRows.innerHTML = '';
+  const strNames = ['G현(③)','B현(②)','e현(①)'];
+  if(!prev) {
+    cpRows.innerHTML = `<div style="font-size:11px;color:var(--ink4);font-family:var(--font-mono);padding:8px 0">첫 번째 코드 — 기준 포지션</div>`;
+  } else {
+    chord.frets.forEach((fret, si) => {
+      const prevFret = prev.frets[si];
+      const chg = fret - prevFret;
+      const prevNote = nn(getNote(STR_IDXS[si], prevFret));
+      const curNote  = nn(getNote(STR_IDXS[si], fret));
+      const badgeClass = chg===0?'badge-stay':chg>0?'badge-up':'badge-down';
+      const badgeText  = chg===0?'유지':chg>0?`+${chg}프렛`:`${chg}프렛`;
+      const row = document.createElement('div');
+      row.className = 'cp-row';
+      row.innerHTML = `
+        <span class="cp-string">${strNames[si].split('(')[0]}</span>
+        <span class="cp-from">${prevFret}fr(${prevNote})</span>
+        <span class="cp-arrow">→</span>
+        <span class="cp-to" style="color:${chg===0?'var(--accent3)':chg>0?'#e06040':'var(--accent2)'}">${fret}fr(${curNote})</span>
+        <span class="cp-note"><span class="change-badge ${badgeClass}">${badgeText}</span></span>
+      `;
+      cpRows.appendChild(row);
+    });
+  }
+}
+
+// ══ 제어 함수 ═══════════════════════════════════════
+let currentVoicing = 'close';
+let currentInvPos  = 'root';
+
+function setVoicing(v, el) {
+  currentVoicing = v;
+  currentInv = v + '_' + currentInvPos;
+  currentStep = 0;
+  document.querySelectorAll('[data-vl-voicing]').forEach(b=>b.classList.remove('active'));
+  el.classList.add('active');
+  renderSequenceA();
+}
+
+function setInvPos(pos, el) {
+  currentInvPos = pos;
+  currentInv = currentVoicing + '_' + pos;
+  currentStep = 0;
+  document.querySelectorAll('[data-vl-inv]').forEach(b=>b.classList.remove('active'));
+  el.classList.add('active');
+  renderSequenceA();
+}
+
+function setKey(k, el) {
+  currentKey = k;
+  currentStep = 0;
+  document.querySelectorAll('[data-vl-key]').forEach(b=>b.classList.remove('active'));
+  el.classList.add('active');
+  renderSequenceA();
+}
+
+function toggleViewMode(el) {
+  currentViewMode = currentViewMode === 'note' ? 'degree' : 'note';
+  el.textContent = currentViewMode === 'note' ? '음이름' : '도수';
+  el.classList.toggle('active', currentViewMode === 'degree');
+  renderSequenceA();
+}
+
+function switchView(v, el) {
+  currentView = v;
+  document.getElementById('view-A').style.display = v==='A'?'block':'none';
+  document.getElementById('view-B').style.display = v==='B'?'block':'none';
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  el.classList.add('active');
+  if(v==='A') renderSequenceA();
+  else renderStepB();
+}
+
+function setCycle(c, el) {
+  currentCycle = c;
+  currentStep = 0;
+  document.querySelectorAll('[data-vl-cycle]').forEach(b=>b.classList.remove('active'));
+  el.classList.add('active');
+  if(currentView==='A') renderSequenceA();
+  else renderStepB();
+}
+
+function setInv(inv, el) {
+  currentInv = inv;
+  currentStep = 0;
+  document.querySelectorAll('[data-vl-inv]').forEach(b=>b.classList.remove('active'));
+  el.classList.add('active');
+  renderSequenceA();
+}
+
+function stepNav(dir) {
+  const seq = getSeq();
+  currentStep = Math.max(0, Math.min(seq.length-1, currentStep+dir));
+  renderStepB();
+}
+
+// ══ 초기 렌더 ═══════════════════════════════════════
+renderSequenceA();
+renderStepB();
+
+// 전역 노출
+window.VL_setKey        = setKey;
+window.VL_setCycle      = setCycle;
+window.VL_setVoicing    = setVoicing;
+window.VL_setInvPos     = setInvPos;
+window.VL_toggleViewMode= toggleViewMode;
+
+})();
+
+// ── 4성부 화음 스크립트 ───────────────────────
+(function() {
+
+const FOURPART_DATA = {"C":{"Min(maj7)":{"drop2":[{"frets":[3,5,4,4],"inv":"Root","rootSt":0},{"frets":[6,9,5,8],"inv":"1st","rootSt":0},{"frets":[10,10,8,12],"inv":"2nd","rootSt":0},{"frets":[14,13,12,13],"inv":"3rd","rootSt":0}],"drop3":[{"frets":[8,9,8,8],"inv":"Root","rootSt":0},{"frets":[11,10,12,12],"inv":"1st","rootSt":0},{"frets":[3,1,4,1],"inv":"2nd","rootSt":0},{"frets":[7,5,5,4],"inv":"3rd","rootSt":0}]},"Maj7#5":{"drop2":[{"frets":[3,6,4,5],"inv":"Root","rootSt":0},{"frets":[7,9,5,9],"inv":"1st","rootSt":0},{"frets":[11,10,9,12],"inv":"2nd","rootSt":0},{"frets":[2,2,1,1],"inv":"3rd","rootSt":0}],"drop3":[{"frets":[8,9,9,9],"inv":"Root","rootSt":0},{"frets":[12,10,13,12],"inv":"1st","rootSt":0},{"frets":[4,2,4,1],"inv":"2nd","rootSt":0},{"frets":[7,6,5,5],"inv":"3rd","rootSt":0}]},"Maj7b5":{"drop2":[{"frets":[3,4,4,5],"inv":"Root","rootSt":0},{"frets":[7,9,5,7],"inv":"1st","rootSt":0},{"frets":[9,10,9,12],"inv":"2nd","rootSt":0},{"frets":[14,14,11,13],"inv":"3rd","rootSt":0}],"drop3":[{"frets":[8,9,9,7],"inv":"Root","rootSt":0},{"frets":[12,10,11,12],"inv":"1st","rootSt":0},{"frets":[2,2,4,1],"inv":"2nd","rootSt":0},{"frets":[7,4,5,5],"inv":"3rd","rootSt":0}]},"Min7#5":{"drop2":[{"frets":[3,6,3,4],"inv":"Root","rootSt":0},{"frets":[6,8,5,9],"inv":"1st","rootSt":0},{"frets":[11,10,8,11],"inv":"2nd","rootSt":0},{"frets":[1,1,1,1],"inv":"3rd","rootSt":0}],"drop3":[{"frets":[8,8,8,9],"inv":"Root","rootSt":0},{"frets":[11,10,13,11],"inv":"1st","rootSt":0},{"frets":[4,1,3,1],"inv":"2nd","rootSt":0},{"frets":[6,6,5,4],"inv":"3rd","rootSt":0}]},"7b5":{"drop2":[{"frets":[3,4,3,5],"inv":"Root","rootSt":0},{"frets":[7,8,5,7],"inv":"1st","rootSt":0},{"frets":[9,10,9,11],"inv":"2nd","rootSt":0},{"frets":[13,14,11,13],"inv":"3rd","rootSt":0}],"drop3":[{"frets":[8,8,9,7],"inv":"Root","rootSt":0},{"frets":[12,10,11,11],"inv":"1st","rootSt":0},{"frets":[2,2,3,1],"inv":"2nd","rootSt":0},{"frets":[6,4,5,5],"inv":"3rd","rootSt":0}]},"Dim(Maj7)":{"drop2":[{"frets":[3,4,4,4],"inv":"Root","rootSt":0},{"frets":[6,9,5,7],"inv":"1st","rootSt":0},{"frets":[9,10,8,12],"inv":"2nd","rootSt":0},{"frets":[14,13,11,13],"inv":"3rd","rootSt":0}],"drop3":[{"frets":[8,9,8,7],"inv":"Root","rootSt":0},{"frets":[11,10,11,12],"inv":"1st","rootSt":0},{"frets":[2,1,4,1],"inv":"2nd","rootSt":0},{"frets":[7,4,5,4],"inv":"3rd","rootSt":0}]}},"F":{"Min(maj7)":{"drop2":[{"frets":[8,10,9,9],"inv":"Root","rootSt":5},{"frets":[11,14,10,13],"inv":"1st","rootSt":5},{"frets":[3,3,1,5],"inv":"2nd","rootSt":5},{"frets":[7,6,5,6],"inv":"3rd","rootSt":5}],"drop3":[{"frets":[1,2,1,1],"inv":"Root","rootSt":5},{"frets":[4,3,5,5],"inv":"1st","rootSt":5},{"frets":[8,6,9,6],"inv":"2nd","rootSt":5},{"frets":[12,10,10,9],"inv":"3rd","rootSt":5}]},"Maj7#5":{"drop2":[{"frets":[8,11,9,10],"inv":"Root","rootSt":5},{"frets":[12,14,10,14],"inv":"1st","rootSt":5},{"frets":[4,3,2,5],"inv":"2nd","rootSt":5},{"frets":[7,7,6,6],"inv":"3rd","rootSt":5}],"drop3":[{"frets":[1,2,2,2],"inv":"Root","rootSt":5},{"frets":[5,3,6,5],"inv":"1st","rootSt":5},{"frets":[9,7,9,6],"inv":"2nd","rootSt":5},{"frets":[12,11,10,10],"inv":"3rd","rootSt":5}]},"Maj7b5":{"drop2":[{"frets":[8,9,9,10],"inv":"Root","rootSt":5},{"frets":[12,14,10,12],"inv":"1st","rootSt":5},{"frets":[2,3,2,5],"inv":"2nd","rootSt":5},{"frets":[7,7,4,6],"inv":"3rd","rootSt":5}],"drop3":[{"frets":[13,14,14,12],"inv":"Root","rootSt":5},{"frets":[5,3,4,5],"inv":"1st","rootSt":5},{"frets":[7,7,9,6],"inv":"2nd","rootSt":5},{"frets":[12,9,10,10],"inv":"3rd","rootSt":5}]},"Min7#5":{"drop2":[{"frets":[8,11,8,9],"inv":"Root","rootSt":5},{"frets":[11,13,10,14],"inv":"1st","rootSt":5},{"frets":[4,3,1,4],"inv":"2nd","rootSt":5},{"frets":[6,6,6,6],"inv":"3rd","rootSt":5}],"drop3":[{"frets":[1,1,1,2],"inv":"Root","rootSt":5},{"frets":[4,3,6,4],"inv":"1st","rootSt":5},{"frets":[9,6,8,6],"inv":"2nd","rootSt":5},{"frets":[11,11,10,9],"inv":"3rd","rootSt":5}]},"7b5":{"drop2":[{"frets":[8,9,8,10],"inv":"Root","rootSt":5},{"frets":[12,13,10,12],"inv":"1st","rootSt":5},{"frets":[2,3,2,4],"inv":"2nd","rootSt":5},{"frets":[6,7,4,6],"inv":"3rd","rootSt":5}],"drop3":[{"frets":[13,13,14,12],"inv":"Root","rootSt":5},{"frets":[5,3,4,4],"inv":"1st","rootSt":5},{"frets":[7,7,8,6],"inv":"2nd","rootSt":5},{"frets":[11,9,10,10],"inv":"3rd","rootSt":5}]},"Dim(Maj7)":{"drop2":[{"frets":[8,9,9,9],"inv":"Root","rootSt":5},{"frets":[11,14,10,12],"inv":"1st","rootSt":5},{"frets":[2,3,1,5],"inv":"2nd","rootSt":5},{"frets":[7,6,4,6],"inv":"3rd","rootSt":5}],"drop3":[{"frets":[13,14,13,12],"inv":"Root","rootSt":5},{"frets":[4,3,4,5],"inv":"1st","rootSt":5},{"frets":[7,6,9,6],"inv":"2nd","rootSt":5},{"frets":[12,9,10,9],"inv":"3rd","rootSt":5}]}},"Bb":{"Min(maj7)":{"drop2":[{"frets":[1,3,2,2],"inv":"Root","rootSt":10},{"frets":[4,7,3,6],"inv":"1st","rootSt":10},{"frets":[8,8,6,10],"inv":"2nd","rootSt":10},{"frets":[12,11,10,11],"inv":"3rd","rootSt":10}],"drop3":[{"frets":[6,7,6,6],"inv":"Root","rootSt":10},{"frets":[9,8,10,10],"inv":"1st","rootSt":10},{"frets":[13,11,14,11],"inv":"2nd","rootSt":10},{"frets":[5,3,3,2],"inv":"3rd","rootSt":10}]},"Maj7#5":{"drop2":[{"frets":[1,4,2,3],"inv":"Root","rootSt":10},{"frets":[5,7,3,7],"inv":"1st","rootSt":10},{"frets":[9,8,7,10],"inv":"2nd","rootSt":10},{"frets":[12,12,11,11],"inv":"3rd","rootSt":10}],"drop3":[{"frets":[6,7,7,7],"inv":"Root","rootSt":10},{"frets":[10,8,11,10],"inv":"1st","rootSt":10},{"frets":[14,12,14,11],"inv":"2nd","rootSt":10},{"frets":[5,4,3,3],"inv":"3rd","rootSt":10}]},"Maj7b5":{"drop2":[{"frets":[1,2,2,3],"inv":"Root","rootSt":10},{"frets":[5,7,3,5],"inv":"1st","rootSt":10},{"frets":[7,8,7,10],"inv":"2nd","rootSt":10},{"frets":[12,12,9,11],"inv":"3rd","rootSt":10}],"drop3":[{"frets":[6,7,7,5],"inv":"Root","rootSt":10},{"frets":[10,8,9,10],"inv":"1st","rootSt":10},{"frets":[12,12,14,11],"inv":"2nd","rootSt":10},{"frets":[5,2,3,3],"inv":"3rd","rootSt":10}]},"Min7#5":{"drop2":[{"frets":[1,4,1,2],"inv":"Root","rootSt":10},{"frets":[4,6,3,7],"inv":"1st","rootSt":10},{"frets":[9,8,6,9],"inv":"2nd","rootSt":10},{"frets":[11,11,11,11],"inv":"3rd","rootSt":10}],"drop3":[{"frets":[6,6,6,7],"inv":"Root","rootSt":10},{"frets":[9,8,11,9],"inv":"1st","rootSt":10},{"frets":[14,11,13,11],"inv":"2nd","rootSt":10},{"frets":[4,4,3,2],"inv":"3rd","rootSt":10}]},"7b5":{"drop2":[{"frets":[1,2,1,3],"inv":"Root","rootSt":10},{"frets":[5,6,3,5],"inv":"1st","rootSt":10},{"frets":[7,8,7,9],"inv":"2nd","rootSt":10},{"frets":[11,12,9,11],"inv":"3rd","rootSt":10}],"drop3":[{"frets":[6,6,7,5],"inv":"Root","rootSt":10},{"frets":[10,8,9,9],"inv":"1st","rootSt":10},{"frets":[12,12,13,11],"inv":"2nd","rootSt":10},{"frets":[4,2,3,3],"inv":"3rd","rootSt":10}]},"Dim(Maj7)":{"drop2":[{"frets":[1,2,2,2],"inv":"Root","rootSt":10},{"frets":[4,7,3,5],"inv":"1st","rootSt":10},{"frets":[7,8,6,10],"inv":"2nd","rootSt":10},{"frets":[12,11,9,11],"inv":"3rd","rootSt":10}],"drop3":[{"frets":[6,7,6,5],"inv":"Root","rootSt":10},{"frets":[9,8,9,10],"inv":"1st","rootSt":10},{"frets":[12,11,14,11],"inv":"2nd","rootSt":10},{"frets":[5,2,3,2],"inv":"3rd","rootSt":10}]}},"Eb":{"Min(maj7)":{"drop2":[{"frets":[6,8,7,7],"inv":"Root","rootSt":3},{"frets":[9,12,8,11],"inv":"1st","rootSt":3},{"frets":[13,13,11,15],"inv":"2nd","rootSt":3},{"frets":[5,4,3,4],"inv":"3rd","rootSt":3}],"drop3":[{"frets":[11,12,11,11],"inv":"Root","rootSt":3},{"frets":[2,1,3,3],"inv":"1st","rootSt":3},{"frets":[6,4,7,4],"inv":"2nd","rootSt":3},{"frets":[10,8,8,7],"inv":"3rd","rootSt":3}]},"Maj7#5":{"drop2":[{"frets":[6,9,7,8],"inv":"Root","rootSt":3},{"frets":[10,12,8,12],"inv":"1st","rootSt":3},{"frets":[14,13,12,15],"inv":"2nd","rootSt":3},{"frets":[5,5,4,4],"inv":"3rd","rootSt":3}],"drop3":[{"frets":[11,12,12,12],"inv":"Root","rootSt":3},{"frets":[3,1,4,3],"inv":"1st","rootSt":3},{"frets":[7,5,7,4],"inv":"2nd","rootSt":3},{"frets":[10,9,8,8],"inv":"3rd","rootSt":3}]},"Maj7b5":{"drop2":[{"frets":[6,7,7,8],"inv":"Root","rootSt":3},{"frets":[10,12,8,10],"inv":"1st","rootSt":3},{"frets":[12,13,12,15],"inv":"2nd","rootSt":3},{"frets":[5,5,2,4],"inv":"3rd","rootSt":3}],"drop3":[{"frets":[11,12,12,10],"inv":"Root","rootSt":3},{"frets":[3,1,2,3],"inv":"1st","rootSt":3},{"frets":[5,5,7,4],"inv":"2nd","rootSt":3},{"frets":[10,7,8,8],"inv":"3rd","rootSt":3}]},"Min7#5":{"drop2":[{"frets":[6,9,6,7],"inv":"Root","rootSt":3},{"frets":[9,11,8,12],"inv":"1st","rootSt":3},{"frets":[14,13,11,14],"inv":"2nd","rootSt":3},{"frets":[4,4,4,4],"inv":"3rd","rootSt":3}],"drop3":[{"frets":[11,11,11,12],"inv":"Root","rootSt":3},{"frets":[2,1,4,2],"inv":"1st","rootSt":3},{"frets":[7,4,6,4],"inv":"2nd","rootSt":3},{"frets":[9,9,8,7],"inv":"3rd","rootSt":3}]},"7b5":{"drop2":[{"frets":[6,7,6,8],"inv":"Root","rootSt":3},{"frets":[10,11,8,10],"inv":"1st","rootSt":3},{"frets":[12,13,12,14],"inv":"2nd","rootSt":3},{"frets":[4,5,2,4],"inv":"3rd","rootSt":3}],"drop3":[{"frets":[11,11,12,10],"inv":"Root","rootSt":3},{"frets":[3,1,2,2],"inv":"1st","rootSt":3},{"frets":[5,5,6,4],"inv":"2nd","rootSt":3},{"frets":[9,7,8,8],"inv":"3rd","rootSt":3}]},"Dim(Maj7)":{"drop2":[{"frets":[6,7,7,7],"inv":"Root","rootSt":3},{"frets":[9,12,8,10],"inv":"1st","rootSt":3},{"frets":[12,13,11,15],"inv":"2nd","rootSt":3},{"frets":[5,4,2,4],"inv":"3rd","rootSt":3}],"drop3":[{"frets":[11,12,11,10],"inv":"Root","rootSt":3},{"frets":[2,1,2,3],"inv":"1st","rootSt":3},{"frets":[5,4,7,4],"inv":"2nd","rootSt":3},{"frets":[10,7,8,7],"inv":"3rd","rootSt":3}]}},"G":{"Min(maj7)":{"drop2":[{"frets":[10,12,11,11],"inv":"Root","rootSt":7},{"frets":[13,16,12,15],"inv":"1st","rootSt":7},{"frets":[5,5,3,7],"inv":"2nd","rootSt":7},{"frets":[9,8,7,8],"inv":"3rd","rootSt":7}],"drop3":[{"frets":[3,4,3,3],"inv":"Root","rootSt":7},{"frets":[6,5,7,7],"inv":"1st","rootSt":7},{"frets":[10,8,11,8],"inv":"2nd","rootSt":7},{"frets":[14,12,12,11],"inv":"3rd","rootSt":7}]},"Maj7#5":{"drop2":[{"frets":[10,13,11,12],"inv":"Root","rootSt":7},{"frets":[14,16,12,16],"inv":"1st","rootSt":7},{"frets":[6,5,4,7],"inv":"2nd","rootSt":7},{"frets":[9,9,8,8],"inv":"3rd","rootSt":7}],"drop3":[{"frets":[3,4,4,4],"inv":"Root","rootSt":7},{"frets":[7,5,8,7],"inv":"1st","rootSt":7},{"frets":[11,9,11,8],"inv":"2nd","rootSt":7},{"frets":[14,13,12,12],"inv":"3rd","rootSt":7}]},"Maj7b5":{"drop2":[{"frets":[10,11,11,12],"inv":"Root","rootSt":7},{"frets":[14,16,12,14],"inv":"1st","rootSt":7},{"frets":[4,5,4,7],"inv":"2nd","rootSt":7},{"frets":[9,9,6,8],"inv":"3rd","rootSt":7}],"drop3":[{"frets":[3,4,4,2],"inv":"Root","rootSt":7},{"frets":[7,5,6,7],"inv":"1st","rootSt":7},{"frets":[9,9,11,8],"inv":"2nd","rootSt":7},{"frets":[14,11,12,12],"inv":"3rd","rootSt":7}]},"Min7#5":{"drop2":[{"frets":[10,13,10,11],"inv":"Root","rootSt":7},{"frets":[13,15,12,16],"inv":"1st","rootSt":7},{"frets":[6,5,3,6],"inv":"2nd","rootSt":7},{"frets":[8,8,8,8],"inv":"3rd","rootSt":7}],"drop3":[{"frets":[3,3,3,4],"inv":"Root","rootSt":7},{"frets":[6,5,8,6],"inv":"1st","rootSt":7},{"frets":[11,8,10,8],"inv":"2nd","rootSt":7},{"frets":[13,13,12,11],"inv":"3rd","rootSt":7}]},"7b5":{"drop2":[{"frets":[10,11,10,12],"inv":"Root","rootSt":7},{"frets":[14,15,12,14],"inv":"1st","rootSt":7},{"frets":[4,5,4,6],"inv":"2nd","rootSt":7},{"frets":[8,9,6,8],"inv":"3rd","rootSt":7}],"drop3":[{"frets":[3,3,4,2],"inv":"Root","rootSt":7},{"frets":[7,5,6,6],"inv":"1st","rootSt":7},{"frets":[9,9,10,8],"inv":"2nd","rootSt":7},{"frets":[13,11,12,12],"inv":"3rd","rootSt":7}]},"Dim(Maj7)":{"drop2":[{"frets":[10,11,11,11],"inv":"Root","rootSt":7},{"frets":[13,16,12,14],"inv":"1st","rootSt":7},{"frets":[4,5,3,7],"inv":"2nd","rootSt":7},{"frets":[9,8,6,8],"inv":"3rd","rootSt":7}],"drop3":[{"frets":[3,4,3,2],"inv":"Root","rootSt":7},{"frets":[6,5,6,7],"inv":"1st","rootSt":7},{"frets":[9,8,11,8],"inv":"2nd","rootSt":7},{"frets":[14,11,12,11],"inv":"3rd","rootSt":7}]}},"D":{"Min(maj7)":{"drop2":[{"frets":[5,7,6,6],"inv":"Root","rootSt":2},{"frets":[8,11,7,10],"inv":"1st","rootSt":2},{"frets":[12,12,10,14],"inv":"2nd","rootSt":2},{"frets":[4,3,2,3],"inv":"3rd","rootSt":2}],"drop3":[{"frets":[10,11,10,10],"inv":"Root","rootSt":2},{"frets":[13,12,14,14],"inv":"1st","rootSt":2},{"frets":[5,3,6,3],"inv":"2nd","rootSt":2},{"frets":[9,7,7,6],"inv":"3rd","rootSt":2}]},"Maj7#5":{"drop2":[{"frets":[5,8,6,7],"inv":"Root","rootSt":2},{"frets":[9,11,7,11],"inv":"1st","rootSt":2},{"frets":[13,12,11,14],"inv":"2nd","rootSt":2},{"frets":[4,4,3,3],"inv":"3rd","rootSt":2}],"drop3":[{"frets":[10,11,11,11],"inv":"Root","rootSt":2},{"frets":[14,12,15,14],"inv":"1st","rootSt":2},{"frets":[6,4,6,3],"inv":"2nd","rootSt":2},{"frets":[9,8,7,7],"inv":"3rd","rootSt":2}]},"Maj7b5":{"drop2":[{"frets":[5,6,6,7],"inv":"Root","rootSt":2},{"frets":[9,11,7,9],"inv":"1st","rootSt":2},{"frets":[11,12,11,14],"inv":"2nd","rootSt":2},{"frets":[4,4,1,3],"inv":"3rd","rootSt":2}],"drop3":[{"frets":[10,11,11,9],"inv":"Root","rootSt":2},{"frets":[14,12,13,14],"inv":"1st","rootSt":2},{"frets":[4,4,6,3],"inv":"2nd","rootSt":2},{"frets":[9,6,7,7],"inv":"3rd","rootSt":2}]},"Min7#5":{"drop2":[{"frets":[5,8,5,6],"inv":"Root","rootSt":2},{"frets":[8,10,7,11],"inv":"1st","rootSt":2},{"frets":[13,12,10,13],"inv":"2nd","rootSt":2},{"frets":[3,3,3,3],"inv":"3rd","rootSt":2}],"drop3":[{"frets":[10,10,10,11],"inv":"Root","rootSt":2},{"frets":[13,12,15,13],"inv":"1st","rootSt":2},{"frets":[6,3,5,3],"inv":"2nd","rootSt":2},{"frets":[8,8,7,6],"inv":"3rd","rootSt":2}]},"7b5":{"drop2":[{"frets":[5,6,5,7],"inv":"Root","rootSt":2},{"frets":[9,10,7,9],"inv":"1st","rootSt":2},{"frets":[11,12,11,13],"inv":"2nd","rootSt":2},{"frets":[3,4,1,3],"inv":"3rd","rootSt":2}],"drop3":[{"frets":[10,10,11,9],"inv":"Root","rootSt":2},{"frets":[14,12,13,13],"inv":"1st","rootSt":2},{"frets":[4,4,5,3],"inv":"2nd","rootSt":2},{"frets":[8,6,7,7],"inv":"3rd","rootSt":2}]},"Dim(Maj7)":{"drop2":[{"frets":[5,6,6,6],"inv":"Root","rootSt":2},{"frets":[8,11,7,9],"inv":"1st","rootSt":2},{"frets":[11,12,10,14],"inv":"2nd","rootSt":2},{"frets":[4,3,1,3],"inv":"3rd","rootSt":2}],"drop3":[{"frets":[10,11,10,9],"inv":"Root","rootSt":2},{"frets":[13,12,13,14],"inv":"1st","rootSt":2},{"frets":[4,3,6,3],"inv":"2nd","rootSt":2},{"frets":[9,6,7,6],"inv":"3rd","rootSt":2}]}},"A":{"Min(maj7)":{"drop2":[{"frets":[12,14,13,13],"inv":"Root","rootSt":9},{"frets":[3,6,2,5],"inv":"1st","rootSt":9},{"frets":[7,7,5,9],"inv":"2nd","rootSt":9},{"frets":[11,10,9,10],"inv":"3rd","rootSt":9}],"drop3":[{"frets":[5,6,5,5],"inv":"Root","rootSt":9},{"frets":[8,7,9,9],"inv":"1st","rootSt":9},{"frets":[12,10,13,10],"inv":"2nd","rootSt":9},{"frets":[4,2,2,1],"inv":"3rd","rootSt":9}]},"Maj7#5":{"drop2":[{"frets":[12,15,13,14],"inv":"Root","rootSt":9},{"frets":[4,6,2,6],"inv":"1st","rootSt":9},{"frets":[8,7,6,9],"inv":"2nd","rootSt":9},{"frets":[11,11,10,10],"inv":"3rd","rootSt":9}],"drop3":[{"frets":[5,6,6,6],"inv":"Root","rootSt":9},{"frets":[9,7,10,9],"inv":"1st","rootSt":9},{"frets":[13,11,13,10],"inv":"2nd","rootSt":9},{"frets":[4,3,2,2],"inv":"3rd","rootSt":9}]},"Maj7b5":{"drop2":[{"frets":[12,13,13,14],"inv":"Root","rootSt":9},{"frets":[4,6,2,4],"inv":"1st","rootSt":9},{"frets":[6,7,6,9],"inv":"2nd","rootSt":9},{"frets":[11,11,8,10],"inv":"3rd","rootSt":9}],"drop3":[{"frets":[5,6,6,4],"inv":"Root","rootSt":9},{"frets":[9,7,8,9],"inv":"1st","rootSt":9},{"frets":[11,11,13,10],"inv":"2nd","rootSt":9},{"frets":[4,1,2,2],"inv":"3rd","rootSt":9}]},"Min7#5":{"drop2":[{"frets":[12,15,12,13],"inv":"Root","rootSt":9},{"frets":[3,5,2,6],"inv":"1st","rootSt":9},{"frets":[8,7,5,8],"inv":"2nd","rootSt":9},{"frets":[10,10,10,10],"inv":"3rd","rootSt":9}],"drop3":[{"frets":[5,5,5,6],"inv":"Root","rootSt":9},{"frets":[8,7,10,8],"inv":"1st","rootSt":9},{"frets":[13,10,12,10],"inv":"2nd","rootSt":9},{"frets":[3,3,2,1],"inv":"3rd","rootSt":9}]},"7b5":{"drop2":[{"frets":[12,13,12,14],"inv":"Root","rootSt":9},{"frets":[4,5,2,4],"inv":"1st","rootSt":9},{"frets":[6,7,6,8],"inv":"2nd","rootSt":9},{"frets":[10,11,8,10],"inv":"3rd","rootSt":9}],"drop3":[{"frets":[5,5,6,4],"inv":"Root","rootSt":9},{"frets":[9,7,8,8],"inv":"1st","rootSt":9},{"frets":[11,11,12,10],"inv":"2nd","rootSt":9},{"frets":[3,1,2,2],"inv":"3rd","rootSt":9}]},"Dim(Maj7)":{"drop2":[{"frets":[12,13,13,13],"inv":"Root","rootSt":9},{"frets":[3,6,2,4],"inv":"1st","rootSt":9},{"frets":[6,7,5,9],"inv":"2nd","rootSt":9},{"frets":[11,10,8,10],"inv":"3rd","rootSt":9}],"drop3":[{"frets":[5,6,5,4],"inv":"Root","rootSt":9},{"frets":[8,7,8,9],"inv":"1st","rootSt":9},{"frets":[11,10,13,10],"inv":"2nd","rootSt":9},{"frets":[4,1,2,1],"inv":"3rd","rootSt":9}]}}};
+
+
+const OPEN_STR=[4,9,14,19,23,28];
+function getNote(ai,f){return(OPEN_STR[ai]+f)%12;}
+function nn(n){return['C','Db','D','Eb','E','F','Gb','G','Ab','A','Bb','B'][n];}
+const degMap={0:'1',1:'b2',2:'2',3:'b3',4:'3',5:'4',6:'b5',7:'5',8:'#5',9:'6',10:'b7',11:'7'};
+
+const DROP2_AI=[1,2,3,4];
+const DROP3_AI=[0,2,3,4];
+const CHORD_INFO={
+  'Min(maj7)':{formula:'1 b3 5 7',ko:'단장7화음',ivs:[0,3,7,11]},
+  'Maj7#5':   {formula:'1 3 #5 7',ko:'증장7화음',ivs:[0,4,8,11]},
+  'Maj7b5':   {formula:'1 3 b5 7',ko:'장7(b5)',ivs:[0,4,6,11]},
+  'Min7#5':   {formula:'1 b3 #5 b7',ko:'증단7',ivs:[0,3,8,10]},
+  '7b5':      {formula:'1 3 b5 b7',ko:'속7(b5)',ivs:[0,4,6,10]},
+  'Dim(Maj7)':{formula:'1 b3 b5 7',ko:'감장7화음',ivs:[0,3,6,11]},
+};
+const INV_LABELS=['근음 포지션','1전위','2전위','3전위'];
+const INV_SHORT=['Root','1st Inv','2nd Inv','3rd Inv'];
+const STR_NAMES=['e','B','G','D','A','E'];
+
+let currentKey='C', currentVoicing='drop2', currentViewMode='note';
+
+// 6줄 가로 지판 SVG (Level 5 voice-leading과 동일 엔진)
+function makeFretboardSVG(chordFrets, activeAI, rootSt, width=220) {
+  const activeSet=new Set(activeAI);
+  const activeFrets=chordFrets.filter(f=>f>0);
+  const startFret=0;
+  const maxF=activeFrets.length?Math.max(...activeFrets):4;
+  const endFret=Math.max(15,maxF+1);
+
+  const NUM_STR=6,SS=14,NR=6,FDOTR=2.5;
+  const LABEL_W=14,OPEN_W=18,NUT_W=5;
+  const padTop=12,padBot=20,padLeft=LABEL_W+OPEN_W+NUT_W+3,padRight=12;
+  const strAreaH=SS*(NUM_STR-1),totalH=padTop+strAreaH+padBot;
+  const numFrets=endFret-startFret;
+  const fretW=(width-padLeft-padRight)/numFrets;
+  const fretX=padLeft,nutX=fretX-NUT_W,openNoteX=nutX-OPEN_W/2;
+  const strY=row=>padTop+row*SS;
+  const toRow=si=>NUM_STR-1-si;
+  const FONT="'IBM Plex Mono',monospace";
+
+  let s=`<svg viewBox="0 0 ${width} ${totalH}" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:auto;display:block">`;
+  s+=`<rect width="${width}" height="${totalH}" fill="#ede7d9" rx="3"/>`;
+
+  // 포지션 마커
+  const dotY=padTop+strAreaH/2;
+  [3,5,7,9,12].forEach(fp=>{
+    if(fp>startFret&&fp<=endFret){
+      const cx=fretX+(fp-startFret-0.5)*fretW;
+      if(fp===12){s+=`<circle cx="${cx-fretW*.25}" cy="${dotY}" r="${FDOTR}" fill="#c8bfa8"/>`;s+=`<circle cx="${cx+fretW*.25}" cy="${dotY}" r="${FDOTR}" fill="#c8bfa8"/>`;}
+      else s+=`<circle cx="${cx}" cy="${dotY}" r="${FDOTR}" fill="#c8bfa8"/>`;
+    }
+  });
+
+  // 너트
+  s+=`<rect x="${nutX}" y="${strY(0)}" width="${NUT_W-1}" height="${strAreaH}" fill="#2c2820" rx="1"/>`;
+
+  // 프렛선
+  for(let f=1;f<=numFrets;f++)
+    s+=`<line x1="${fretX+f*fretW}" y1="${strY(0)}" x2="${fretX+f*fretW}" y2="${strY(5)}" stroke="#9a8f7a" stroke-width="1"/>`;
+
+  // 현선 + 라벨
+  for(let si=0;si<NUM_STR;si++){
+    const row=toRow(si),y=strY(row);
+    const isAct=activeSet.has(si);
+    const th=(0.6+((NUM_STR-1-si)/(NUM_STR-1))*1.6).toFixed(2);
+    s+=`<line x1="${nutX}" y1="${y}" x2="${width-padRight}" y2="${y}" stroke="${isAct?'#8b7355':'#d0c8b4'}" stroke-width="${isAct?th:th*.5}"/>`;
+    s+=`<text x="${LABEL_W/2}" y="${y}" font-family="${FONT}" font-size="8" fill="${isAct?'#9a9080':'#ccc8be'}" text-anchor="middle" dominant-baseline="middle">${STR_NAMES[row]}</text>`;
+  }
+
+  // 프렛 번호
+  for(let f=1;f<=numFrets;f++)
+    s+=`<text x="${fretX+(f-.5)*fretW}" y="${strY(5)+13}" font-family="${FONT}" font-size="7" fill="#9a9080" text-anchor="middle">${f+startFret}</text>`;
+
+  // 음표
+  activeAI.forEach((ai,i)=>{
+    const fret=chordFrets[i];
+    const row=toRow(ai),y=strY(row);
+    const x=fret===0?openNoteX:fretX+(fret-startFret-.5)*fretW;
+    const noteSt=((OPEN_STR[ai]+fret)%12+12)%12;
+    const noteNm=nn(noteSt);
+    const isRoot=noteSt===((rootSt%12)+12)%12;
+    const interval=(noteSt-rootSt+12)%12;
+    const label=currentViewMode==='degree'?degMap[interval]:noteNm;
+    const fill=isRoot?'#a63228':'#2c5f8a';
+    if(fret===0){
+      s+=`<circle cx="${openNoteX}" cy="${y}" r="${NR}" fill="#ede7d9" stroke="${fill}" stroke-width="1.5"/>`;
+      s+=`<text x="${openNoteX}" y="${y}" font-family="${FONT}" font-size="5" fill="${fill}" text-anchor="middle" dominant-baseline="middle" font-weight="600">${label}</text>`;
+    } else {
+      s+=`<circle cx="${x}" cy="${y}" r="${NR}" fill="${fill}"/>`;
+      s+=`<text x="${x}" y="${y}" font-family="${FONT}" font-size="${label.length>1?'4.5':'5.5'}" fill="#f5f0e8" text-anchor="middle" dominant-baseline="middle" font-weight="600">${label}</text>`;
+    }
+  });
+  s+=`</svg>`;
+  return s;
+}
+
+function render() {
+  const aiList = currentVoicing==='drop2'?DROP2_AI:DROP3_AI;
+  const strSetLabel = currentVoicing==='drop2'?'⑤④③②':'⑥④③②';
+  const keyData = FOURPART_DATA[currentKey];
+  const rootSt = {'C':0,'F':5,'Bb':10,'Eb':3,'G':7,'D':2,'A':9}[currentKey];
+
+  let html = `<div class="concept-box">
+    <h3>🎸 4성부 화음 All Inversions</h3>
+    <p><strong>Level 6 요구사항:</strong> Min(maj7)/Maj7♯5/Maj7♭5/Min7♯5/7♭5/Dim(Maj7) · 각 코드당 4전위 (근음·1전위·2전위·3전위) 모두 구사<br>
+    Level 3~4는 근음 포지션 2개 폼이었지만, Level 6는 <strong>전위 4가지를 모두</strong> 연주할 수 있어야 해요.<br>
+    <span style="color:var(--red,#a63228)">●</span> 빨강 = 루트음 &nbsp; <span style="color:var(--accent2)">●</span> 파랑 = 나머지 구성음</p>
+  </div>`;
+
+  Object.keys(CHORD_INFO).forEach(chord=>{
+    const info=CHORD_INFO[chord];
+    const chordData=keyData?.[chord]?.[currentVoicing];
+    if(!chordData)return;
+
+    const chordRootName = currentKey + chord;
+
+    html+=`<div class="chord-section">
+      <div class="chord-header">${chordRootName}</div>
+      <div class="chord-formula">${info.formula} &nbsp;·&nbsp; ${strSetLabel} 현 세트</div>
+      <div class="inv-grid">`;
+
+    chordData.forEach((form,inv)=>{
+      if(!form){
+        html+=`<div class="inv-card"><div class="inv-label">${INV_LABELS[inv]}<span>${INV_SHORT[inv]}</span></div><div class="inv-notes" style="padding:16px;color:var(--ink4);font-size:11px">이 포지션은 해당 현 세트에서 4프렛 이내로 연주하기 어렵습니다</div></div>`;
+        return;
+      }
+      const notes=aiList.map((ai,i)=>nn(((OPEN_STR[ai]+form.frets[i])%12+12)%12)).join('·');
+      const degs=aiList.map((ai,i)=>degMap[((OPEN_STR[ai]+form.frets[i])%12+12-rootSt+12)%12]).join('·');
+      const display=currentViewMode==='degree'?degs:notes;
+      html+=`<div class="inv-card">
+        <div class="inv-label">${INV_LABELS[inv]}<span>${INV_SHORT[inv]}</span></div>
+        <div class="inv-fb">${makeFretboardSVG(form.frets,aiList,rootSt,220)}</div>
+        <div class="inv-notes">${display}</div>
+      </div>`;
+    });
+
+    html+=`</div></div>`;
+  });
+
+  document.getElementById('fp-main').innerHTML=html;
+}
+
+function setKey(k,el){
+  currentKey=k;
+  document.querySelectorAll('[data-fp-key]').forEach(b=>b.classList.remove('active'));
+  el.classList.add('active');
+  render();
+}
+function setVoicing(v,el){
+  currentVoicing=v;
+  document.querySelectorAll('[data-fp-voicing]').forEach(b=>b.classList.remove('active'));
+  el.classList.add('active');
+  render();
+}
+function toggleView(el){
+  currentViewMode=currentViewMode==='note'?'degree':'note';
+  el.textContent=currentViewMode==='note'?'음이름':'도수';
+  el.classList.toggle('active',currentViewMode==='degree');
+  render();
+}
+
+render();
+
+window.FP_setKey     = setKey;
+window.FP_setVoicing = setVoicing;
+window.FP_toggleView = toggleView;
+
+})();
+</script>
+</body>
+</html>
