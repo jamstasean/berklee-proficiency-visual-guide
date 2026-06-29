@@ -155,6 +155,12 @@ header {
   align-items: center;
   gap: 10px;
   flex-wrap: wrap;
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background: var(--bg);
+  border-bottom: 1px solid var(--border);
+  box-shadow: 0 2px 8px rgba(26,23,16,0.06);
 }
 
 .key-label {
@@ -395,7 +401,7 @@ main {
 <nav class="section-nav">
   <button class="sec-tab active" onclick="switchSection('scales')">🎼 스케일</button>
   <button class="sec-tab" onclick="switchSection('triads')">🎸 3화음 코드</button>
-  <button class="sec-tab" onclick="switchSection('fourpart')">🎵 4성부 화음</button>
+  <button class="sec-tab" onclick="switchSection('fourpart')">🎵 4화음 코드</button>
 </nav>
 
 <div class="key-bar">

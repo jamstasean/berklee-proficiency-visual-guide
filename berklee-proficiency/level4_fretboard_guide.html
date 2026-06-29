@@ -155,6 +155,12 @@ header {
   align-items: center;
   gap: 10px;
   flex-wrap: wrap;
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background: var(--bg);
+  border-bottom: 1px solid var(--border);
+  box-shadow: 0 2px 8px rgba(26,23,16,0.06);
 }
 
 .key-label {
@@ -518,7 +524,7 @@ main {
 <nav class="section-nav">
   <button class="sec-tab active" onclick="switchSection('scales')">🎼 스케일</button>
   <button class="sec-tab" onclick="switchSection('triads')">🎸 3화음 코드</button>
-  <button class="sec-tab" onclick="switchSection('fourpart')">🎵 4성부 화음</button>
+  <button class="sec-tab" onclick="switchSection('fourpart')">🎵 4화음 코드</button>
 </nav>
 
 <div class="key-bar">
@@ -688,11 +694,24 @@ const CHORD_NAMES_KO = {
   '7(b9/b13)':'속7(b9/b13)','13(b9)':'13화음(b9)','9(b13)':'9화음(b13)'
 };
 
-// Level 3 4성부 화음 — Level 1과 동일한 14종 (인터벌 재사용)
+// Level 3 4화음 코드 — Level 1과 동일한 14종 (인터벌 재사용)
 const CHORD_INTERVALS_L3 = {}; // Level 1 CHORD_INTERVALS 그대로 사용
 
-// Level 3 인터벌 degree (Level 1 INTERVAL_DEGREES 재사용)
-const INTERVAL_DEGREES_L3 = {};
+// Level 4 4화음 코드 인터벌 degree (음이름 정확 표기용 — letter 간격)
+const INTERVAL_DEGREES_L3 = {
+  'Min(maj7)':  [0,2,4,6],
+  'Maj7#5':     [0,2,4,6],
+  'Maj7b5':     [0,2,4,6],
+  'Min7#5':     [0,2,4,6],
+  '7b5':        [0,2,4,6],
+  'Dim(Maj7)':  [0,2,4,6],
+  'Maj(9/7)':   [0,2,4,6,1],
+  'Maj(9/6)':   [0,2,4,5,1],
+  'min9(maj7)': [0,2,4,6,1],
+  '7(b9/b13)':  [0,2,4,6,1,5],
+  '13(b9)':     [0,2,4,6,1,5],
+  '9(b13)':     [0,2,4,6,1,5],
+};
 
 // Level 3 degree override (Level 1 DEGREE_OVERRIDE 재사용)
 const DEGREE_OVERRIDE_L3 = {};
@@ -785,7 +804,7 @@ const VOICING_SETS = {
 };
 
 // ════════════════════════════════════════════════
-// DROP 2/3 보이싱 엔진 (4성부 화음용)
+// DROP 2/3 보이싱 엔진 (4화음 코드용)
 // NotebookLM 버클리 기타 마스터 브레인 검증 완료
 // ════════════════════════════════════════════════
 
@@ -837,67 +856,127 @@ function findDropVoicing(tones, absIdxList, order) {
 }
 
 // Drop 폼 → voicingPos 변환 (makeFretboardSVG 입력 형식)
-function dropVoicingToPos(voicing, baseIntervals, key) {
+function dropVoicingToPos(voicing, baseIntervals, key, chord) {
   const degOffsets = [0,2,4,6]; // 1도, 3도, 5도, 7도 letter offset
   const rootSt = noteToSemitone(key);
   return voicing.map(({absIdx, fret, degIdx}) => {
     const noteSt = ((OPEN_STRINGS[absIdx] + fret) % 12 + 12) % 12;
     const isRoot = noteSt === rootSt % 12;
     const noteNm = intervalToNoteName(key, baseIntervals[degIdx], degOffsets[degIdx]);
-    const degLabels = ['1','3','5','7'];
+    const relSt = ((baseIntervals[degIdx] % 12) + 12) % 12;
     return {
       string: absIdx, fret, isRoot, isOpen: fret===0,
-      note: noteNm, degree: degLabels[degIdx] || '',
+      note: noteNm, degree: getDegreeLabel(relSt, chord),
     };
   });
 }
 
-// Drop 보이싱 섹션 HTML (지판 전체에 폼 표시)
-function makeDropVoicingSection(chord, key, baseIntervals) {
-  const rootSt = noteToSemitone(key);
-  const tones = baseIntervals.map(i => (rootSt + i) % 12);
-  const invLabels = ['근음 포지션','1전위','2전위','3전위'];
-  const dropTypes = [
-    {label:'Drop 3 (⑥④③②)', absIdxList:DROP3_STRINGS, orderFn:getDrop3Order, strNums:[6,4,3,2]},
-    {label:'Drop 2 (⑤④③②)', absIdxList:DROP2_STRINGS, orderFn:getDrop2Order, strNums:[5,4,3,2]},
-  ];
+// ── 인터랙티브 Drop 보이싱 (타입 + 전위 토글, 한 번에 1개 폼) ──
+const DROP_INV_LABELS = ['근음 포지션','1전위','2전위','3전위'];
 
-  let html = `<div class="voicing-section">`;
-  html += `<div class="voicing-section-title">🎸 Drop 보이싱 폼 <span style="font-weight:400;color:var(--ink4);font-size:11px">Level IV 실기: 근음 포지션 2개 폼 필수</span></div>`;
-  html += `<div class="voicing-section-sub">Drop 3 = 위에서 3번째 음을 옥타브 아래로 (⑥현 뮤트) · Drop 2 = 위에서 2번째 음을 옥타브 아래로</div>`;
+function dropCfg(type) {
+  return type === 'drop3'
+    ? {strings:DROP3_STRINGS, orderFn:getDrop3Order, strNums:[6,4,3,2], label:'Drop 3 (⑥④③②)'}
+    : {strings:DROP2_STRINGS, orderFn:getDrop2Order, strNums:[5,4,3,2], label:'Drop 2 (⑤④③②)'};
+}
 
-  dropTypes.forEach(({label, absIdxList, orderFn, strNums}) => {
-    html += `<div style="margin-bottom:18px">`;
-    html += `<div style="font-size:14px;font-family:'IBM Plex Sans KR',sans-serif;color:var(--ink2);margin-bottom:10px;font-weight:700">${label}</div>`;
-    html += `<div style="display:flex;flex-wrap:wrap;gap:16px;">`;
-
-    for (let inv = 0; inv < 4; inv++) {
-      const v = findDropVoicing(tones, absIdxList, orderFn(inv));
-      if (!v) {
-        html += `<div style="font-size:11px;color:var(--ink4);padding:8px;">${invLabels[inv]}: 12프렛 이내 불가</div>`;
-        continue;
-      }
-      const vPos = dropVoicingToPos(v, baseIntervals, key);
-      const vFrets = v.map(p=>p.fret).filter(f=>f>0);
-      const maxF = vFrets.length ? Math.max(...vFrets) : 4;
-      const endFr = Math.max(15, maxF+1);
-      const activeStrNums = new Set(strNums);
-
-      // Level IV 실기는 근음 포지션만 필수 — 강조 표시
-      const isRequired = inv === 0;
-      html += `<div style="flex:1;min-width:180px;">`;
-      html += `<div style="font-size:12px;font-family:'IBM Plex Mono',monospace;color:${isRequired?'var(--accent)':'var(--ink3)'};margin-bottom:6px;font-weight:${isRequired?'700':'400'}">`;
-      html += `${invLabels[inv]}${isRequired?' ★실기 필수':''}`;
-      html += `</div>`;
-      html += makeFretboardSVG(vPos, {startFret:0, endFret:endFr, width:320, viewMode:currentViewMode, activeStrNums});
-      html += `</div>`;
-    }
-    html += `</div></div>`;
+// Drop 폼 → 다이어그램 + 힌트 텍스트
+function buildDropDisplay(v, ivs, key, cfg, invIdx, chord) {
+  const vPos = dropVoicingToPos(v, ivs, key, chord);
+  const vFrets = v.map(p => p.fret);
+  const endFr = Math.max(15, Math.max(...vFrets) + 1);
+  const svg = makeFretboardSVG(vPos, {
+    startFret:0, endFret:endFr, width:700,
+    viewMode:currentViewMode, activeStrNums:new Set(cfg.strNums),
   });
+  const strSymbols = ['','①','②','③','④','⑤','⑥'];
+  const degOffsets = [0,2,4,6];
+  const info = v.map(({absIdx, fret, degIdx}) => {
+    const noteNm = intervalToNoteName(key, ivs[degIdx], degOffsets[degIdx]);
+    const relSt = ((ivs[degIdx] % 12) + 12) % 12;
+    return `${strSymbols[6-absIdx]}현 ${fret}fr = ${noteNm}(${getDegreeLabel(relSt, chord)})`;
+  }).join(' · ');
+  const reqd = invIdx === 0 ? ' · ★실기 필수' : '';
+  return { svg, note:`💡 ${cfg.label} · ${DROP_INV_LABELS[invIdx]}${reqd} — ${info}` };
+}
 
-  html += `<div class="voicing-note">💡 <strong>실기 핵심:</strong> Drop 3(6번줄 루트)과 Drop 2(5번줄 루트) 근음 포지션 2개를 모든 키에서 즉각 연주할 수 있어야 합니다.</div>`;
+// 인터랙티브 Drop 보이싱 섹션 HTML 생성
+function makeDropVoicingSection(chord, key, baseIntervals) {
+  const uid = key + '_' + chord.replace(/[^A-Za-z0-9]/g,'') + '_drop';
+  const ivs = baseIntervals.map(i => ((i % 12) + 12) % 12);
+  const rootSt = noteToSemitone(key);
+  const tones = ivs.map(i => (rootSt + i) % 12);
+  const types = [['drop3','Drop 3 (⑥④③②)'], ['drop2','Drop 2 (⑤④③②)']];
+  const invKeys = ['R','1','2','3'];
+
+  // 초기 렌더: Drop 3 · 근음 포지션
+  const cfg0 = dropCfg('drop3');
+  const v0 = findDropVoicing(tones, cfg0.strings, cfg0.orderFn(0));
+  let initDiag, initNote;
+  if (v0) { const d = buildDropDisplay(v0, ivs, key, cfg0, 0, chord); initDiag = d.svg; initNote = d.note; }
+  else {
+    initDiag = `<div style="padding:14px;font-size:12px;color:var(--ink4);font-family:'IBM Plex Mono',monospace;">⚠️ 이 타입/전위는 12프렛 이내로 연주하기 어렵습니다.</div>`;
+    initNote = '';
+  }
+
+  const ivsEnc = encodeURIComponent(JSON.stringify(ivs));
+  let html = `<div class="voicing-section" id="vs-${uid}" data-ivs="${ivsEnc}" data-chord="${encodeURIComponent(chord)}">`;
+  html += `<div class="voicing-section-title">🎸 Drop 보이싱 폼 <span style="font-weight:400;color:var(--ink4);font-size:11px">실기: 근음 포지션 2개 폼(Drop 3 · Drop 2) 필수</span></div>`;
+  html += `<div class="voicing-section-sub">Drop 3 = 위에서 3번째 음을 옥타브 아래로 (⑥현 루트 · ⑤현 뮤트) · Drop 2 = 위에서 2번째 음을 옥타브 아래로 (⑤현 루트) · 타입과 전위를 선택하면 해당 폼이 표시돼요</div>`;
+
+  // 타입 토글 (Drop 3 / Drop 2)
+  html += `<div class="voicing-controls">`;
+  html += `<div class="voicing-ctrl-row"><span class="voicing-ctrl-label">타입</span>`;
+  types.forEach(([t,label], i) => {
+    html += `<button class="voicing-set-btn${i===0?' active':''}" onclick="selectDropType('${uid}','${t}')" data-drop="${t}">${label}</button>`;
+  });
+  html += `</div>`;
+  // 전위 토글 (근음 ~ 3전위)
+  html += `<div class="voicing-ctrl-row"><span class="voicing-ctrl-label">전위</span>`;
+  invKeys.forEach((inv, i) => {
+    html += `<button class="voicing-inv-btn${i===0?' active':''}" onclick="selectDropInv('${uid}','${inv}')" data-inv="${inv}">${DROP_INV_LABELS[i]}${i===0?' ★':''}</button>`;
+  });
+  html += `</div></div>`;
+
+  html += `<div class="voicing-display" id="vd-${uid}">${initDiag}</div>`;
+  html += `<div class="voicing-note" id="vn-${uid}">${initNote}</div>`;
   html += `</div>`;
   return html;
+}
+
+function selectDropType(uid, type) {
+  const sec = document.getElementById('vs-'+uid);
+  if (!sec) return;
+  sec.querySelectorAll('.voicing-set-btn').forEach(b => b.classList.toggle('active', b.dataset.drop === type));
+  const inv = (sec.querySelector('.voicing-inv-btn.active') || {dataset:{inv:'R'}}).dataset.inv;
+  renderDropDiagram(uid, type, inv);
+}
+function selectDropInv(uid, inv) {
+  const sec = document.getElementById('vs-'+uid);
+  if (!sec) return;
+  sec.querySelectorAll('.voicing-inv-btn').forEach(b => b.classList.toggle('active', b.dataset.inv === inv));
+  const type = (sec.querySelector('.voicing-set-btn.active') || {dataset:{drop:'drop3'}}).dataset.drop;
+  renderDropDiagram(uid, type, inv);
+}
+function renderDropDiagram(uid, type, inv) {
+  const sec = document.getElementById('vs-'+uid);
+  if (!sec) return;
+  const ivs = JSON.parse(decodeURIComponent(sec.dataset.ivs));
+  const chord = decodeURIComponent(sec.dataset.chord || '');
+  const key = currentKey;
+  const rootSt = noteToSemitone(key);
+  const tones = ivs.map(i => (rootSt + i) % 12);
+  const cfg = dropCfg(type);
+  const invIdx = {R:0,'1':1,'2':2,'3':3}[inv];
+  const v = findDropVoicing(tones, cfg.strings, cfg.orderFn(invIdx));
+  if (!v) {
+    document.getElementById('vd-'+uid).innerHTML = `<div style="padding:14px;font-size:12px;color:var(--ink4);font-family:'IBM Plex Mono',monospace;">⚠️ 이 타입/전위는 12프렛 이내로 연주하기 어렵습니다.</div>`;
+    document.getElementById('vn-'+uid).textContent = '';
+    return;
+  }
+  const d = buildDropDisplay(v, ivs, key, cfg, invIdx, chord);
+  document.getElementById('vd-'+uid).innerHTML = d.svg;
+  document.getElementById('vn-'+uid).textContent = d.note;
 }
 
 const SET_LABELS = {
@@ -1101,7 +1180,7 @@ function makeInteractiveVoicingSection(type, voicingType, uid, key, intervals) {
       return {
         string: absIdx, fret, isRoot, isOpen: fret === 0,
         note:   noteNm,
-        degree: degLabels0[degIdx] || '',
+        degree: getDegreeLabel(baseIvs0[degIdx], type),
       };
     });
     const sf0 = 0;
@@ -1115,7 +1194,7 @@ function makeInteractiveVoicingSection(type, voicingType, uid, key, intervals) {
     const strSymbols = ['','①','②','③','④','⑤','⑥'];
     const noteInfo = voicing0.map(({absIdx, fret, degIdx}) => {
       const noteNm = intervalToNoteName(key, baseIvs0[degIdx], degOffsets0[degIdx]);
-      const deg = degLabels0[degIdx] || '';
+      const deg = getDegreeLabel(baseIvs0[degIdx], type);
       return `${strSymbols[6-absIdx]}현 ${fret}fr = ${noteNm}(${deg})`;
     }).join(' · ');
     initNote = `💡 ${SET_LABELS[initSet]} · ${INV_LABELS_MAP['R']} — ${noteInfo}`;
@@ -1219,7 +1298,7 @@ function renderVoicingDiagram(uid, set, inv) {
       string: absIdx,
       fret:   fret,
       note:   noteNm,
-      degree: degreeLabels[degIdx] || '',
+      degree: getDegreeLabel(baseIvs[degIdx], type),
       isRoot: isRoot,
       isOpen: fret === 0,
     };
@@ -1244,7 +1323,7 @@ function renderVoicingDiagram(uid, set, inv) {
   const noteInfo = voicing.map(({absIdx, fret, degIdx}) => {
     const noteNm = intervalToNoteName(currentKey, baseIvs[degIdx], degreeOffsets[degIdx]);
     const strNum = 6 - absIdx;
-    const deg = degreeLabels[degIdx] || '';
+    const deg = getDegreeLabel(baseIvs[degIdx], type);
     return `${strSymbols[strNum]}현 ${fret}fr = ${noteNm}(${deg})`;
   }).join(' · ');
 

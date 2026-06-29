@@ -155,6 +155,12 @@ header {
   align-items: center;
   gap: 10px;
   flex-wrap: wrap;
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background: var(--bg);
+  border-bottom: 1px solid var(--border);
+  box-shadow: 0 2px 8px rgba(26,23,16,0.06);
 }
 
 .key-label {
@@ -518,7 +524,7 @@ main {
 <nav class="section-nav">
   <button class="sec-tab active" onclick="switchSection('scales')">🎼 스케일</button>
   <button class="sec-tab" onclick="switchSection('triads')">🎸 3화음 코드</button>
-  <button class="sec-tab" onclick="switchSection('fourpart')">🎵 4성부 화음</button>
+  <button class="sec-tab" onclick="switchSection('fourpart')">🎵 4화음 코드</button>
 </nav>
 
 <div class="key-bar">
@@ -684,7 +690,7 @@ const CHORD_NAMES_KO = {
   '9(b13)':'b13 9화음'
 };
 
-// Level 2 전용 4성부 화음 인터벌
+// Level 2 전용 4화음 코드 인터벌
 const CHORD_INTERVALS_L2 = {
   'Min(maj7)': [0,3,7,11],
   'Maj7#5':    [0,4,8,11],
@@ -814,6 +820,45 @@ function freetsOfNote(ai, targetNote, minF, maxF) {
     if (((OPEN_STRINGS[ai] + f) % 12 + 12) % 12 === targetNote) result.push(f);
   }
   return result;
+}
+
+// ── Drop 3 보이싱 (대표 폼 계산용) ─────────────────────
+const DROP3_STRINGS = [0,2,3,4]; // ⑥④③② absIdx
+function getDrop3Order(invIdx){ const i=invIdx%4; return [i%4,(i+3)%4,(i+1)%4,(i+2)%4]; }
+function findDropVoicing(tones, absIdxList, order){
+  const results = [];
+  const bassAi = absIdxList[0];
+  for (const bF of freetsOfNote(bassAi, tones[order[0]], 0, 18)) {
+    let voicing = [{absIdx:bassAi, fret:bF, degIdx:order[0]}];
+    let valid = true;
+    for (let si = 1; si < absIdxList.length; si++) {
+      const ai = absIdxList[si];
+      const target = tones[order[si]];
+      const minF = Math.max(0, bF-4), maxF = Math.min(18, bF+6);
+      const cands = freetsOfNote(ai, target, minF, maxF);
+      if (!cands.length) { valid=false; break; }
+      cands.sort((a,b) => Math.abs(a-bF)-Math.abs(b-bF));
+      voicing.push({absIdx:ai, fret:cands[0], degIdx:order[si]});
+    }
+    if (!valid) continue;
+    const frets = voicing.map(v => v.fret);
+    const span = Math.max(...frets) - Math.min(...frets);
+    if (span <= 5) results.push({voicing, span, bF});
+  }
+  if (!results.length) return null;
+  results.sort((a,b) => a.bF - b.bF || a.span - b.span);
+  return results[0].voicing;
+}
+function dropVoicingToPos(voicing, baseIntervals, key){
+  const degOffsets = [0,2,4,6];
+  const rootSt = noteToSemitone(key);
+  return voicing.map(({absIdx, fret, degIdx}) => {
+    const noteSt = ((OPEN_STRINGS[absIdx] + fret) % 12 + 12) % 12;
+    const isRoot = noteSt === rootSt % 12;
+    const noteNm = intervalToNoteName(key, baseIntervals[degIdx], degOffsets[degIdx]);
+    const relSt = ((baseIntervals[degIdx] % 12) + 12) % 12;
+    return { string: absIdx, fret, isRoot, isOpen: fret===0, note: noteNm, degree: getDegreeLabel(relSt) };
+  });
 }
 
 // ── 클로즈 보이싱 탐색 ─────────────────────────────────
@@ -986,7 +1031,7 @@ function makeInteractiveVoicingSection(type, voicingType, uid, key, intervals) {
       return {
         string: absIdx, fret, isRoot, isOpen: fret === 0,
         note:   noteNm,
-        degree: degLabels0[degIdx] || '',
+        degree: getDegreeLabel(baseIvs0[degIdx], type),
       };
     });
     const vFrets0 = voicing0.map(p => p.fret);
@@ -1000,7 +1045,7 @@ function makeInteractiveVoicingSection(type, voicingType, uid, key, intervals) {
     const strSymbols = ['','①','②','③','④','⑤','⑥'];
     const noteInfo = voicing0.map(({absIdx, fret, degIdx}) => {
       const noteNm = intervalToNoteName(key, baseIvs0[degIdx], degOffsets0[degIdx]);
-      const deg = degLabels0[degIdx] || '';
+      const deg = getDegreeLabel(baseIvs0[degIdx], type);
       return `${strSymbols[6-absIdx]}현 ${fret}fr = ${noteNm}(${deg})`;
     }).join(' · ');
     initNote = `💡 ${SET_LABELS[initSet]} · ${INV_LABELS_MAP['R']} — ${noteInfo}`;
@@ -1105,7 +1150,7 @@ function renderVoicingDiagram(uid, set, inv) {
       string: absIdx,
       fret:   fret,
       note:   noteNm,
-      degree: degreeLabels[degIdx] || '',
+      degree: getDegreeLabel(baseIvs[degIdx], type),
       isRoot: isRoot,
       isOpen: fret === 0,
     };
@@ -1130,7 +1175,7 @@ function renderVoicingDiagram(uid, set, inv) {
   const noteInfo = voicing.map(({absIdx, fret, degIdx}) => {
     const noteNm = intervalToNoteName(currentKey, baseIvs[degIdx], degreeOffsets[degIdx]);
     const strNum = 6 - absIdx;
-    const deg = degreeLabels[degIdx] || '';
+    const deg = getDegreeLabel(baseIvs[degIdx], type);
     return `${strSymbols[strNum]}현 ${fret}fr = ${noteNm}(${deg})`;
   }).join(' · ');
 
@@ -1801,7 +1846,13 @@ function renderFourPart(key) {
     '9(b13)':     {formula:'1 3 5 b7 9 b13', struct:'Dom7 + 장9도 + 단13도'},
   };
 
+  // 순수 4음 화음 — 대표 폼(Drop 3 근음) 표시 대상
+  const FOURNOTE_REP_CHORDS = ['Min(maj7)','Maj7#5','Maj7b5','Min7#5','7b5','Dim(Maj7)'];
+
   let html = '';
+
+  // Level II 안내 배너
+  html += `<div class="hint-box" style="margin-bottom:20px">📌 <strong>Level II 4화음 코드 — 코드당 한 가지 폼만:</strong> Level II는 각 코드를 <strong>한 가지 폼</strong>으로만 익히면 됩니다 (전위·드롭 보이싱 전개는 Level III·IV부터). 순수 4음 화음 6종(Min(maj7)~Dim(Maj7))은 <strong>대표 폼(⑥현 루트 Drop 3)</strong>을 함께 표시했고, 9·13 계열 확장 화음은 지판 전체 구성음 위치를 참고하세요.</div>`;
 
   chords.forEach(chord => {
     const intervals = (CHORD_INTERVALS_L2[chord] || []).map(iv => iv % 12);
@@ -1819,6 +1870,23 @@ function renderFourPart(key) {
     html += `<div class="fb-card-sub">빨간 <strong>R</strong> = 루트음 · 파란 점 = 나머지 구성음 · 루트를 찾고 주변 구성음을 연결하면 폼이 완성돼요</div>`;
     html += makeFretboardSVG(pos, {startFret:0, endFret:12, width:700, viewMode:currentViewMode});
     html += `</div>`;
+
+    // 순수 4음 화음: 대표 폼 1개 (Drop 3 근음 포지션) — Level II는 코드당 1폼
+    if (FOURNOTE_REP_CHORDS.includes(chord)) {
+      const rootSt2 = noteToSemitone(key);
+      const tones2 = intervals.map(i => (rootSt2 + i) % 12);
+      const repV = findDropVoicing(tones2, DROP3_STRINGS, getDrop3Order(0));
+      if (repV) {
+        const repPos = dropVoicingToPos(repV, intervals, key);
+        const repEnd = Math.max(15, Math.max(...repV.map(p=>p.fret)) + 1);
+        html += `<div class="fb-card" style="width:100%;margin-top:14px">`;
+        html += `<div class="fb-card-title">${key}${chord} — 대표 폼 (⑥현 루트 · 근음 포지션)</div>`;
+        html += `<div class="fb-card-sub">Level II는 코드당 이 한 가지 폼만 익히면 됩니다 · 빨간 R = 루트 · ⑥④③②현</div>`;
+        html += makeFretboardSVG(repPos, {startFret:0, endFret:repEnd, width:700, viewMode:currentViewMode, activeStrNums:new Set([6,4,3,2])});
+        html += `</div>`;
+      }
+    }
+
     html += `<div class="hint-box">💡 지판에서 루트를 찾고 → 구성음 패턴을 직접 연결해서 자신만의 코드 폼을 만들어보세요.</div>`;
 
     html += `</div>`;
